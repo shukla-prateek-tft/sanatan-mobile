@@ -1,0 +1,95 @@
+import { Tabs } from 'expo-router';
+import React from 'react';
+import { Platform } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { colors, typography } from '../../theme';
+
+export default function TabLayout() {
+  return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: colors.gold,
+        tabBarInactiveTintColor: colors.textMuted,
+        tabBarStyle: {
+          backgroundColor: colors.bgSecondary,
+          borderTopColor: colors.cardBorder,
+          borderTopWidth: 1,
+          height: Platform.OS === 'ios' ? 88 : 65,
+          paddingBottom: Platform.OS === 'ios' ? 24 : 8,
+          paddingTop: 8,
+        },
+        tabBarLabelStyle: {
+          fontSize: typography.fontSize.xs,
+          fontWeight: typography.fontWeight.medium,
+        },
+        headerStyle: {
+          backgroundColor: colors.bgSecondary,
+          borderBottomColor: colors.cardBorder,
+          borderBottomWidth: 1,
+        },
+        headerTintColor: colors.textPrimary,
+        headerTitleStyle: {
+          fontSize: typography.fontSize.xl,
+          fontWeight: typography.fontWeight.bold,
+          color: colors.gold,
+        },
+      }}
+    >
+      <Tabs.Screen
+        name="index"
+        options={{
+          title: 'Home',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="home" size={size} color={color} />
+          ),
+          headerTitle: 'Sanatan Dharma',
+        }}
+      />
+      <Tabs.Screen
+        name="jap"
+        options={{
+          title: 'Jap',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="infinite" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="bhajan"
+        options={{
+          title: 'Bhajan',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="musical-notes" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="scriptures"
+        options={{
+          title: 'Scriptures',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="book" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="calendar"
+        options={{
+          title: 'Calendar',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: 'Settings',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="settings" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
+}
