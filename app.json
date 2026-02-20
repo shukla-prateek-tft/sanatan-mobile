@@ -8,12 +8,14 @@
     "scheme": "sanatan-dharma",
     "userInterfaceStyle": "dark",
     "newArchEnabled": true,
+    "jsEngine": "hermes",
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.sanatandharma.app",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "Play audio bhajans",
-        "NSCameraUsageDescription": "Capture spiritual moments"
+        "NSCameraUsageDescription": "Capture spiritual moments",
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -25,7 +27,9 @@
       "permissions": [
         "VIBRATE",
         "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE"
+        "WRITE_EXTERNAL_STORAGE",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
       ],
       "edgeToEdgeEnabled": true
     },
@@ -54,6 +58,12 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "25aa6dc9-b6ee-41f4-b444-9bb234dc3a8a"
+      }
     }
   }
 }
