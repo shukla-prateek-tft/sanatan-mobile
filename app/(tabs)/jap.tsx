@@ -36,7 +36,7 @@ import * as Speech from "expo-speech";
 import { GradientBackground } from "../../components/GradientBackground";
 import { colors, spacing, typography, theme } from "../../theme";
 import { storageService } from "../../services/storageService";
-import { JAP_MANTRAS, Mantra } from "../../services/mantraService";
+import { Mantra, mantraService } from "../../services/mantraService";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   useSharedValue,
@@ -179,7 +179,7 @@ const SettingRow = ({
 export default function JapScreen() {
   // ── State ──────────────────────────────────
   const [count, setCount] = useState(0);
-  const [selectedMantra, setSelectedMantra] = useState<Mantra>(JAP_MANTRAS[0]);
+  const [selectedMantra, setSelectedMantra] = useState<Mantra>([]);
   const [customMantras, setCustomMantras] = useState<CustomMantra[]>([]);
   const [settings, setSettings] = useState<JapSettings>({
     hapticsEnabled: true,
@@ -195,7 +195,7 @@ export default function JapScreen() {
   const [showAddMantra, setShowAddMantra] = useState(false);
   const [showConfirmReset, setShowConfirmReset] = useState(false);
   const [editingMantra, setEditingMantra] = useState<CustomMantra | null>(null);
-
+  const [dailyMantra, setDailyMantra] = useState<Mantra | null>([]);
   // ── Custom mantra form ──────────────────────
   const [formText, setFormText] = useState("");
   const [formMeaning, setFormMeaning] = useState("");
@@ -212,9 +212,20 @@ export default function JapScreen() {
   const remaining = 108 - currentProgress;
   const progressPct = Math.round((currentProgress / 108) * 100);
 
+  const loadData = useCallback(async () => {
+    try {
+      const response = mantraService.getAllJapMantras();
+      setDailyMantra(response);
+      setSelectedMantra(response[0]);
+    } catch (e) {
+      console.error("Panchang load error:", e);
+    }
+  }, []);
+
   // ── Load persisted data ─────────────────────
   useEffect(() => {
     (async () => {
+      await loadData();
       try {
         const savedCount = (await storageService.getJapCount()) ?? 0;
         const savedMantra = await storageService.getSelectedMantra();
@@ -248,7 +259,7 @@ export default function JapScreen() {
 
         // Restore selected mantra
         const allMantras = [
-          ...JAP_MANTRAS,
+          ...dailyMantra,
           ...(rawCustom ? JSON.parse(rawCustom) : []),
         ];
         const found = allMantras.find((m) => m.text === savedMantra);
@@ -296,12 +307,12 @@ export default function JapScreen() {
       if (!settings.ttsEnabled) return;
       Speech.stop();
       Speech.speak(text, {
-        language: settings.ttsLanguage,
-        pitch: 0.95,
-        rate: 0.75,
+        language: "hi-IN",
+        pitch: 1,
+        rate: 0.85,
       });
     },
-    [settings.ttsEnabled, settings.ttsLanguage],
+    [settings.ttsEnabled],
   );
 
   // ── TAP ─────────────────────────────────────
@@ -452,8 +463,8 @@ export default function JapScreen() {
               );
               // If deleted mantra was selected, fallback to first
               if (selectedMantra.id === id) {
-                setSelectedMantra(JAP_MANTRAS[0]);
-                storageService.saveSelectedMantra(JAP_MANTRAS[0].text);
+                setSelectedMantra(dailyMantra[0]);
+                storageService.saveSelectedMantra(dailyMantra[0].text);
               }
               return updated;
             });
@@ -475,7 +486,7 @@ export default function JapScreen() {
     opacity: celebScale.value,
   }));
 
-  const allMantras = [...JAP_MANTRAS, ...customMantras];
+  const allMantras = [...dailyMantra, ...customMantras];
 
   return (
     <GradientBackground>
@@ -692,7 +703,7 @@ export default function JapScreen() {
                 const isCustom = (item as any).isCustom;
                 const isSelected = selectedMantra.id === item.id;
                 const showCustomHeader =
-                  isCustom && index === JAP_MANTRAS.length;
+                  isCustom && index === dailyMantra.length;
                 return (
                   <>
                     {showCustomHeader && (
@@ -857,8 +868,9 @@ export default function JapScreen() {
                       style={md.previewSpeak}
                       onPress={() =>
                         Speech.speak(formText, {
-                          language: settings.ttsLanguage,
-                          rate: 0.75,
+                          language: "hi-IN",
+                          pitch: 1,
+                          rate: 0.85,
                         })
                       }
                       activeOpacity={0.7}
@@ -958,7 +970,7 @@ export default function JapScreen() {
                   />
 
                   {/* Language selector */}
-                  <View style={st.langRow}>
+                  {/* <View style={st.langRow}>
                     <Text style={st.langLabel}>🌐 भाषा · Language</Text>
                     <View style={st.langOptions}>
                       {[
@@ -990,7 +1002,7 @@ export default function JapScreen() {
                         </TouchableOpacity>
                       ))}
                     </View>
-                  </View>
+                  </View> */}
 
                   {/* Test TTS */}
                   <TouchableOpacity

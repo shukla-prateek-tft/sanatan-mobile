@@ -30,15 +30,9 @@ import {
   SECTION_LABELS_HI,
   MUHURTA_LABELS_HI,
 } from "../../services/constants";
+import { bhajanService } from "@/services/bhajanService";
+import { artistService } from "@/services/artistsService";
 
-// ─────────────────────────────────────────────────────────
-// ATOMS
-// ─────────────────────────────────────────────────────────
-
-/**
- * Bilingual info cell — shows English label + Hindi label,
- * English value + Hindi value stacked.
- */
 const BiCell = ({
   labelEn,
   labelHi,
@@ -69,7 +63,6 @@ const BiCell = ({
   </View>
 );
 
-/** Simple info cell (single language — for times etc.) */
 const InfoCell = ({
   label,
   value,
@@ -88,7 +81,6 @@ const InfoCell = ({
   </View>
 );
 
-/** Timing row with coloured dot, icon, Hindi label, time range */
 const TimingRow = ({
   icon,
   labelEn,
@@ -117,7 +109,6 @@ const TimingRow = ({
   </View>
 );
 
-/** Section header pill */
 const SectionHeader = ({ en, hi }: { en: string; hi: string }) => (
   <View style={styles.sectionHeader}>
     <View style={styles.sectionLine} />
@@ -129,7 +120,6 @@ const SectionHeader = ({ en, hi }: { en: string; hi: string }) => (
   </View>
 );
 
-/** Paksha / Raasi badge pill */
 const Pill = ({ text, color }: { text: string; color?: string }) => (
   <View style={[styles.pill, { borderColor: color ?? colors.gold }]}>
     <Text style={[styles.pillText, { color: color ?? colors.gold }]}>
@@ -138,9 +128,6 @@ const Pill = ({ text, color }: { text: string; color?: string }) => (
   </View>
 );
 
-// ─────────────────────────────────────────────────────────
-// SCREEN
-// ─────────────────────────────────────────────────────────
 export default function HomeScreen() {
   const [panchang, setPanchang] = useState<PanchangData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -148,10 +135,11 @@ export default function HomeScreen() {
   const [dailyMantra, setDailyMantra] = useState<Mantra | null>(null);
   const [showInauspicious, setShowInauspicious] = useState(false);
 
-  const loadData = useCallback(() => {
+  const loadData = useCallback(async () => {
     try {
-      setLoading(true);
       setPanchang(panchangService.getTodayPanchang());
+      const response = await mantraService.getDailyMantra();
+
       setDailyMantra(mantraService.getDailyMantra());
     } catch (e) {
       console.error("Panchang load error:", e);
@@ -160,17 +148,27 @@ export default function HomeScreen() {
     }
   }, []);
 
+  // Pull-to-refresh: re-fetches Firebase mantras, then refreshes all data
   const onRefresh = useCallback(async () => {
+    await Promise.all([bhajanService.refresh(), artistService.refresh()]);
     setRefreshing(true);
-    loadData();
-    setRefreshing(false);
-  }, [loadData]);
+    try {
+      const response = await mantraService.refresh();
+      if (response) {
+        setPanchang(panchangService.getTodayPanchang());
+        setDailyMantra(response?.[0]);
+      }
+    } catch (e) {
+      console.error("Refresh error:", e);
+    } finally {
+      setRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  // ── Loading ───────────────────────────────────────────
   if (loading && !panchang) {
     return (
       <GradientBackground>
@@ -200,10 +198,11 @@ export default function HomeScreen() {
             onRefresh={onRefresh}
             tintColor={colors.gold}
             colors={[colors.gold]}
+            title="Refreshing Panchang…"
+            titleColor={colors.gold}
           />
         }
       >
-        {/* ── HEADER ─────────────────────────────────── */}
         <Animated.View entering={FadeIn.duration(1000)} style={styles.header}>
           <AnimatedDiya />
           <Text style={styles.om}>॥ ॐ नमः शिवाय ॥</Text>
@@ -215,7 +214,6 @@ export default function HomeScreen() {
           )}
         </Animated.View>
 
-        {/* ── DAILY MANTRA ───────────────────────────── */}
         {dailyMantra && (
           <Animated.View entering={FadeInDown.delay(100).duration(700)}>
             <Card title={`✨ ${SECTION_LABELS_HI.mantra} · Today's Mantra`}>
@@ -230,7 +228,6 @@ export default function HomeScreen() {
 
         {panchang && (
           <>
-            {/* ── HINDU CALENDAR STRIP ───────────────── */}
             <Animated.View entering={FadeInDown.delay(200).duration(700)}>
               <Card title={`📅 ${SECTION_LABELS_HI.calendar} · Hindu Calendar`}>
                 <View style={styles.strip}>
@@ -261,7 +258,6 @@ export default function HomeScreen() {
                     <Text style={styles.stripValueEn}>{panchang.vara}</Text>
                   </View>
                 </View>
-
                 <View style={styles.samvatRow}>
                   <View style={styles.samvatItem}>
                     <Text style={styles.samvatLabelHi}>
@@ -283,7 +279,6 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
-            {/* ── PANCH-ANG: FIVE LIMBS ──────────────── */}
             <Animated.View entering={FadeInDown.delay(300).duration(700)}>
               <Card title={`🪔 ${SECTION_LABELS_HI.panchang} · Panch-Ang`}>
                 <View style={styles.grid2}>
@@ -318,8 +313,6 @@ export default function HomeScreen() {
                     subValue={`ends ${panchang.karanaEnd}`}
                   />
                 </View>
-
-                {/* Paksha + Raasi badges */}
                 <View style={styles.badgeRow}>
                   <Pill
                     text={`${panchang.paksha_hi} · ${panchang.paksha} Paksha`}
@@ -330,10 +323,8 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
-            {/* ── SUN & MOON ─────────────────────────── */}
             <Animated.View entering={FadeInDown.delay(400).duration(700)}>
               <Card title={`☀️ ${SECTION_LABELS_HI.sunMoon} · Sun & Moon`}>
-                {/* Moon visual */}
                 <View style={styles.moonRow}>
                   <MoonPhase phase={panchang.moonPhase} size={90} />
                   <View style={styles.moonDetails}>
@@ -343,8 +334,8 @@ export default function HomeScreen() {
                     <Text style={styles.moonValue}>
                       {Math.round(panchang.moonPhase * 100)}%{" "}
                       {panchang.moonPhase < 0.5
-                        ? `${FIELD_LABELS_HI.waxing}`
-                        : `${FIELD_LABELS_HI.waning}`}
+                        ? FIELD_LABELS_HI.waxing
+                        : FIELD_LABELS_HI.waning}
                     </Text>
                     <Text style={styles.moonLabelHi}>
                       {FIELD_LABELS_HI.raasi}
@@ -358,9 +349,7 @@ export default function HomeScreen() {
                     <Text style={styles.moonValue}>{panchang.paksha_hi}</Text>
                   </View>
                 </View>
-
                 <SectionHeader en="Daily Timings" hi="दैनिक समय" />
-
                 <View style={styles.grid2}>
                   <InfoCell
                     label={`🌅 ${FIELD_LABELS_HI.sunrise} · Sunrise`}
@@ -392,7 +381,6 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
-            {/* ── AUSPICIOUS MUHURTA ─────────────────── */}
             <Animated.View entering={FadeInDown.delay(500).duration(700)}>
               <Card
                 title={`🌟 ${SECTION_LABELS_HI.auspicious} · Auspicious Timings`}
@@ -418,7 +406,6 @@ export default function HomeScreen() {
                   slot={{ start: panchang.brahmaHora, end: panchang.sunrise }}
                   dot="#60A5FA"
                 />
-
                 <TouchableOpacity
                   style={styles.toggleBtn}
                   onPress={() => setShowInauspicious((v) => !v)}
@@ -426,14 +413,13 @@ export default function HomeScreen() {
                 >
                   <Text style={styles.toggleText}>
                     {showInauspicious
-                      ? `▴ अशुभ काल छुपाएँ · Hide inauspicious`
-                      : `▾ अशुभ काल देखें · Show inauspicious`}
+                      ? "▴ अशुभ काल छुपाएँ · Hide inauspicious"
+                      : "▾ अशुभ काल देखें · Show inauspicious"}
                   </Text>
                 </TouchableOpacity>
               </Card>
             </Animated.View>
 
-            {/* ── INAUSPICIOUS PERIODS ───────────────── */}
             {showInauspicious && (
               <Animated.View entering={FadeInLeft.duration(400)}>
                 <Card
@@ -484,7 +470,6 @@ export default function HomeScreen() {
               </Animated.View>
             )}
 
-            {/* ── ASTRONOMICAL INFO ──────────────────── */}
             <Animated.View entering={FadeInDown.delay(600).duration(700)}>
               <Card
                 title={`🔭 ${SECTION_LABELS_HI.astronomy} · Astronomical Info`}
@@ -506,7 +491,6 @@ export default function HomeScreen() {
           </>
         )}
 
-        {/* ── FOOTER ─────────────────────────────────── */}
         <Animated.View
           entering={FadeIn.delay(700).duration(1000)}
           style={styles.footer}
@@ -521,14 +505,9 @@ export default function HomeScreen() {
   );
 }
 
-// ─────────────────────────────────────────────────────────
-// STYLES
-// ─────────────────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: { flex: 1 },
   content: { paddingVertical: spacing.lg, paddingHorizontal: spacing.sm },
-
-  // Loading
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
@@ -541,8 +520,6 @@ const styles = StyleSheet.create({
     marginTop: spacing.md,
   },
   loadingHi: { color: colors.gold, fontSize: typography.fontSize.md },
-
-  // Header
   header: { alignItems: "center", marginVertical: spacing.lg },
   om: {
     fontSize: typography.fontSize.xxl,
@@ -564,8 +541,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
     textAlign: "center",
   },
-
-  // Mantra
   mantraText: {
     fontSize: typography.fontSize.xl,
     color: colors.textPrimary,
@@ -580,8 +555,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.sm,
   },
   mantraFooter: { alignItems: "center" },
-
-  // Calendar Strip
   strip: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -609,7 +582,6 @@ const styles = StyleSheet.create({
   },
   stripValueEn: { fontSize: 11, color: colors.textMuted, textAlign: "center" },
   stripDivider: { width: 1, height: 44, backgroundColor: colors.gold + "40" },
-
   samvatRow: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -625,15 +597,11 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontWeight: typography.fontWeight.bold,
   },
-
-  // Grid
   grid2: {
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "space-between",
   },
-
-  // BiCell
   biCell: {
     width: "48%",
     marginBottom: spacing.md,
@@ -667,8 +635,6 @@ const styles = StyleSheet.create({
     marginTop: 2,
   },
   biCellSub: { fontSize: 10, color: colors.textMuted, marginTop: 4 },
-
-  // InfoCell
   infoCell: {
     width: "48%",
     marginBottom: spacing.md,
@@ -690,19 +656,13 @@ const styles = StyleSheet.create({
     fontWeight: typography.fontWeight.semibold,
   },
   infoCellSub: { fontSize: 10, color: colors.textMuted, marginTop: 3 },
-
-  // Accent
   accent: { color: colors.gold },
-
-  // Badge row
   badgeRow: {
     flexDirection: "row",
     flexWrap: "wrap",
     gap: spacing.sm,
     marginTop: spacing.xs,
   },
-
-  // Pill
   pill: {
     borderWidth: 1,
     borderRadius: 20,
@@ -711,8 +671,6 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   pillText: { fontSize: 11, fontWeight: typography.fontWeight.semibold },
-
-  // Moon
   moonRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -726,8 +684,6 @@ const styles = StyleSheet.create({
     color: colors.textPrimary,
     fontWeight: typography.fontWeight.semibold,
   },
-
-  // Section Header
   sectionHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -744,8 +700,6 @@ const styles = StyleSheet.create({
   },
   sectionEn: { fontSize: 10, color: colors.textMuted },
   sectionHi: { fontSize: 11, color: colors.gold },
-
-  // Timing Row
   timingRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -769,8 +723,6 @@ const styles = StyleSheet.create({
     textAlign: "right",
     lineHeight: 18,
   },
-
-  // Inauspicious note
   avoidNote: {
     fontSize: typography.fontSize.sm,
     color: colors.textMuted,
@@ -778,8 +730,6 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     lineHeight: 20,
   },
-
-  // Toggle
   toggleBtn: {
     alignItems: "center",
     marginTop: spacing.sm,
@@ -790,8 +740,6 @@ const styles = StyleSheet.create({
     color: colors.gold,
     fontWeight: typography.fontWeight.semibold,
   },
-
-  // Footer
   footer: {
     alignItems: "center",
     marginTop: spacing.xl,

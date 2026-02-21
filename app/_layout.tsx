@@ -1,28 +1,49 @@
-import { Stack } from "expo-router";
-import { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
-// import * as SplashScreen from "expo-splash-screen";
+import { SplashScreen, Stack } from "expo-router";
+import { useEffect, useState, useCallback } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { usePanchangLocation } from "../services/panchangService";
 import { LocationPickerModal } from "../components/LocationPicker";
 import CustomSplashScreen from "@/components/SplashScreen";
-// Keep the splash screen visible while we fetch resources
-// SplashScreen.preventAutoHideAsync();
+import { mantraService } from "@/services/mantraService";
+import { bhajanService } from "@/services/bhajanService";
+import { artistService } from "@/services/artistsService";
+import * as Speech from "expo-speech";
+
+SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const loc = usePanchangLocation();
+  const [appReady, setAppReady] = useState(false);
+  const [showCustomSplash, setShowCustomSplash] = useState(true);
 
-  // useEffect(() => {
-  //   // Hide splash screen after a delay
-  //   setTimeout(() => {
-  //     SplashScreen.hideAsync();
-  //   }, 2000);
-  // }, []);
-  const [showSplash, setShowSplash] = useState(true);
+  const prepareApp = useCallback(async () => {
+    try {
+      await Promise.all([
+        mantraService.init(),
+        bhajanService.init(),
+        artistService.init(),
+        Speech.getAvailableVoicesAsync(),
+      ]);
+    } catch (e) {
+      console.warn(e);
+    } finally {
+      setAppReady(true);
+      await SplashScreen.hideAsync();
+    }
+  }, []);
 
-  if (showSplash) {
+  useEffect(() => {
+    prepareApp();
+  }, []);
+
+  if (!appReady) {
+    return null; // Native splash stays visible
+  }
+
+  if (showCustomSplash) {
     return (
       <CustomSplashScreen
-        onFinish={() => setShowSplash(false)}
+        onFinish={() => setShowCustomSplash(false)}
         appName="पञ्चाङ्ग"
         tagline="Panchang • Bhajan • Jap • Gita"
       />
@@ -30,18 +51,17 @@ export default function RootLayout() {
   }
 
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="(tabs)" />
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="(tabs)" />
+      </Stack>
+
       <LocationPickerModal
         visible={loc.status === "denied"}
         onDetectGPS={loc.detectGPS}
         onPickCity={loc.pickCity}
         error={loc.error}
       />
-    </Stack>
+    </SafeAreaProvider>
   );
 }

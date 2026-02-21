@@ -266,9 +266,6 @@ export function usePanchangLocation() {
     setState((s) => ({ ...s, status: "detecting" }));
 
     initLocation().then((loc) => {
-      console.log("====================================");
-      console.log(loc);
-      console.log("====================================");
       // If initLocation returned FALLBACK with no saved location → denied
       const wasDenied = loc === FALLBACK_LOCATION;
       setState({

@@ -23,9 +23,6 @@ export const fetchShlokas = async (
   chapterNumber: number | undefined,
   shlokNumber: number | undefined,
 ): Promise<Verse[]> => {
-  console.log("====================================");
-  console.log(chapterNumber, shlokNumber);
-  console.log("====================================");
   if (!chapterNumber) return [];
   try {
     const response = await fetch(
@@ -37,7 +34,6 @@ export const fetchShlokas = async (
     }
 
     const data = await response.json();
-    console.log(data);
     const transformed: Verse[] = [
       {
         chapter: data.chapter,
