@@ -12,7 +12,11 @@ import {
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
 import { colors, spacing, typography, theme } from "../../theme";
-import { panchangService, PanchangData } from "../../services/panchangService";
+import {
+  panchangService,
+  PanchangData,
+  usePanchangLocation,
+} from "../../services/panchangService";
 import { Ionicons } from "@expo/vector-icons";
 import {
   format,
@@ -25,10 +29,82 @@ import {
   getDay,
   isToday,
 } from "date-fns";
+import { getPanchangam, Observer } from "@ishubhamx/panchangam-js";
+import { FadeInDown } from "react-native-reanimated";
+import { Card } from "@/components/Card";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const DAY_SIZE = Math.floor((SCREEN_WIDTH - spacing.md * 2) / 7);
+
+// ─────────────────────────────────────────────
+// FESTIVAL HELPERS
+// library returns: [{name, description, category, isFastingDay, ...}]
+// ─────────────────────────────────────────────
+interface FestivalObj {
+  name: string;
+  description?: string;
+  category?: string; // "major" | "minor" | "fasting"
+  isFastingDay?: boolean;
+}
+
+function parseFestivals(raw: unknown): FestivalObj[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((f) =>
+      typeof f === "string"
+        ? { name: f }
+        : {
+            name: f?.name ?? "",
+            description: f?.description,
+            category: f?.category,
+            isFastingDay: !!f?.isFastingDay,
+          },
+    )
+    .filter((f) => Boolean(f.name));
+}
+
+const FESTIVAL_COLOR: Record<string, string> = {
+  major: "#F4D160",
+  minor: "#60A5FA",
+  fasting: "#86EFAC",
+};
+
+// IST = UTC+5:30 = 330 min. Ideally derive from UserLocation.timezone,
+// but IST covers 99% of the app's target audience.
+const TZ_OFFSET_MIN = 330;
+
+// Fallback if location isn't ready yet when festivals are first requested
+const FALLBACK_LAT = 28.6139;
+const FALLBACK_LNG = 77.209;
+
+// ─────────────────────────────────────────────
+// FESTIVAL CARD  (new, self-contained)
+// ─────────────────────────────────────────────
+const FestivalCard = ({ fest }: { fest: FestivalObj }) => {
+  const accent = FESTIVAL_COLOR[fest.category ?? "minor"] ?? colors.gold;
+  const emoji =
+    fest.category === "major" ? "🎊" : fest.isFastingDay ? "🙏" : "🪔";
+  return (
+    <View style={[mStyles.festCard, { borderLeftColor: accent }]}>
+      <View style={mStyles.festTop}>
+        <Text style={mStyles.festEmoji}>{emoji}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={[mStyles.festName, { color: accent }]}>{fest.name}</Text>
+          {fest.category ? (
+            <Text style={mStyles.festMeta}>
+              {fest.category.charAt(0).toUpperCase() + fest.category.slice(1)}
+              {fest.isFastingDay ? "  ·  व्रत / Fasting Day" : ""}
+            </Text>
+          ) : null}
+        </View>
+      </View>
+      {fest.description ? (
+        <Text style={mStyles.festDesc}>{fest.description}</Text>
+      ) : null}
+    </View>
+  );
+};
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -283,42 +359,72 @@ export default function CalendarScreen() {
   const [specialDays, setSpecialDays] = useState<Map<string, DayMeta>>(
     new Map(),
   );
+  const [festivals, setFestivals] = useState<FestivalObj[]>([]);
   const [buildingCalendar, setBuildingCalendar] = useState(false);
   const slideAnim = useRef(new Animated.Value(0)).current;
 
+  const { location } = usePanchangLocation();
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(currentMonth);
   const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
   const leadingBlanks = getDay(monthStart);
+
+  // ── Festival loader (@ishubhamx/panchangam-js) ────────────────────────────
+  // Non-fatal: if it throws, festivals stay []. Never blocks the screen.
+  const loadFestivals = useCallback(
+    (date: Date) => {
+      try {
+        const lat = location?.latitude ?? FALLBACK_LAT;
+        const lng = location?.longitude ?? FALLBACK_LNG;
+        const obs = new Observer(lat, lng, 200);
+        const p = getPanchangam(date, obs, { timezoneOffset: TZ_OFFSET_MIN });
+        setFestivals(parseFestivals(p.festivals));
+      } catch (e) {
+        console.warn("[festivals] non-fatal:", e);
+        setFestivals([]);
+      }
+    },
+    [location?.latitude, location?.longitude],
+  );
 
   // Build special day map whenever month changes
   useEffect(() => {
     setBuildingCalendar(true);
     // Run on next tick so UI doesn't freeze
     setTimeout(() => {
+      const today = new Date();
+      loadFestivals(today); // ← new, parallel, non-fatal
       const map = buildMonthSpecialDays(daysInMonth);
       setSpecialDays(map);
       setBuildingCalendar(false);
     }, 0);
   }, [currentMonth.getFullYear(), currentMonth.getMonth()]);
+  useEffect(() => {
+    if (location) loadFestivals(new Date());
+  }, [location?.latitude, location?.longitude]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const openPanchang = useCallback((date: Date) => {
-    setSelectedDate(date);
-    setLoadingModal(true);
-    setModalVisible(true);
-    setShowInauspicious(false);
-    // Use setTimeout so modal animates open before computation
-    setTimeout(() => {
-      try {
-        const data = panchangService.getPanchangForDate(date);
-        setPanchang(data);
-      } catch (e) {
-        console.error("Panchang error:", e);
-      } finally {
-        setLoadingModal(false);
-      }
-    }, 50);
-  }, []);
+  const openPanchang = useCallback(
+    (date: Date) => {
+      setSelectedDate(date);
+
+      setLoadingModal(true);
+      setModalVisible(true);
+      setShowInauspicious(false);
+      // Use setTimeout so modal animates open before computation
+      setTimeout(() => {
+        try {
+          const data = panchangService.getPanchangForDate(date);
+          loadFestivals(date);
+          setPanchang(data);
+        } catch (e) {
+          console.error("Panchang error:", e);
+        } finally {
+          setLoadingModal(false);
+        }
+      }, 50);
+    },
+    [loadFestivals],
+  );
 
   const navigateMonth = useCallback(
     (dir: 1 | -1) => {
@@ -444,22 +550,25 @@ export default function CalendarScreen() {
         <Animated.View
           style={[s.gridWrap, { transform: [{ translateX: slideAnim }] }]}
         >
-          {buildingCalendar && (
+          {buildingCalendar ? (
             <View style={s.calLoader}>
-              <ActivityIndicator size="small" color={colors.gold} />
+              <ActivityIndicator size="large" color={colors.gold} />
             </View>
+          ) : (
+            <>
+              {rows.map((row, ri) => (
+                <View key={ri} style={s.gridRow}>
+                  {row.map((date, ci) =>
+                    date ? (
+                      renderDay(date)
+                    ) : (
+                      <View key={`b-${ri}-${ci}`} style={s.blankCell} />
+                    ),
+                  )}
+                </View>
+              ))}
+            </>
           )}
-          {rows.map((row, ri) => (
-            <View key={ri} style={s.gridRow}>
-              {row.map((date, ci) =>
-                date ? (
-                  renderDay(date)
-                ) : (
-                  <View key={`b-${ri}-${ci}`} style={s.blankCell} />
-                ),
-              )}
-            </View>
-          ))}
         </Animated.View>
 
         {/* ── TODAY STRIP ── */}
@@ -560,7 +669,6 @@ export default function CalendarScreen() {
                     </View>
                   ) : null;
                 })()}
-
                 {/* Moon banner */}
                 <View style={mStyles.moonBanner}>
                   <Text style={mStyles.moonEmoji}>
@@ -582,7 +690,14 @@ export default function CalendarScreen() {
                     <Text style={mStyles.raasiEn}>{panchang.raasi}</Text>
                   </View>
                 </View>
-
+                {festivals.length > 0 && (
+                  <>
+                    <SecDiv en="Festivals" hi="🎊 त्योहार " />
+                    {festivals.map((f, i) => (
+                      <FestivalCard key={`${f.name}-${i}`} fest={f} />
+                    ))}
+                  </>
+                )}
                 {/* Panch-Ang */}
                 <SecDiv en="Panch-Ang" hi="पञ्चाङ्ग" />
                 <InfoRow
@@ -872,7 +987,7 @@ const s = StyleSheet.create({
 
   gridWrap: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
   gridRow: { flexDirection: "row" },
-  calLoader: { position: "absolute", top: 8, right: 8, zIndex: 1 },
+  calLoader: { height: 200, alignItems: "center", justifyContent: "center" },
 
   dayCell: {
     width: DAY_SIZE,
@@ -1151,5 +1266,30 @@ const mStyles = StyleSheet.create({
     textAlign: "center",
     marginBottom: spacing.sm,
     fontStyle: "italic",
+  },
+  festCard: {
+    borderLeftWidth: 4,
+    borderRadius: 10,
+    backgroundColor: colors.gold + "10",
+    padding: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.gold + "20",
+    marginBottom: spacing.xs,
+  },
+  festTop: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  festEmoji: { fontSize: 20 },
+  festName: { fontSize: typography.fontSize.md, fontWeight: "700" },
+  festMeta: {
+    fontSize: 10,
+    color: colors.textMuted,
+    marginTop: 1,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  festDesc: {
+    fontSize: typography.fontSize.sm,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+    lineHeight: 18,
   },
 });

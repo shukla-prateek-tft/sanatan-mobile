@@ -92,6 +92,15 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="kundli"
+        options={{
+          title: "Kundli",
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="kundli" size={size} color={color} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

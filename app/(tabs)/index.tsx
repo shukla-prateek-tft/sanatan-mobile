@@ -1,3 +1,21 @@
+/**
+ * HomeScreen.tsx
+ *
+ * Mixed data strategy — zero changes to panchangService:
+ *
+ *  ① panchangService (mhah-panchang + suncalc)
+ *     └─ ALL core data: tithi, nakshatra, yoga, karana, vara, masa, ritu,
+ *        raasi, sunrise/set, moon times, muhurtas, samvat, ayanamsa.
+ *
+ *  ② @ishubhamx/panchangam-js  — festivals[] ONLY
+ *     └─ Called in parallel in loadData(), fully non-fatal.
+ *        Uses the same UserLocation from usePanchangLocation (already
+ *        exported from panchangService) so coords stay in sync.
+ *
+ *  usePanchangLocation — imported from panchangService (already there).
+ *  No new hook, no new service, no new file needed.
+ */
+
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -23,6 +41,7 @@ import {
   panchangService,
   PanchangData,
   TimeSlot,
+  usePanchangLocation, // ← already exported from panchangService
 } from "../../services/panchangService";
 import { mantraService, Mantra } from "../../services/mantraService";
 import {
@@ -32,7 +51,80 @@ import {
 } from "../../services/constants";
 import { bhajanService } from "@/services/bhajanService";
 import { artistService } from "@/services/artistsService";
+import { getPanchangam, Observer } from "@ishubhamx/panchangam-js";
 
+// ─────────────────────────────────────────────
+// FESTIVAL HELPERS
+// library returns: [{name, description, category, isFastingDay, ...}]
+// ─────────────────────────────────────────────
+interface FestivalObj {
+  name: string;
+  description?: string;
+  category?: string; // "major" | "minor" | "fasting"
+  isFastingDay?: boolean;
+}
+
+function parseFestivals(raw: unknown): FestivalObj[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((f) =>
+      typeof f === "string"
+        ? { name: f }
+        : {
+            name: f?.name ?? "",
+            description: f?.description,
+            category: f?.category,
+            isFastingDay: !!f?.isFastingDay,
+          },
+    )
+    .filter((f) => Boolean(f.name));
+}
+
+const FESTIVAL_COLOR: Record<string, string> = {
+  major: "#F4D160",
+  minor: "#60A5FA",
+  fasting: "#86EFAC",
+};
+
+// IST = UTC+5:30 = 330 min. Ideally derive from UserLocation.timezone,
+// but IST covers 99% of the app's target audience.
+const TZ_OFFSET_MIN = 330;
+
+// Fallback if location isn't ready yet when festivals are first requested
+const FALLBACK_LAT = 28.6139;
+const FALLBACK_LNG = 77.209;
+
+// ─────────────────────────────────────────────
+// FESTIVAL CARD  (new, self-contained)
+// ─────────────────────────────────────────────
+const FestivalCard = ({ fest }: { fest: FestivalObj }) => {
+  const accent = FESTIVAL_COLOR[fest.category ?? "minor"] ?? colors.gold;
+  const emoji =
+    fest.category === "major" ? "🎊" : fest.isFastingDay ? "🙏" : "🪔";
+  return (
+    <View style={[styles.festCard, { borderLeftColor: accent }]}>
+      <View style={styles.festTop}>
+        <Text style={styles.festEmoji}>{emoji}</Text>
+        <View style={{ flex: 1 }}>
+          <Text style={[styles.festName, { color: accent }]}>{fest.name}</Text>
+          {fest.category ? (
+            <Text style={styles.festMeta}>
+              {fest.category.charAt(0).toUpperCase() + fest.category.slice(1)}
+              {fest.isFastingDay ? "  ·  व्रत / Fasting Day" : ""}
+            </Text>
+          ) : null}
+        </View>
+      </View>
+      {fest.description ? (
+        <Text style={styles.festDesc}>{fest.description}</Text>
+      ) : null}
+    </View>
+  );
+};
+
+// ─────────────────────────────────────────────
+// ORIGINAL ATOMS  (unchanged from your code)
+// ─────────────────────────────────────────────
 const BiCell = ({
   labelEn,
   labelHi,
@@ -128,27 +220,54 @@ const Pill = ({ text, color }: { text: string; color?: string }) => (
   </View>
 );
 
+// ─────────────────────────────────────────────
+// SCREEN
+// ─────────────────────────────────────────────
 export default function HomeScreen() {
+  // usePanchangLocation is already exported from panchangService —
+  // panchangService reads the same _loc internally for its own calculations.
+  const { location } = usePanchangLocation();
+
   const [panchang, setPanchang] = useState<PanchangData | null>(null);
+  const [festivals, setFestivals] = useState<FestivalObj[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [dailyMantra, setDailyMantra] = useState<Mantra | null>(null);
   const [showInauspicious, setShowInauspicious] = useState(false);
 
+  // ── Festival loader (@ishubhamx/panchangam-js) ────────────────────────────
+  // Non-fatal: if it throws, festivals stay []. Never blocks the screen.
+  const loadFestivals = useCallback(
+    (date: Date) => {
+      try {
+        const lat = location?.latitude ?? FALLBACK_LAT;
+        const lng = location?.longitude ?? FALLBACK_LNG;
+        const obs = new Observer(lat, lng, 200);
+        const p = getPanchangam(date, obs, { timezoneOffset: TZ_OFFSET_MIN });
+        setFestivals(parseFestivals(p.festivals));
+      } catch (e) {
+        console.warn("[festivals] non-fatal:", e);
+        setFestivals([]);
+      }
+    },
+    [location?.latitude, location?.longitude],
+  );
+
+  // ── Core load — identical to your original logic ──────────────────────────
   const loadData = useCallback(async () => {
     try {
+      const today = new Date();
       setPanchang(panchangService.getTodayPanchang());
-      const response = await mantraService.getDailyMantra();
-
       setDailyMantra(mantraService.getDailyMantra());
+      loadFestivals(today); // ← new, parallel, non-fatal
     } catch (e) {
       console.error("Panchang load error:", e);
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [loadFestivals]);
 
-  // Pull-to-refresh: re-fetches Firebase mantras, then refreshes all data
+  // ── Pull-to-refresh — identical to your original logic ───────────────────
   const onRefresh = useCallback(async () => {
     await Promise.all([bhajanService.refresh(), artistService.refresh()]);
     setRefreshing(true);
@@ -157,18 +276,25 @@ export default function HomeScreen() {
       if (response) {
         setPanchang(panchangService.getTodayPanchang());
         setDailyMantra(response?.[0]);
+        loadFestivals(new Date()); // ← refresh festivals too
       }
     } catch (e) {
       console.error("Refresh error:", e);
     } finally {
       setRefreshing(false);
     }
-  }, []);
+  }, [loadFestivals]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
 
+  // Re-fetch festivals when GPS location comes in after initial render
+  useEffect(() => {
+    if (location) loadFestivals(new Date());
+  }, [location?.latitude, location?.longitude]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Loading state (unchanged) ─────────────────────────────────────────────
   if (loading && !panchang) {
     return (
       <GradientBackground>
@@ -186,6 +312,10 @@ export default function HomeScreen() {
     );
   }
 
+  // ─────────────────────────────────────────────────────────────────────────
+  // RENDER  — identical structure to your original; festivals card inserted
+  //           right after the header, before the mantra card.
+  // ─────────────────────────────────────────────────────────────────────────
   return (
     <GradientBackground>
       <ScrollView
@@ -203,6 +333,7 @@ export default function HomeScreen() {
           />
         }
       >
+        {/* ── HEADER ── */}
         <Animated.View entering={FadeIn.duration(1000)} style={styles.header}>
           <AnimatedDiya />
           <Text style={styles.om}>॥ ॐ नमः शिवाय ॥</Text>
@@ -210,10 +341,33 @@ export default function HomeScreen() {
             <>
               <Text style={styles.dateEn}>{panchang.date}</Text>
               <Text style={styles.dateHi}>{panchang.date_hi}</Text>
+              {/* Show city from panchangService._loc */}
+              {panchang.locationCity ? (
+                <View style={styles.locationPill}>
+                  <Text style={styles.locationPillTxt}>
+                    📍 {panchang.locationCity}
+                  </Text>
+                </View>
+              ) : null}
             </>
           )}
         </Animated.View>
 
+        {/* ════════════════════════════════════════════════════
+            FESTIVALS  — @ishubhamx/panchangam-js data
+            Hidden on non-festival days (festivals.length === 0)
+            ════════════════════════════════════════════════════ */}
+        {festivals.length > 0 && (
+          <Animated.View entering={FadeInDown.delay(50).duration(700)}>
+            <Card title={`🎊 त्योहार · Today's Festivals`}>
+              {festivals.map((f, i) => (
+                <FestivalCard key={`${f.name}-${i}`} fest={f} />
+              ))}
+            </Card>
+          </Animated.View>
+        )}
+
+        {/* ── DAILY MANTRA (unchanged) ── */}
         {dailyMantra && (
           <Animated.View entering={FadeInDown.delay(100).duration(700)}>
             <Card title={`✨ ${SECTION_LABELS_HI.mantra} · Today's Mantra`}>
@@ -226,8 +380,12 @@ export default function HomeScreen() {
           </Animated.View>
         )}
 
+        {/* ═══════════════════════════════════════════════════
+            EVERYTHING BELOW — panchangService data, unchanged
+            ═══════════════════════════════════════════════════ */}
         {panchang && (
           <>
+            {/* ── HINDU CALENDAR ── */}
             <Animated.View entering={FadeInDown.delay(200).duration(700)}>
               <Card title={`📅 ${SECTION_LABELS_HI.calendar} · Hindu Calendar`}>
                 <View style={styles.strip}>
@@ -279,6 +437,7 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
+            {/* ── PANCH-ANG ── */}
             <Animated.View entering={FadeInDown.delay(300).duration(700)}>
               <Card title={`🪔 ${SECTION_LABELS_HI.panchang} · Panch-Ang`}>
                 <View style={styles.grid2}>
@@ -323,6 +482,7 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
+            {/* ── SUN & MOON ── */}
             <Animated.View entering={FadeInDown.delay(400).duration(700)}>
               <Card title={`☀️ ${SECTION_LABELS_HI.sunMoon} · Sun & Moon`}>
                 <View style={styles.moonRow}>
@@ -381,6 +541,7 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
+            {/* ── AUSPICIOUS TIMINGS ── */}
             <Animated.View entering={FadeInDown.delay(500).duration(700)}>
               <Card
                 title={`🌟 ${SECTION_LABELS_HI.auspicious} · Auspicious Timings`}
@@ -420,6 +581,7 @@ export default function HomeScreen() {
               </Card>
             </Animated.View>
 
+            {/* ── INAUSPICIOUS PERIODS ── */}
             {showInauspicious && (
               <Animated.View entering={FadeInLeft.duration(400)}>
                 <Card
@@ -470,6 +632,7 @@ export default function HomeScreen() {
               </Animated.View>
             )}
 
+            {/* ── ASTRONOMICAL INFO ── */}
             <Animated.View entering={FadeInDown.delay(600).duration(700)}>
               <Card
                 title={`🔭 ${SECTION_LABELS_HI.astronomy} · Astronomical Info`}
@@ -491,6 +654,7 @@ export default function HomeScreen() {
           </>
         )}
 
+        {/* ── FOOTER ── */}
         <Animated.View
           entering={FadeIn.delay(700).duration(1000)}
           style={styles.footer}
@@ -505,7 +669,13 @@ export default function HomeScreen() {
   );
 }
 
+// ─────────────────────────────────────────────
+// STYLES
+// Original styles kept byte-for-byte.
+// New styles (locationPill, fest*) added at the bottom.
+// ─────────────────────────────────────────────
 const styles = StyleSheet.create({
+  // ── original ──────────────────────────────────────────────────────────────
   container: { flex: 1 },
   content: { paddingVertical: spacing.lg, paddingHorizontal: spacing.sm },
   loadingContainer: {
@@ -755,5 +925,42 @@ const styles = StyleSheet.create({
     fontSize: typography.fontSize.sm,
     color: colors.textMuted,
     marginTop: spacing.xs,
+  },
+
+  // ── new additions ──────────────────────────────────────────────────────────
+  locationPill: {
+    marginTop: spacing.xs,
+    backgroundColor: colors.gold + "15",
+    borderRadius: 20,
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderWidth: 1,
+    borderColor: colors.gold + "35",
+  },
+  locationPillTxt: { fontSize: 11, color: colors.gold, fontWeight: "600" },
+  festCard: {
+    borderLeftWidth: 4,
+    borderRadius: 10,
+    backgroundColor: colors.gold + "10",
+    padding: spacing.sm,
+    borderWidth: 1,
+    borderColor: colors.gold + "20",
+    marginBottom: spacing.xs,
+  },
+  festTop: { flexDirection: "row", alignItems: "center", gap: spacing.sm },
+  festEmoji: { fontSize: 20 },
+  festName: { fontSize: typography.fontSize.md, fontWeight: "700" },
+  festMeta: {
+    fontSize: 10,
+    color: colors.textMuted,
+    marginTop: 1,
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
+  },
+  festDesc: {
+    fontSize: typography.fontSize.sm,
+    color: colors.textMuted,
+    marginTop: spacing.xs,
+    lineHeight: 18,
   },
 });

@@ -482,8 +482,8 @@ export default function JapScreen() {
     shadowRadius: 12 + glow.value * 18,
   }));
   const celebStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: celebScale.value }],
-    opacity: celebScale.value,
+    transform: [{ scale: Math.min(celebScale.value, 1) }],
+    opacity: Math.min(celebScale.value, 1),
   }));
 
   const allMantras = [...dailyMantra, ...customMantras];
@@ -1203,7 +1203,7 @@ const st = StyleSheet.create({
     position: "absolute",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: colors.cardBg + "F2",
+    backgroundColor: colors.cardBg,
     borderRadius: RING_SIZE * 0.28,
     width: RING_SIZE * 0.56,
     height: RING_SIZE * 0.56,

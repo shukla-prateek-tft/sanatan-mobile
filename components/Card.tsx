@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { colors, spacing, typography, theme } from '../theme';
-import { LinearGradient } from 'expo-linear-gradient';
+import React from "react";
+import { View, Text, StyleSheet, ViewStyle, TextStyle } from "react-native";
+import { colors, spacing, typography, theme } from "../theme";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface CardProps {
   children: React.ReactNode;
@@ -10,7 +10,12 @@ interface CardProps {
   subtitle?: string;
 }
 
-export const Card: React.FC<CardProps> = ({ children, style, title, subtitle }) => {
+export const Card: React.FC<CardProps> = ({
+  children,
+  style,
+  title,
+  subtitle,
+}) => {
   return (
     <View style={[styles.container, style]}>
       <View style={styles.card}>
