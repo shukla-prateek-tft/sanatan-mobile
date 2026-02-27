@@ -1,0 +1,200 @@
+[
+  {
+    "id": "makar_sankranti",
+    "name": "Makar Sankranti",
+    "nameHi": "मकर संक्रांति",
+    "date": "2026-01-14",
+    "screen": "Panchang",
+    "emoji": "🪁",
+    "description": "Sun enters Capricorn · सूर्य मकर राशि में"
+  },
+  {
+    "id": "basant_panchami",
+    "name": "Basant Panchami",
+    "nameHi": "बसंत पंचमी",
+    "date": "2026-02-02",
+    "screen": "Puja",
+    "emoji": "🌸",
+    "description": "Saraswati Puja · सरस्वती पूजा"
+  },
+  {
+    "id": "maha_shivratri",
+    "name": "Maha Shivratri",
+    "nameHi": "महाशिवरात्रि",
+    "date": "2026-02-26",
+    "screen": "Chalisa",
+    "emoji": "🔱",
+    "description": "Night of Lord Shiva · शिवरात्रि"
+  },
+  {
+    "id": "holi",
+    "name": "Holi",
+    "nameHi": "होली",
+    "date": "2026-03-03",
+    "screen": "Panchang",
+    "emoji": "🎨",
+    "description": "Festival of Colors · रंगों का त्योहार"
+  },
+  {
+    "id": "ram_navami",
+    "name": "Ram Navami",
+    "nameHi": "राम नवमी",
+    "date": "2026-03-28",
+    "screen": "Jap",
+    "emoji": "🏹",
+    "description": "Birthday of Lord Ram · भगवान राम जन्मोत्सव"
+  },
+  {
+    "id": "hanuman_jayanti",
+    "name": "Hanuman Jayanti",
+    "nameHi": "हनुमान जयंती",
+    "date": "2026-04-14",
+    "screen": "Chalisa",
+    "emoji": "🙏",
+    "description": "Birthday of Hanuman · हनुमान जन्मोत्सव"
+  },
+  {
+    "id": "akshaya_tritiya",
+    "name": "Akshaya Tritiya",
+    "nameHi": "अक्षय तृतीया",
+    "date": "2026-04-28",
+    "screen": "Panchang",
+    "emoji": "🌟",
+    "description": "Auspicious day · शुभ दिन"
+  },
+  {
+    "id": "guru_purnima",
+    "name": "Guru Purnima",
+    "nameHi": "गुरु पूर्णिमा",
+    "date": "2026-07-10",
+    "screen": "Puja",
+    "emoji": "🕯️",
+    "description": "Honour your Guru · गुरु वंदना"
+  },
+  {
+    "id": "nag_panchami",
+    "name": "Nag Panchami",
+    "nameHi": "नाग पंचमी",
+    "date": "2026-07-26",
+    "screen": "Panchang",
+    "emoji": "🐍",
+    "description": "Worship of serpents · नाग पूजा"
+  },
+  {
+    "id": "raksha_bandhan",
+    "name": "Raksha Bandhan",
+    "nameHi": "रक्षाबंधन",
+    "date": "2026-08-09",
+    "screen": "Panchang",
+    "emoji": "🎀",
+    "description": "Bond of protection · रक्षा का बंधन"
+  },
+  {
+    "id": "krishna_janmashtami",
+    "name": "Janmashtami",
+    "nameHi": "जन्माष्टमी",
+    "date": "2026-08-16",
+    "screen": "Jap",
+    "emoji": "🪈",
+    "description": "Birthday of Lord Krishna · श्री कृष्ण जन्मोत्सव"
+  },
+  {
+    "id": "ganesh_chaturthi",
+    "name": "Ganesh Chaturthi",
+    "nameHi": "गणेश चतुर्थी",
+    "date": "2026-08-24",
+    "screen": "Puja",
+    "emoji": "🐘",
+    "description": "Birthday of Ganesha · गणेश उत्सव"
+  },
+  {
+    "id": "navratri_sharad",
+    "name": "Navratri (Sharad)",
+    "nameHi": "शारदीय नवरात्रि",
+    "date": "2026-10-01",
+    "screen": "Chalisa",
+    "emoji": "🌺",
+    "description": "Nine nights of Durga · नवदुर्गा उत्सव"
+  },
+  {
+    "id": "dussehra",
+    "name": "Dussehra",
+    "nameHi": "दशहरा",
+    "date": "2026-10-10",
+    "screen": "Panchang",
+    "emoji": "🏹",
+    "description": "Victory of good · असत्य पर सत्य की जीत"
+  },
+  {
+    "id": "karwa_chauth",
+    "name": "Karwa Chauth",
+    "nameHi": "करवा चौथ",
+    "date": "2026-10-22",
+    "screen": "Panchang",
+    "emoji": "🌕",
+    "description": "Fast for husband · व्रत पर्व"
+  },
+  {
+    "id": "dhanteras",
+    "name": "Dhanteras",
+    "nameHi": "धनतेरस",
+    "date": "2026-10-29",
+    "screen": "Puja",
+    "emoji": "🪔",
+    "description": "Worship of Dhanvantari · धन पूजा"
+  },
+  {
+    "id": "diwali",
+    "name": "Diwali",
+    "nameHi": "दीपावली",
+    "date": "2026-10-31",
+    "screen": "Puja",
+    "emoji": "🪔",
+    "description": "Festival of Lights · रोशनी का पर्व"
+  },
+  {
+    "id": "bhai_dooj",
+    "name": "Bhai Dooj",
+    "nameHi": "भाई दूज",
+    "date": "2026-11-02",
+    "screen": "Panchang",
+    "emoji": "🎊",
+    "description": "Bond of siblings · भाई-बहन का पर्व"
+  },
+  {
+    "id": "tulsi_vivah",
+    "name": "Tulsi Vivah",
+    "nameHi": "तुलसी विवाह",
+    "date": "2026-11-11",
+    "screen": "Puja",
+    "emoji": "🌿",
+    "description": "Wedding of Tulsi · तुलसी विवाह उत्सव"
+  },
+  {
+    "id": "dev_uthani_ekadashi",
+    "name": "Dev Uthani Ekadashi",
+    "nameHi": "देव उठनी एकादशी",
+    "date": "2026-11-11",
+    "screen": "Jap",
+    "emoji": "🌸",
+    "description": "Vishnu awakens · विष्णु जागरण"
+  },
+  {
+    "id": "vivah_panchami",
+    "name": "Vivah Panchami",
+    "nameHi": "विवाह पंचमी",
+    "date": "2026-11-24",
+    "screen": "Panchang",
+    "emoji": "💍",
+    "description": "Wedding of Ram-Sita · राम-सीता विवाह"
+  },
+  {
+    "id": "gita_jayanti",
+    "name": "Gita Jayanti",
+    "nameHi": "गीता जयंती",
+    "date": "2026-12-07",
+    "screen": "Gita",
+    "emoji": "📖",
+    "description": "Birth of Bhagavad Gita · गीता जन्मोत्सव"
+  }
+]

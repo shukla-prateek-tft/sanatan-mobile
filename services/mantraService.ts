@@ -237,7 +237,7 @@ export const mantraService = {
       _cache.length > 0
         ? [..._cache, ...DAILY_MANTRAS_STATIC]
         : DAILY_MANTRAS_STATIC;
-    return pool[0];
+    return pool[new Date().getUTCDay()];
   },
 
   /**

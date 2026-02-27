@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "Sanatan Dharma",
+    "name": "Sanatan Bhakti",
     "slug": "sanatan-dharma",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -66,6 +66,7 @@
       "eas": {
         "projectId": "25aa6dc9-b6ee-41f4-b444-9bb234dc3a8a"
       }
-    }
+    },
+    "owner": "prateekshukla130"
   }
 }

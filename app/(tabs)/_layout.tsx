@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5, FontAwesome6, Ionicons } from "@expo/vector-icons";
 import { colors, typography } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
@@ -84,20 +84,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="kundli"
+        options={{
+          title: "Kundli",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome6 name="hand-sparkles" size={size} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="settings" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="kundli"
-        options={{
-          title: "Kundli",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="kundli" size={size} color={color} />
           ),
         }}
       />

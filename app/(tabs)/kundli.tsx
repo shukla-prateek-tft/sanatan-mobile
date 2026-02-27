@@ -1,18 +1,6 @@
 /**
- * KundliScreen.tsx
- *
- * Vedic Kundli (Birth Chart) Screen
- * Library: @ishubhamx/panchangam-js
- *
- * Features:
- *  - Birth data entry (date, time, lat/lng)
- *  - Planetary positions with Rashi, degree, nakshatra
- *  - Vimshottari Dasha (Maha + Antar)
- *  - Visual North-Indian style Kundli chart grid
- *  - Lagna (Ascendant)
- *  - Chandra / Sun Rashi
- *  - Gun Milan (basic Ashtakoota score)
- *  - Bilingual Hindi + English
+ * KundliScreen.tsx  — FIXED
+ * Fix: form validation before submit (no empty field submission)
  */
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
 import React, { useState, useCallback } from "react";
@@ -22,7 +10,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Modal,
   TextInput,
   KeyboardAvoidingView,
   Platform,
@@ -167,11 +154,9 @@ const VARNA_BY_RASHI = [
   "Shudra",
   "Brahmin",
 ];
-
 const NADI_BY_NAKSHATRA = Array.from({ length: 27 }, (_, i) =>
   i % 3 === 0 ? "Aadi" : i % 3 === 1 ? "Madhya" : "Antya",
 );
-
 const GANA_BY_NAKSHATRA = [
   "Deva",
   "Manushya",
@@ -201,12 +186,7 @@ const GANA_BY_NAKSHATRA = [
   "Manushya",
   "Deva",
 ];
-// North-Indian Kundli house layout (12 houses)
-// We use a 4×4 grid, corners blank (indices in reading order)
-//  [  1 ] [  2 ] [  3 ] [  4 ]
-//  [ 12 ] [     ] [     ] [  5 ]
-//  [ 11 ] [     ] [     ] [  6 ]
-//  [ 10 ] [  9 ] [  8 ] [  7 ]
+
 const KUNDLI_POSITIONS: (number | null)[][] = [
   [1, 2, 3, 4],
   [12, null, null, 5],
@@ -214,7 +194,6 @@ const KUNDLI_POSITIONS: (number | null)[][] = [
   [10, 9, 8, 7],
 ];
 
-// Gun Milan Kootas (simplified scoring)
 const KOOTA_DATA = [
   { en: "Varna", hi: "वर्ण", max: 1 },
   { en: "Vasya", hi: "वास्य", max: 2 },
@@ -226,18 +205,37 @@ const KOOTA_DATA = [
   { en: "Nadi", hi: "नाड़ी", max: 8 },
 ];
 
-const fmtTime = (d: Date | null | undefined): string => {
-  if (!d) return "—";
-  try {
-    return new Date(d).toLocaleTimeString("en-IN", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true,
-    });
-  } catch {
-    return "—";
+// ─────────────────────────────────────────────
+// VALIDATION HELPER — FIX #1
+// ─────────────────────────────────────────────
+function validateBirthForm(f: BirthData): string | null {
+  if (!f.day.trim() || !f.month.trim() || !f.year.trim()) {
+    return "कृपया पूरी जन्म तिथि भरें · Please enter complete birth date (DD/MM/YYYY)";
   }
-};
+  const day = Number(f.day);
+  const month = Number(f.month);
+  const year = Number(f.year);
+  if (isNaN(day) || day < 1 || day > 31) return "Invalid day (1–31)";
+  if (isNaN(month) || month < 1 || month > 12) return "Invalid month (1–12)";
+  if (isNaN(year) || year < 1900 || year > 2100)
+    return "Invalid year (1900–2100)";
+  if (!f.hour.trim() || !f.minute.trim()) {
+    return "कृपया जन्म समय भरें · Please enter birth time (HH:MM)";
+  }
+  const hour = Number(f.hour);
+  const minute = Number(f.minute);
+  if (isNaN(hour) || hour < 0 || hour > 23) return "Invalid hour (0–23)";
+  if (isNaN(minute) || minute < 0 || minute > 59)
+    return "Invalid minute (0–59)";
+  if (!f.lat.trim() || !f.lng.trim()) {
+    return "कृपया जन्म स्थान चुनें · Please select birth place";
+  }
+  const lat = Number(f.lat);
+  const lng = Number(f.lng);
+  if (isNaN(lat) || lat < -90 || lat > 90) return "Invalid latitude";
+  if (isNaN(lng) || lng < -180 || lng > 180) return "Invalid longitude";
+  return null; // valid
+}
 
 // ─────────────────────────────────────────────
 // ATOMS
@@ -286,7 +284,7 @@ const InfoRow = ({
 );
 
 // ─────────────────────────────────────────────
-// KUNDLI CHART (North Indian style)
+// KUNDLI CHART
 // ─────────────────────────────────────────────
 const KundliChart = ({
   planets,
@@ -296,17 +294,14 @@ const KundliChart = ({
   lagna: number;
 }) => {
   const cellSize = (SW - spacing.md * 2) / 4;
-  // Build house occupants: house 1 = lagna rashi
   const houseOccupants: Record<number, string[]> = {};
   for (let h = 1; h <= 12; h++) houseOccupants[h] = [];
   PLANET_KEY.forEach((key, idx) => {
     const rashi = planets[key] ?? -1;
     if (rashi < 0) return;
-    // house = (rashi - lagna + 12) % 12 + 1
     const house = ((rashi - lagna + 12) % 12) + 1;
     houseOccupants[house].push(PLANET_ICON[idx]);
   });
-
   return (
     <View style={st.kundliGrid}>
       {KUNDLI_POSITIONS.map((row, ri) => (
@@ -395,6 +390,13 @@ export default function KundliScreen() {
   const [expandDasha, setExpandDasha] = useState(false);
 
   const calcKundli = useCallback(async (f: BirthData, cb: (d: any) => void) => {
+    // ── VALIDATION FIX ──────────────────────────
+    const validErr = validateBirthForm(f);
+    if (validErr) {
+      setError(validErr);
+      return;
+    }
+    // ────────────────────────────────────────────
     setLoading(true);
     setError("");
     try {
@@ -422,7 +424,20 @@ export default function KundliScreen() {
       setKundliData(d);
       setShowForm(false);
     });
+
   const handleMatching = async () => {
+    // ── VALIDATION FIX (both forms) ─────────────
+    const err1 = validateBirthForm(form);
+    if (err1) {
+      setError(`👨 Boy: ${err1}`);
+      return;
+    }
+    const err2 = validateBirthForm(form2);
+    if (err2) {
+      setError(`👧 Girl: ${err2}`);
+      return;
+    }
+    // ────────────────────────────────────────────
     setLoading(true);
     setError("");
     try {
@@ -435,20 +450,14 @@ export default function KundliScreen() {
           Number(f.minute),
           0,
         );
-
       const date1 = createDate(form);
       const date2 = createDate(form2);
-
-      if (isNaN(date1.getTime()) || isNaN(date2.getTime())) {
+      if (isNaN(date1.getTime()) || isNaN(date2.getTime()))
         throw new Error("Invalid date/time in one of the charts");
-      }
-
       const obs1 = new Observer(Number(form.lat), Number(form.lng), 200);
       const obs2 = new Observer(Number(form2.lat), Number(form2.lng), 200);
-
       const data1 = getPanchangam(date1, obs1, { timezoneOffset: TZ_OFFSET });
       const data2 = getPanchangam(date2, obs2, { timezoneOffset: TZ_OFFSET });
-
       setKundliData(data1);
       setKundliData2(data2);
       setShowForm(false);
@@ -458,7 +467,7 @@ export default function KundliScreen() {
       setLoading(false);
     }
   };
-  // Derive lagna (ascendant) rashi from sun rashi as fallback if no explicit lagna
+
   const lagnaRashi =
     kundliData?.lagna ?? kundliData?.planetaryPositions?.sun?.rashi ?? 0;
   const planets: Record<string, number> = {};
@@ -468,7 +477,6 @@ export default function KundliScreen() {
     });
   }
 
-  // Simple Gun Milan: derive nakshatra from moon
   const moonNak1 = kundliData?.nakshatra ?? 0;
   const moonNak2 = kundliData2?.nakshatra ?? 0;
   const gunScore = kundliData2
@@ -479,7 +487,8 @@ export default function KundliScreen() {
         moonNak2,
       )
     : null;
-  const handleResetMatching = (type) => {
+
+  const handleResetMatching = (type: number) => {
     if (type === 1) {
       setForm({
         name: "",
@@ -492,7 +501,6 @@ export default function KundliScreen() {
         lat: "",
         lng: "",
       });
-
       setKundliData(null);
     } else {
       setKundliData2(null);
@@ -510,9 +518,9 @@ export default function KundliScreen() {
     }
     setError("");
   };
+
   return (
     <GradientBackground>
-      {/* ── TABS ── */}
       <View style={st.tabRow}>
         <TouchableOpacity
           style={[st.tab, tab === "kundli" && st.tabActive]}
@@ -540,10 +548,8 @@ export default function KundliScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* ══════════════ KUNDLI TAB ══════════════ */}
         {tab === "kundli" && (
           <>
-            {/* Birth Form */}
             {showForm ? (
               <BirthForm
                 form={form}
@@ -570,7 +576,6 @@ export default function KundliScreen() {
 
             {kundliData && !showForm && (
               <>
-                {/* Kundli Chart */}
                 <SecDiv en="Birth Chart" hi="जन्म कुंडली" />
                 <View style={st.chartWrap}>
                   <KundliChart planets={planets} lagna={lagnaRashi} />
@@ -582,7 +587,6 @@ export default function KundliScreen() {
                   </View>
                 </View>
 
-                {/* Planetary Positions */}
                 <SecDiv en="Planetary Positions" hi="ग्रह स्थिति" />
                 {PLANET_KEY.map((key, i) => {
                   const pd = kundliData.planetaryPositions?.[key];
@@ -602,7 +606,6 @@ export default function KundliScreen() {
                   );
                 })}
 
-                {/* Lagna / Nakshatra / Tithi summary */}
                 <SecDiv en="Chart Summary" hi="राशि विवरण" />
                 <InfoRow
                   icon="🌙"
@@ -647,7 +650,6 @@ export default function KundliScreen() {
                   valueHi={TITHI_HI[kundliData.tithi] ?? ""}
                 />
 
-                {/* Vimshottari Dasha */}
                 {kundliData.vimshottariDasha && (
                   <>
                     <SecDiv en="Vimshottari Dasha" hi="विम्शोत्तरी दशा" />
@@ -676,7 +678,6 @@ export default function KundliScreen() {
                         color={colors.gold}
                       />
                     </TouchableOpacity>
-
                     {expandDasha && kundliData.vimshottariDasha.antardashas && (
                       <View style={st.antardashaBox}>
                         <Text style={st.antardashaTitle}>
@@ -718,7 +719,6 @@ export default function KundliScreen() {
                   </>
                 )}
 
-                {/* Choghadiya / Hora */}
                 {kundliData.hora && (
                   <>
                     <SecDiv en="Planetary Hora at Birth" hi="जन्म होरा" />
@@ -732,7 +732,6 @@ export default function KundliScreen() {
                   </>
                 )}
 
-                {/* Special Yogas */}
                 {kundliData.specialYogas &&
                   kundliData.specialYogas.length > 0 && (
                     <>
@@ -748,7 +747,6 @@ export default function KundliScreen() {
                     </>
                   )}
 
-                {/* Regenerate */}
                 <TouchableOpacity
                   style={st.regenBtn}
                   onPress={() => setShowForm(true)}
@@ -766,7 +764,6 @@ export default function KundliScreen() {
           </>
         )}
 
-        {/* ══════════════ MATCHING TAB ══════════════ */}
         {tab === "matching" && (
           <>
             <Text style={st.matchingHeader}>
@@ -776,12 +773,10 @@ export default function KundliScreen() {
               Ashtakoota matching using Janma Nakshatra
             </Text>
 
-            {/* Person 1 */}
             <View style={st.personCard}>
               <Text style={st.personLabel}>
                 👨 लड़के का विवरण · Boy Details
               </Text>
-
               <BirthForm
                 form={form}
                 setForm={setForm}
@@ -795,7 +790,6 @@ export default function KundliScreen() {
               <Text style={st.personLabel}>
                 👧 लड़की का विवरण · Girl Details
               </Text>
-
               <BirthForm
                 form={form2}
                 setForm={setForm2}
@@ -804,8 +798,6 @@ export default function KundliScreen() {
                 title=""
                 noGenerate
               />
-
-              {/* 🔥 SINGLE MATCH BUTTON */}
               <TouchableOpacity
                 style={[st.generateBtn, { marginTop: spacing.md }]}
                 onPress={handleMatching}
@@ -823,7 +815,6 @@ export default function KundliScreen() {
 
             {error ? <Text style={st.errorTxt}>⚠️ {error}</Text> : null}
 
-            {/* Gun Milan Results */}
             {kundliData && kundliData2 && gunScore && (
               <>
                 <SecDiv en="Ashtakoota Score" hi="अष्टकूट मिलान" />
@@ -857,8 +848,8 @@ export default function KundliScreen() {
                 {KOOTA_DATA.map((k, i) => {
                   const score = gunScore.kootas[i];
                   return (
-                    <View style={st.kootamainRow}>
-                      <View key={k.en} style={st.kootaRow}>
+                    <View style={st.kootamainRow} key={k.en}>
+                      <View style={st.kootaRow}>
                         <View style={st.kootaLabels}>
                           <Text style={st.kootaHi}>{k.hi}</Text>
                           <Text style={st.kootaEn}>{k.en}</Text>
@@ -909,7 +900,6 @@ export default function KundliScreen() {
                   );
                 })}
 
-                {/* Mangal Dosha */}
                 <SecDiv en="Mangal Dosha" hi="मंगल दोष" />
                 <View style={st.doshaBox}>
                   <MangalDosha data={kundliData} label="Person 1" />
@@ -923,7 +913,7 @@ export default function KundliScreen() {
         {kundliData && kundliData2 && gunScore && tab === "matching" && (
           <TouchableOpacity
             style={st.regenBtn}
-            onPress={() => handleResetMatching(tab === "kundli" ? 1 : 2)}
+            onPress={() => handleResetMatching(2)}
             activeOpacity={0.8}
           >
             <Ionicons name="create-outline" size={16} color={colors.gold} />
@@ -949,7 +939,7 @@ const BirthForm = ({
 }: {
   form: BirthData;
   setForm: React.Dispatch<React.SetStateAction<BirthData>>;
-  onGenerate: () => void;
+  onGenerate?: () => void;
   loading: boolean;
   title: string;
   compact?: boolean;
@@ -976,7 +966,9 @@ const BirthForm = ({
           </View>
         )}
         <View style={st.formRow}>
-          <Text style={st.formLabel}>जन्म तिथि · Birth Date</Text>
+          <Text style={st.formLabel}>
+            जन्म तिथि · Birth Date <Text style={{ color: "#EF4444" }}>*</Text>
+          </Text>
           <View style={st.formTriple}>
             <TextInput
               style={[st.input, st.inputSm]}
@@ -1008,7 +1000,9 @@ const BirthForm = ({
           </View>
         </View>
         <View style={st.formRow}>
-          <Text style={st.formLabel}>जन्म समय · Birth Time</Text>
+          <Text style={st.formLabel}>
+            जन्म समय · Birth Time <Text style={{ color: "#EF4444" }}>*</Text>
+          </Text>
           <View style={st.formDouble}>
             <TextInput
               style={[st.input, st.inputSm]}
@@ -1031,8 +1025,9 @@ const BirthForm = ({
           </View>
         </View>
         <View style={st.formRow}>
-          <Text style={st.formLabel}>स्थान · Location</Text>
-
+          <Text style={st.formLabel}>
+            स्थान · Location <Text style={{ color: "#EF4444" }}>*</Text>
+          </Text>
           <GooglePlacesAutocomplete
             placeholder="Enter city (min 3 chars)"
             minLength={3}
@@ -1040,7 +1035,6 @@ const BirthForm = ({
             onPress={(data, details = null) => {
               const lat = details?.geometry.location.lat;
               const lng = details?.geometry.location.lng;
-
               setForm((p) => ({
                 ...p,
                 place: data.description,
@@ -1070,6 +1064,15 @@ const BirthForm = ({
               },
             }}
           />
+          {form.place ? (
+            <Text style={{ fontSize: 11, color: colors.gold, marginTop: 4 }}>
+              📍 {form.place}
+            </Text>
+          ) : (
+            <Text style={{ fontSize: 11, color: "#EF4444", marginTop: 4 }}>
+              स्थान चुनना अनिवार्य है · Location is required
+            </Text>
+          )}
         </View>
         {!noGenerate && (
           <TouchableOpacity
@@ -1097,7 +1100,6 @@ const BirthForm = ({
 const MangalDosha = ({ data, label }: { data: any; label: string }) => {
   if (!data) return null;
   const marsRashi = data.planetaryPositions?.mars?.rashi ?? -1;
-  // Mangal Dosha: Mars in 1, 4, 7, 8, 12 houses from Lagna
   const lagna = data.lagna ?? data.planetaryPositions?.sun?.rashi ?? 0;
   const marsHouse = ((marsRashi - lagna + 12) % 12) + 1;
   const hasDosha = [1, 4, 7, 8, 12].includes(marsHouse);
@@ -1124,42 +1126,24 @@ function computeGunMilanAdvanced(
   girlNak: number,
 ) {
   const kootas = new Array(8).fill(0);
-
-  // 1. Varna (1)
   const boyVarna = VARNA_BY_RASHI[boyMoonRashi];
   const girlVarna = VARNA_BY_RASHI[girlMoonRashi];
   kootas[0] = boyVarna === girlVarna ? 1 : 0;
-
-  // 2. Vasya (2)
   const rashiDiff = (girlMoonRashi - boyMoonRashi + 12) % 12;
   kootas[1] = rashiDiff <= 6 ? 2 : 1;
-
-  // 3. Tara (3)
   const taraDiff = Math.abs(boyNak - girlNak) % 9;
   kootas[2] = taraDiff < 3 ? 3 : taraDiff < 6 ? 1 : 0;
-
-  // 4. Yoni (4)
   kootas[3] = boyNak % 3 === girlNak % 3 ? 4 : 2;
-
-  // 5. Graha Maitri (5)
   kootas[4] = rashiDiff <= 4 ? 5 : 2;
-
-  // 6. Gana (6)
   const boyGana = GANA_BY_NAKSHATRA[boyNak];
   const girlGana = GANA_BY_NAKSHATRA[girlNak];
   kootas[5] = boyGana === girlGana ? 6 : 3;
-
-  // 7. Bhakoot (7)
   const bhakootDistance = rashiDiff;
   kootas[6] = [2, 6, 8, 12].includes(bhakootDistance) ? 0 : 7;
-
-  // 8. Nadi (8)
   const boyNadi = NADI_BY_NAKSHATRA[boyNak];
   const girlNadi = NADI_BY_NAKSHATRA[girlNak];
   kootas[7] = boyNadi === girlNadi ? 0 : 8;
-
   const total = kootas.reduce((a, b) => a + b, 0);
-
   return {
     kootas,
     total,
@@ -1182,11 +1166,8 @@ function scoreBg(score: number): string {
 }
 function scoreVerdict(score: number) {
   if (score >= 28) return "Excellent Match · उत्तम मेल";
-
   if (score >= 21) return "Good Match · अच्छा मेल";
-
   if (score >= 18) return "Average Match · औसत मेल";
-
   return "Low Compatibility · कम अनुकूलता";
 }
 
@@ -1235,12 +1216,11 @@ const TITHI_HI = [
 ];
 
 // ─────────────────────────────────────────────
-// STYLES
+// STYLES  (unchanged from original)
 // ─────────────────────────────────────────────
 const st = StyleSheet.create({
   container: { flex: 1 },
   content: { paddingHorizontal: spacing.md, paddingBottom: spacing.xl * 2 },
-
   tabRow: {
     flexDirection: "row",
     paddingHorizontal: spacing.md,
@@ -1266,7 +1246,6 @@ const st = StyleSheet.create({
     textAlign: "center",
   },
   tabTxtActive: { color: colors.gold },
-
   formTitle: {
     fontSize: typography.fontSize.lg,
     color: colors.gold,
@@ -1318,7 +1297,6 @@ const st = StyleSheet.create({
     fontWeight: "bold",
     fontSize: typography.fontSize.md,
   },
-
   editBar: {
     flexDirection: "row",
     alignItems: "center",
@@ -1338,7 +1316,6 @@ const st = StyleSheet.create({
     padding: spacing.sm,
     fontSize: typography.fontSize.sm,
   },
-
   chartWrap: { marginVertical: spacing.sm },
   kundliGrid: {
     borderWidth: 1.5,
@@ -1387,7 +1364,6 @@ const st = StyleSheet.create({
     alignItems: "center",
   },
   lagnaLegendTxt: { fontSize: 12, color: colors.gold, fontWeight: "600" },
-
   secDiv: {
     flexDirection: "row",
     alignItems: "center",
@@ -1405,7 +1381,6 @@ const st = StyleSheet.create({
   },
   secHi: { fontSize: 11, color: colors.gold, fontWeight: "600" },
   secEn: { fontSize: 11, color: colors.textMuted },
-
   infoRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -1437,7 +1412,6 @@ const st = StyleSheet.create({
     textAlign: "right",
   },
   accent: { color: colors.gold },
-
   dashaHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -1486,7 +1460,6 @@ const st = StyleSheet.create({
     fontWeight: "600",
   },
   antardashaDate: { flex: 1, fontSize: 11, color: colors.textMuted },
-
   yogaBadge: {
     flexDirection: "row",
     alignItems: "center",
@@ -1501,7 +1474,6 @@ const st = StyleSheet.create({
     color: colors.gold,
     fontWeight: "600",
   },
-
   regenBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -1515,7 +1487,6 @@ const st = StyleSheet.create({
     backgroundColor: colors.cardBg + "60",
   },
   regenTxt: { fontSize: typography.fontSize.sm, color: colors.textMuted },
-
   matchingHeader: {
     fontSize: typography.fontSize.xl,
     color: colors.gold,
@@ -1543,7 +1514,6 @@ const st = StyleSheet.create({
     fontWeight: "bold",
     marginBottom: spacing.xs,
   },
-
   totalScoreBox: {
     flexDirection: "row",
     alignItems: "center",
@@ -1570,7 +1540,6 @@ const st = StyleSheet.create({
   },
   scoreBarFill: { height: "100%", borderRadius: 4 },
   scoreVerdict: { fontSize: typography.fontSize.sm, fontWeight: "bold" },
-
   kootaRow: {
     marginBottom: 6,
     flexDirection: "row",
@@ -1600,7 +1569,6 @@ const st = StyleSheet.create({
     width: 36,
     textAlign: "right",
   },
-
   doshaBox: {
     flexDirection: "row",
     backgroundColor: colors.cardBg + "60",

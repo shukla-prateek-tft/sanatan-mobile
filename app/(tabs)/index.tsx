@@ -15,7 +15,6 @@
  *  usePanchangLocation — imported from panchangService (already there).
  *  No new hook, no new service, no new file needed.
  */
-
 import React, { useState, useEffect, useCallback } from "react";
 import {
   View,
@@ -352,7 +351,6 @@ export default function HomeScreen() {
             </>
           )}
         </Animated.View>
-
         {/* ════════════════════════════════════════════════════
             FESTIVALS  — @ishubhamx/panchangam-js data
             Hidden on non-festival days (festivals.length === 0)
@@ -366,7 +364,6 @@ export default function HomeScreen() {
             </Card>
           </Animated.View>
         )}
-
         {/* ── DAILY MANTRA (unchanged) ── */}
         {dailyMantra && (
           <Animated.View entering={FadeInDown.delay(100).duration(700)}>
@@ -379,7 +376,6 @@ export default function HomeScreen() {
             </Card>
           </Animated.View>
         )}
-
         {/* ═══════════════════════════════════════════════════
             EVERYTHING BELOW — panchangService data, unchanged
             ═══════════════════════════════════════════════════ */}
@@ -653,7 +649,6 @@ export default function HomeScreen() {
             </Animated.View>
           </>
         )}
-
         {/* ── FOOTER ── */}
         <Animated.View
           entering={FadeIn.delay(700).duration(1000)}

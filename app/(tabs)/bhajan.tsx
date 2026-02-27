@@ -1,19 +1,9 @@
 /**
- * BhajanScreen.tsx
+ * BhajanScreen.tsx — FIXED
  *
- * Features:
- *  - 4 Tabs: Library | YouTube | Artists | Local
- *  - Library: built-in bhajans with deity filter + now-playing mini bar
- *  - YouTube: opens in-app WebView search for bhajans/kirtans
- *  - Artists: curated live/popular bhajan artists with YouTube channel links
- *  - Local: pick audio files from device (expo-document-picker), save to library
- *  - Persistent mini player bar at bottom when audio is active
- *  - Full-screen now-playing modal with progress, controls
- *  - Bilingual Hindi + English throughout
- *
- * Dependencies:
- *   expo install expo-av expo-document-picker expo-media-library
- *   npm install react-native-webview (for YouTube tab)
+ * Fix 1: Only one song plays at a time (proper sound cleanup before loading new track)
+ * Fix 2: Mini player bar is rendered OUTSIDE the tab content so it persists across all tabs
+ * Fix 3: isLoadingRef prevents race-condition double-play on fast taps
  */
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
@@ -27,20 +17,18 @@ import {
   Modal,
   ScrollView,
   Dimensions,
-  Image,
   Alert,
   Animated as RNAnimated,
 } from "react-native";
 import { Audio, AVPlaybackStatus } from "expo-av";
 import * as DocumentPicker from "expo-document-picker";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography, theme } from "../../theme";
+import { colors, spacing, typography } from "../../theme";
 import { bhajanService, Bhajan } from "../../services/bhajanService";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   withRepeat,
   withTiming,
   cancelAnimation,
@@ -48,7 +36,7 @@ import Animated, {
 } from "react-native-reanimated";
 import { artistService } from "@/services/artistsService";
 
-const { width: SW, height: SH } = Dimensions.get("window");
+const { width: SW } = Dimensions.get("window");
 
 // ─────────────────────────────────────────────
 // TYPES
@@ -61,11 +49,8 @@ interface LocalBhajan {
   duration?: string;
   isLocal: true;
 }
-
 type AnyBhajan = Bhajan | LocalBhajan;
-
 type Tab = "library" | "youtube" | "artists" | "local";
-
 interface Artist {
   id: string;
   name: string;
@@ -78,10 +63,6 @@ interface Artist {
   color: string;
   tags: string[];
 }
-
-// ─────────────────────────────────────────────
-// CURATED ARTISTS DATA
-// ─────────────────────────────────────────────
 
 // ─────────────────────────────────────────────
 // DEITY CONFIG
@@ -97,17 +78,28 @@ const DEITIES = [
   { en: "Hanuman", hi: "हनुमान", icon: "🙏" },
 ];
 
-// ─────────────────────────────────────────────
-// FORMAT SECONDS → MM:SS
-// ─────────────────────────────────────────────
 function fmtTime(ms: number): string {
   const s = Math.floor(ms / 1000);
   const m = Math.floor(s / 60);
   return `${m}:${String(s % 60).padStart(2, "0")}`;
 }
 
+function getDeityEmoji(deity: string): string {
+  const map: Record<string, string> = {
+    Shiva: "🔱",
+    Vishnu: "🪷",
+    Durga: "🌸",
+    Krishna: "🪈",
+    Rama: "🏹",
+    Ganesha: "🐘",
+    Hanuman: "🙏",
+    Bhakti: "🕉️",
+  };
+  return map[deity] ?? "🎵";
+}
+
 // ─────────────────────────────────────────────
-// SPINNING DISC ATOM
+// SPINNING DISC
 // ─────────────────────────────────────────────
 const SpinDisc = ({
   isPlaying,
@@ -119,7 +111,6 @@ const SpinDisc = ({
   emoji?: string;
 }) => {
   const rotate = useSharedValue(0);
-
   useEffect(() => {
     if (isPlaying) {
       rotate.value = withRepeat(
@@ -130,11 +121,9 @@ const SpinDisc = ({
       cancelAnimation(rotate);
     }
   }, [isPlaying]);
-
   const style = useAnimatedStyle(() => ({
     transform: [{ rotate: `${rotate.value}deg` }],
   }));
-
   return (
     <Animated.View
       style={[
@@ -157,30 +146,108 @@ const SpinDisc = ({
 };
 
 // ─────────────────────────────────────────────
+// EMPTY STATE
+// ─────────────────────────────────────────────
+function EmptyState({
+  icon,
+  msgHi,
+  msgEn,
+  subEn,
+}: {
+  icon: string;
+  msgHi: string;
+  msgEn: string;
+  subEn?: string;
+}) {
+  return (
+    <View style={st.emptyState}>
+      <Ionicons name={icon as any} size={60} color={colors.textMuted + "60"} />
+      <Text style={st.emptyHi}>{msgHi}</Text>
+      <Text style={st.emptyEn}>{msgEn}</Text>
+      {subEn ? <Text style={st.emptySub}>{subEn}</Text> : null}
+    </View>
+  );
+}
+
+// ─────────────────────────────────────────────
+// LAZY WEBVIEW
+// ─────────────────────────────────────────────
+function YouTubeWebView({ url }: { url: string }) {
+  try {
+    const { WebView } = require("react-native-webview");
+    return (
+      <WebView
+        source={{ uri: url }}
+        style={{ flex: 1, backgroundColor: "#0F0F0F" }}
+        startInLoadingState
+        renderLoading={() => (
+          <View
+            style={{
+              flex: 1,
+              alignItems: "center",
+              justifyContent: "center",
+              backgroundColor: "#0F0F0F",
+            }}
+          >
+            <ActivityIndicator size="large" color="#FF0000" />
+            <Text style={{ color: "#888", marginTop: 12 }}>
+              YouTube लोड हो रहा है…
+            </Text>
+          </View>
+        )}
+      />
+    );
+  } catch {
+    return (
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          padding: 32,
+        }}
+      >
+        <Ionicons name="logo-youtube" size={64} color="#FF0000" />
+        <Text
+          style={{
+            color: "white",
+            fontSize: 18,
+            marginTop: 16,
+            textAlign: "center",
+          }}
+        >
+          Install react-native-webview to use YouTube in-app
+        </Text>
+      </View>
+    );
+  }
+}
+
+// ─────────────────────────────────────────────
 // MAIN SCREEN
 // ─────────────────────────────────────────────
 export default function BhajanScreen() {
-  // ── Tabs & Filters ─────────────────────────
   const [activeTab, setActiveTab] = useState<Tab>("library");
   const [selectedDeity, setSelectedDeity] = useState("All");
   const [localBhajans, setLocalBhajans] = useState<LocalBhajan[]>([]);
   const [importLoading, setImportLoading] = useState(false);
-  const [youtubeQuery, setYoutubeQuery] = useState("");
   const [showYoutube, setShowYoutube] = useState(false);
   const [ytUrl, setYtUrl] = useState("");
 
-  // ── Audio player ───────────────────────────
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
+  // ── Audio state ────────────────────────────────────────────
+  // FIX: soundRef holds the live Audio.Sound object so it's always current
+  // in callbacks without stale closure issues
+  const soundRef = useRef<Audio.Sound | null>(null);
   const [playingBhajan, setPlayingBhajan] = useState<AnyBhajan | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [position, setPosition] = useState(0);
   const [duration, setDuration] = useState(0);
   const [showNowPlaying, setShowNowPlaying] = useState(false);
+  // FIX: guard flag prevents race condition when tapping quickly
+  const loadingRef = useRef(false);
 
-  // ── Mini player slide-up ───────────────────
   const miniBarAnim = useRef(new RNAnimated.Value(0)).current;
-
   useEffect(() => {
     RNAnimated.timing(miniBarAnim, {
       toValue: playingBhajan ? 1 : 0,
@@ -189,44 +256,58 @@ export default function BhajanScreen() {
     }).start();
   }, [!!playingBhajan]);
 
-  // ── Cleanup on unmount ─────────────────────
+  // Cleanup on unmount
   useEffect(() => {
     return () => {
-      sound?.unloadAsync();
+      soundRef.current?.unloadAsync();
     };
   }, []);
 
-  // ── Filtered library list ──────────────────
   const libraryBhajans: Bhajan[] =
     selectedDeity === "All"
       ? bhajanService.getAllBhajans()
       : bhajanService.getBhajansByDeity(selectedDeity as any);
 
-  // ── PLAY / PAUSE ───────────────────────────
+  // ─────────────────────────────────────────────────────────
+  // FIX #1 — PLAY / PAUSE: properly unload before loading new
+  // ─────────────────────────────────────────────────────────
   const playBhajan = useCallback(
     async (bhajan: AnyBhajan) => {
+      // Guard: ignore tap while a track is loading
+      if (loadingRef.current) return;
+
       try {
-        // Same track → toggle play/pause
-        if (playingBhajan?.id === bhajan.id && sound) {
-          const status = await sound.getStatusAsync();
+        // ── Same track → toggle play/pause ───────────────────
+        if (playingBhajan?.id === bhajan.id && soundRef.current) {
+          const status = await soundRef.current.getStatusAsync();
           if (status.isLoaded) {
             if (status.isPlaying) {
-              await sound.pauseAsync();
+              await soundRef.current.pauseAsync();
               setIsPlaying(false);
             } else {
-              await sound.playAsync();
+              await soundRef.current.playAsync();
               setIsPlaying(true);
             }
           }
           return;
         }
 
-        // New track
-        if (sound) {
-          await sound.unloadAsync();
-          setSound(null);
-        }
+        // ── New track ─────────────────────────────────────────
+        loadingRef.current = true;
         setIsLoading(true);
+
+        // IMPORTANT: unload previous sound BEFORE setting new state
+        // This prevents the old track from continuing to play
+        if (soundRef.current) {
+          try {
+            await soundRef.current.stopAsync();
+            await soundRef.current.unloadAsync();
+          } catch (_) {
+            /* ignore unload errors */
+          }
+          soundRef.current = null;
+        }
+
         setPlayingBhajan(bhajan);
         setIsPlaying(false);
         setPosition(0);
@@ -235,6 +316,7 @@ export default function BhajanScreen() {
         await Audio.setAudioModeAsync({ playsInSilentModeIOS: true });
 
         const uri = (bhajan as LocalBhajan).uri ?? (bhajan as Bhajan).audioUrl;
+
         const { sound: newSound } = await Audio.Sound.createAsync(
           { uri },
           { shouldPlay: true },
@@ -250,38 +332,46 @@ export default function BhajanScreen() {
           },
         );
 
-        setSound(newSound);
+        // Store in ref immediately so stop/pause always targets the right instance
+        soundRef.current = newSound;
         setIsPlaying(true);
-        setIsLoading(false);
       } catch (err) {
         console.error("playBhajan error:", err);
-        setIsLoading(false);
         Alert.alert(
           "त्रुटि · Error",
           "Could not play this track. Check the audio URL.",
         );
+      } finally {
+        setIsLoading(false);
+        loadingRef.current = false;
       }
     },
-    [sound, playingBhajan],
+    [playingBhajan],
   );
 
   const stopPlayback = useCallback(async () => {
-    await sound?.unloadAsync();
-    setSound(null);
+    if (soundRef.current) {
+      try {
+        await soundRef.current.stopAsync();
+        await soundRef.current.unloadAsync();
+      } catch (_) {}
+      soundRef.current = null;
+    }
     setPlayingBhajan(null);
     setIsPlaying(false);
     setPosition(0);
-  }, [sound]);
+    setDuration(0);
+  }, []);
 
   const seekTo = useCallback(
     async (pct: number) => {
-      if (!sound || duration === 0) return;
-      await sound.setPositionAsync(pct * duration);
+      if (!soundRef.current || duration === 0) return;
+      await soundRef.current.setPositionAsync(pct * duration);
     },
-    [sound, duration],
+    [duration],
   );
 
-  // ── IMPORT FROM DEVICE ─────────────────────
+  // ── IMPORT ─────────────────────────────────────────────────
   const importLocalFiles = useCallback(async () => {
     try {
       setImportLoading(true);
@@ -290,12 +380,7 @@ export default function BhajanScreen() {
         multiple: true,
         copyToCacheDirectory: true,
       });
-
-      if (result.canceled) {
-        setImportLoading(false);
-        return;
-      }
-
+      if (result.canceled) return;
       const newBhajans: LocalBhajan[] = result.assets.map((asset) => ({
         id: `local_${Date.now()}_${Math.random()}`,
         title: asset.name.replace(/\.[^.]+$/, ""),
@@ -303,14 +388,12 @@ export default function BhajanScreen() {
         uri: asset.uri,
         isLocal: true as const,
       }));
-
       setLocalBhajans((prev) => {
-        // Deduplicate by name
         const existing = new Set(prev.map((b) => b.title));
         return [...prev, ...newBhajans.filter((b) => !existing.has(b.title))];
       });
       setActiveTab("local");
-    } catch (err) {
+    } catch {
       Alert.alert("त्रुटि · Error", "Could not import file.");
     } finally {
       setImportLoading(false);
@@ -325,42 +408,38 @@ export default function BhajanScreen() {
     [playingBhajan, stopPlayback],
   );
 
-  // ── OPEN YOUTUBE (artist or search) ────────
   const openYoutube = useCallback((query: string) => {
-    const encoded = encodeURIComponent(query);
-    setYtUrl(`https://www.youtube.com/results?search_query=${encoded}`);
+    setYtUrl(
+      `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`,
+    );
     setShowYoutube(true);
   }, []);
 
   // ─────────────────────────────────────────────
-  // RENDER: BHAJAN CARD
+  // BHAJAN CARD
   // ─────────────────────────────────────────────
   const renderBhajanCard = ({ item }: { item: AnyBhajan }) => {
     const playing = playingBhajan?.id === item.id;
-    const loading = isLoading && playing;
+    const loadingThis = isLoading && playing;
     const isLocal = (item as LocalBhajan).isLocal;
     const deity = (item as Bhajan).deity ?? "";
-
     return (
       <TouchableOpacity
         style={[st.bhajanCard, playing && st.bhajanCardActive]}
         onPress={() => playBhajan(item)}
         activeOpacity={0.78}
       >
-        {/* Disc */}
         <View style={st.discWrap}>
-          {loading ? (
+          {loadingThis ? (
             <ActivityIndicator size="small" color={colors.gold} />
           ) : (
             <SpinDisc
-              isPlaying={playing}
+              isPlaying={playing && isPlaying}
               size={50}
               emoji={deity ? getDeityEmoji(deity) : "🎵"}
             />
           )}
         </View>
-
-        {/* Info */}
         <View style={st.bhajanInfo}>
           <Text
             style={[st.bhajanTitle, playing && st.bhajanTitleActive]}
@@ -394,8 +473,6 @@ export default function BhajanScreen() {
             )}
           </View>
         </View>
-
-        {/* Actions */}
         <View style={st.bhajanActions}>
           {playing && isPlaying ? (
             <Ionicons name="pause-circle" size={36} color={colors.gold} />
@@ -426,7 +503,7 @@ export default function BhajanScreen() {
   };
 
   // ─────────────────────────────────────────────
-  // RENDER: ARTIST CARD
+  // ARTIST CARD
   // ─────────────────────────────────────────────
   const renderArtistCard = ({ item }: { item: Artist }) => (
     <TouchableOpacity
@@ -478,11 +555,9 @@ export default function BhajanScreen() {
   // ─────────────────────────────────────────────
   const renderTabContent = () => {
     switch (activeTab) {
-      // ── LIBRARY ──────────────────────────────
       case "library":
         return (
           <>
-            {/* Deity filter */}
             <View style={st.filterBar}>
               <ScrollView
                 horizontal
@@ -520,11 +595,11 @@ export default function BhajanScreen() {
                 ))}
               </ScrollView>
             </View>
-
             <FlatList
               data={libraryBhajans as AnyBhajan[]}
               keyExtractor={(i) => i.id}
               renderItem={renderBhajanCard}
+              // FIX #2: extra bottom padding so content isn't hidden behind mini player
               contentContainerStyle={[
                 st.listContent,
                 { paddingBottom: playingBhajan ? 90 : 20 },
@@ -540,17 +615,17 @@ export default function BhajanScreen() {
           </>
         );
 
-      // ── YOUTUBE ────────────────────────────────
       case "youtube":
         return (
           <ScrollView
-            contentContainerStyle={st.ytTabContent}
+            contentContainerStyle={[
+              st.ytTabContent,
+              { paddingBottom: playingBhajan ? 110 : 80 },
+            ]}
             showsVerticalScrollIndicator={false}
           >
             <Text style={st.ytTitle}>यूट्यूब पर भजन खोजें</Text>
             <Text style={st.ytSubtitle}>Search Bhajans on YouTube</Text>
-
-            {/* Quick search buttons */}
             <Text style={st.ytSectionLabel}>⚡ त्वरित खोज · Quick Search</Text>
             <View style={st.ytChipRow}>
               {[
@@ -577,7 +652,6 @@ export default function BhajanScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-
             <Text style={st.ytSectionLabel}>🔥 लोकप्रिय · Trending</Text>
             {[
               {
@@ -622,7 +696,6 @@ export default function BhajanScreen() {
                 <Ionicons name="logo-youtube" size={20} color="#FF0000" />
               </TouchableOpacity>
             ))}
-
             <View style={st.ytNote}>
               <Ionicons
                 name="information-circle-outline"
@@ -637,7 +710,6 @@ export default function BhajanScreen() {
           </ScrollView>
         );
 
-      // ── ARTISTS ─────────────────────────────────
       case "artists":
         return (
           <FlatList
@@ -659,11 +731,9 @@ export default function BhajanScreen() {
           />
         );
 
-      // ── LOCAL ────────────────────────────────────
       case "local":
         return (
           <>
-            {/* Import button */}
             <TouchableOpacity
               style={st.importBtn}
               onPress={importLocalFiles}
@@ -685,7 +755,6 @@ export default function BhajanScreen() {
                   : "डिवाइस से गाने जोड़ें · Import from Device"}
               </Text>
             </TouchableOpacity>
-
             {localBhajans.length === 0 ? (
               <EmptyState
                 icon="phone-portrait-outline"
@@ -710,7 +779,7 @@ export default function BhajanScreen() {
   };
 
   // ─────────────────────────────────────────────
-  // MINI PLAYER BAR
+  // FIX #2 — Mini player translate animation
   // ─────────────────────────────────────────────
   const miniBarTranslate = miniBarAnim.interpolate({
     inputRange: [0, 1],
@@ -719,6 +788,11 @@ export default function BhajanScreen() {
 
   return (
     <GradientBackground>
+      {/*
+       * FIX #2: The entire screen is ONE View. Tab content is inside flex:1,
+       * and the mini player sits BELOW it as a sibling — not inside any tab.
+       * This means it persists regardless of which tab is active.
+       */}
       <View style={st.container}>
         {/* ── HEADER ── */}
         <View style={st.header}>
@@ -736,7 +810,7 @@ export default function BhajanScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* ── TABS ── */}
+        {/* ── TAB BAR ── */}
         <View style={st.tabBar}>
           {(
             [
@@ -802,17 +876,21 @@ export default function BhajanScreen() {
           ))}
         </View>
 
-        {/* ── TAB CONTENT ── */}
+        {/* ── TAB CONTENT ── flex:1 so it fills space above mini player */}
         <View style={{ flex: 1 }}>{renderTabContent()}</View>
 
-        {/* ── MINI PLAYER BAR ── */}
-        {playingBhajan && (
-          <RNAnimated.View
-            style={[
-              st.miniBar,
-              { transform: [{ translateY: miniBarTranslate }] },
-            ]}
-          >
+        {/* ── MINI PLAYER BAR ────────────────────────────────────────────
+         * FIX #2: Rendered here as a sibling of tab content, NOT inside any tab.
+         * It is always mounted; visibility controlled by translateY animation.
+         * This means switching tabs does NOT unmount or hide the player.
+         * ─────────────────────────────────────────────────────────────── */}
+        <RNAnimated.View
+          style={[
+            st.miniBar,
+            { transform: [{ translateY: miniBarTranslate }] },
+          ]}
+        >
+          {playingBhajan && (
             <TouchableOpacity
               style={st.miniBarInner}
               onPress={() => setShowNowPlaying(true)}
@@ -830,7 +908,6 @@ export default function BhajanScreen() {
                 <Text style={st.miniBarArtist} numberOfLines={1}>
                   {playingBhajan.artist}
                 </Text>
-                {/* Progress line */}
                 <View style={st.miniProgress}>
                   <View
                     style={[
@@ -861,13 +938,11 @@ export default function BhajanScreen() {
                 </TouchableOpacity>
               </View>
             </TouchableOpacity>
-          </RNAnimated.View>
-        )}
+          )}
+        </RNAnimated.View>
       </View>
 
-      {/* ════════════════════════════════════════
-          NOW PLAYING FULL MODAL
-      ════════════════════════════════════════ */}
+      {/* ════════════ NOW PLAYING MODAL ════════════ */}
       <Modal
         visible={showNowPlaying}
         animationType="slide"
@@ -876,7 +951,6 @@ export default function BhajanScreen() {
       >
         <View style={npStyle.overlay}>
           <View style={npStyle.sheet}>
-            {/* Handle */}
             <View style={npStyle.handle} />
             <TouchableOpacity
               style={npStyle.closeBtn}
@@ -888,8 +962,6 @@ export default function BhajanScreen() {
                 color={colors.textMuted}
               />
             </TouchableOpacity>
-
-            {/* Big disc */}
             <View style={npStyle.discArea}>
               <SpinDisc
                 isPlaying={isPlaying}
@@ -901,8 +973,6 @@ export default function BhajanScreen() {
                 }
               />
             </View>
-
-            {/* Track info */}
             <View style={npStyle.trackInfo}>
               <Text style={npStyle.trackTitle}>
                 {playingBhajan?.title ?? ""}
@@ -918,14 +988,11 @@ export default function BhajanScreen() {
                 </View>
               )}
             </View>
-
-            {/* Progress bar */}
             <View style={npStyle.progressArea}>
               <TouchableOpacity
                 style={npStyle.progressTrack}
                 onPress={(e) => {
-                  const x = e.nativeEvent.locationX;
-                  seekTo(x / (SW - spacing.xl * 2));
+                  seekTo(e.nativeEvent.locationX / (SW - spacing.xl * 2));
                 }}
               >
                 <View
@@ -944,8 +1011,6 @@ export default function BhajanScreen() {
                 <Text style={npStyle.timeTxt}>{fmtTime(duration)}</Text>
               </View>
             </View>
-
-            {/* Controls */}
             <View style={npStyle.controls}>
               <TouchableOpacity
                 style={npStyle.ctrlBtn}
@@ -956,7 +1021,6 @@ export default function BhajanScreen() {
                 <Ionicons name="play-back" size={26} color={colors.textMuted} />
                 <Text style={npStyle.ctrlHint}>15s</Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={npStyle.playBtn}
                 onPress={() => playingBhajan && playBhajan(playingBhajan)}
@@ -972,7 +1036,6 @@ export default function BhajanScreen() {
                   />
                 )}
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={npStyle.ctrlBtn}
                 onPress={() =>
@@ -987,7 +1050,6 @@ export default function BhajanScreen() {
                 <Text style={npStyle.ctrlHint}>15s</Text>
               </TouchableOpacity>
             </View>
-
             <TouchableOpacity
               style={npStyle.stopBtn}
               onPress={() => {
@@ -1006,9 +1068,7 @@ export default function BhajanScreen() {
         </View>
       </Modal>
 
-      {/* ════════════════════════════════════════
-          YOUTUBE IN-APP WEBVIEW MODAL
-      ════════════════════════════════════════ */}
+      {/* ════════════ YOUTUBE MODAL ════════════ */}
       <Modal
         visible={showYoutube}
         animationType="slide"
@@ -1028,8 +1088,6 @@ export default function BhajanScreen() {
             </View>
             <View style={{ width: 40 }} />
           </View>
-
-          {/* Dynamic import of WebView to avoid hard dep */}
           <YouTubeWebView url={ytUrl} />
         </View>
       </Modal>
@@ -1038,117 +1096,10 @@ export default function BhajanScreen() {
 }
 
 // ─────────────────────────────────────────────
-// LAZY WEBVIEW — avoids crash if not installed
-// ─────────────────────────────────────────────
-function YouTubeWebView({ url }: { url: string }) {
-  try {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { WebView } = require("react-native-webview");
-    return (
-      <WebView
-        source={{ uri: url }}
-        style={{ flex: 1, backgroundColor: "#0F0F0F" }}
-        startInLoadingState
-        renderLoading={() => (
-          <View
-            style={{
-              flex: 1,
-              alignItems: "center",
-              justifyContent: "center",
-              backgroundColor: "#0F0F0F",
-            }}
-          >
-            <ActivityIndicator size="large" color="#FF0000" />
-            <Text style={{ color: "#888", marginTop: 12 }}>
-              YouTube लोड हो रहा है…
-            </Text>
-          </View>
-        )}
-      />
-    );
-  } catch {
-    return (
-      <View
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          padding: 32,
-        }}
-      >
-        <Ionicons name="logo-youtube" size={64} color="#FF0000" />
-        <Text
-          style={{
-            color: "white",
-            fontSize: 18,
-            marginTop: 16,
-            textAlign: "center",
-          }}
-        >
-          Install react-native-webview to use YouTube in-app
-        </Text>
-        <Text
-          style={{
-            color: "#888",
-            marginTop: 8,
-            textAlign: "center",
-            fontSize: 13,
-          }}
-        >
-          npx expo install react-native-webview
-        </Text>
-      </View>
-    );
-  }
-}
-
-// ─────────────────────────────────────────────
-// EMPTY STATE ATOM
-// ─────────────────────────────────────────────
-function EmptyState({
-  icon,
-  msgHi,
-  msgEn,
-  subEn,
-}: {
-  icon: string;
-  msgHi: string;
-  msgEn: string;
-  subEn?: string;
-}) {
-  return (
-    <View style={st.emptyState}>
-      <Ionicons name={icon as any} size={60} color={colors.textMuted + "60"} />
-      <Text style={st.emptyHi}>{msgHi}</Text>
-      <Text style={st.emptyEn}>{msgEn}</Text>
-      {subEn ? <Text style={st.emptySub}>{subEn}</Text> : null}
-    </View>
-  );
-}
-
-// ─────────────────────────────────────────────
-// DEITY EMOJI
-// ─────────────────────────────────────────────
-function getDeityEmoji(deity: string): string {
-  const map: Record<string, string> = {
-    Shiva: "🔱",
-    Vishnu: "🪷",
-    Durga: "🌸",
-    Krishna: "🪈",
-    Rama: "🏹",
-    Ganesha: "🐘",
-    Hanuman: "🙏",
-    Bhakti: "🕉️",
-  };
-  return map[deity] ?? "🎵";
-}
-
-// ─────────────────────────────────────────────
 // STYLES
 // ─────────────────────────────────────────────
 const st = StyleSheet.create({
   container: { flex: 1 },
-
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -1180,7 +1131,6 @@ const st = StyleSheet.create({
     borderColor: colors.gold + "40",
   },
   importHeaderTxt: { fontSize: 13, color: colors.gold, fontWeight: "600" },
-
   tabBar: {
     flexDirection: "row",
     backgroundColor: colors.bgSecondary,
@@ -1210,7 +1160,6 @@ const st = StyleSheet.create({
     justifyContent: "center",
   },
   tabBadgeTxt: { fontSize: 9, color: colors.bgSecondary, fontWeight: "bold" },
-
   filterBar: {
     paddingVertical: spacing.sm,
     borderBottomWidth: 1,
@@ -1235,9 +1184,7 @@ const st = StyleSheet.create({
   filterTxtHi: { fontSize: 10, color: colors.textMuted, fontWeight: "600" },
   filterTxtEn: { fontSize: 9, color: colors.textMuted },
   filterTxtActive: { color: colors.gold },
-
   listContent: { paddingHorizontal: spacing.md, paddingTop: spacing.sm },
-
   bhajanCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -1289,7 +1236,6 @@ const st = StyleSheet.create({
   deityPillTxt: { fontSize: 10, color: colors.gold },
   durationTxt: { fontSize: 10, color: colors.textMuted },
   bhajanActions: { alignItems: "center", gap: 4 },
-
   artistsHeader: {
     paddingHorizontal: spacing.md,
     paddingTop: spacing.md,
@@ -1305,7 +1251,6 @@ const st = StyleSheet.create({
     color: colors.textMuted,
     marginTop: 2,
   },
-
   artistCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -1357,7 +1302,6 @@ const st = StyleSheet.create({
     borderWidth: 1,
     borderColor: "#FF000040",
   },
-
   importBtn: {
     flexDirection: "row",
     alignItems: "center",
@@ -1373,7 +1317,6 @@ const st = StyleSheet.create({
     color: colors.bgSecondary,
     fontWeight: typography.fontWeight.bold,
   },
-
   emptyState: {
     alignItems: "center",
     paddingVertical: 60,
@@ -1396,13 +1339,10 @@ const st = StyleSheet.create({
     marginTop: 8,
     textAlign: "center",
   },
-
-  // Mini player
+  // ── Mini Player ──────────────────────────────────────────────────────────
   miniBar: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    // position is NOT absolute anymore — it's a flex child sitting below tab content
+    // This guarantees it shows on every tab without any z-index tricks
     backgroundColor: colors.bgSecondary,
     borderTopWidth: 1,
     borderTopColor: colors.gold + "40",
@@ -1438,9 +1378,7 @@ const st = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
-  // YouTube tab
-  ytTabContent: { padding: spacing.lg, paddingBottom: 80 },
+  ytTabContent: { padding: spacing.lg },
   ytTitle: {
     fontSize: typography.fontSize.xl,
     fontWeight: typography.fontWeight.bold,
@@ -1504,7 +1442,6 @@ const st = StyleSheet.create({
   },
 });
 
-// Now Playing modal styles
 const npStyle = StyleSheet.create({
   overlay: {
     flex: 1,
@@ -1630,7 +1567,6 @@ const npStyle = StyleSheet.create({
   stopTxt: { fontSize: 13, color: colors.textMuted },
 });
 
-// YouTube WebView modal styles
 const ytStyle = StyleSheet.create({
   ytHeader: {
     flexDirection: "row",
