@@ -1,6 +1,7 @@
 import { SplashScreen, Stack } from "expo-router";
 import { useEffect, useState, useCallback } from "react";
 import { SafeAreaProvider } from "react-native-safe-area-context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { usePanchangLocation } from "../services/panchangService";
 import { LocationPickerModal } from "../components/LocationPicker";
 import CustomSplashScreen from "@/components/SplashScreen";
@@ -51,17 +52,19 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(tabs)" />
+        </Stack>
 
-      <LocationPickerModal
-        visible={loc.status === "denied"}
-        onDetectGPS={loc.detectGPS}
-        onPickCity={loc.pickCity}
-        error={loc.error}
-      />
-    </SafeAreaProvider>
+        <LocationPickerModal
+          visible={loc.status === "denied"}
+          onDetectGPS={loc.detectGPS}
+          onPickCity={loc.pickCity}
+          error={loc.error}
+        />
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

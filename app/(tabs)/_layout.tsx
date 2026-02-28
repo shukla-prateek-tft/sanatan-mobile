@@ -93,6 +93,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="temples"
+        options={{
+          title: "Temples",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="place-of-worship" size={size} color={color} />
+          ),
+          headerTitle: "Nearby Temples",
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
