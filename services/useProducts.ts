@@ -119,7 +119,9 @@ export function useProducts(): UseProductsReturn {
     const unsub = onSnapshot(
       q,
       (snap: QuerySnapshot<DocumentData>) => {
-        const docs = snap.docs.map((d) => mapDoc({ ...d, id: d.id }));
+        const docs = snap.docs.map((d) =>
+          mapDoc({ ...d.data(), id: d.data().id }),
+        );
         setProducts(docs);
         setLoading(false);
       },
