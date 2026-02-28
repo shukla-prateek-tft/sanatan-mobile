@@ -513,7 +513,7 @@ export default function ShopScreen() {
         {!loading && rows.length > 0 && (
           <View style={st.grid}>
             {rows.map(([a, b], i) => (
-              <View key={i} style={st.gridRow}>
+              <View key={i + Math.random()} style={st.gridRow}>
                 <ProductCard item={a} />
                 {b ? (
                   <ProductCard item={b} />
