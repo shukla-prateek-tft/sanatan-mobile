@@ -16,8 +16,8 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import { GradientBackground } from "../components/GradientBackground";
-import { colors, spacing, typography } from "../theme";
+import { GradientBackground } from "../../components/GradientBackground";
+import { colors, spacing, typography } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import {
   getPanchangam,

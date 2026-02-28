@@ -30,14 +30,14 @@ import {
   ActivityIndicator,
   Dimensions,
 } from "react-native";
-import { GradientBackground } from "../components/GradientBackground";
-import { colors, spacing, typography } from "../theme";
+import { GradientBackground } from "../../components/GradientBackground";
+import { colors, spacing, typography } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import {
   useProducts,
   getCategoryLabel,
   type Product,
-} from "../services/useProducts";
+} from "../../services/useProducts";
 
 const { width: SW } = Dimensions.get("window");
 const CARD_WIDTH = (SW - spacing.md * 2 - spacing.sm) / 2;

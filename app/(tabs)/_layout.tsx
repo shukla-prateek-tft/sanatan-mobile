@@ -147,38 +147,25 @@ export default function TabLayout() {
       <Tabs.Screen
         name="kundli"
         options={{
-          title: "Kundli",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="hand-sparkles" size={size} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="temples"
-        options={{
-          title: "Temples",
-          tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name="place-of-worship" size={size} color={color} />
-          ),
-          headerTitle: "Nearby Temples",
+          href: null,
         }}
       />
       <Tabs.Screen
         name="shop"
         options={{
-          title: "Shop",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="storefront" size={size} color={color} />
-          ),
+          href: null,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
-          title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="settings" size={size} color={color} />
-          ),
+          href: null,
+        }}
+      />
+      <Tabs.Screen
+        name="temples"
+        options={{
+          href: null,
         }}
       />
     </Tabs>
