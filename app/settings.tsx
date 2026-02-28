@@ -30,13 +30,13 @@ import {
   Platform,
   ActivityIndicator,
 } from "react-native";
-import { GradientBackground } from "../../components/GradientBackground";
-import { Card } from "../../components/Card";
-import { colors, spacing, typography } from "../../theme";
+import { GradientBackground } from "../components/GradientBackground";
+import { Card } from "../components/Card";
+import { colors, spacing, typography } from "../theme";
 import { Ionicons } from "@expo/vector-icons";
 import Constants from "expo-constants";
-import { useNotifications } from "../../services/useNotification";
-import type { NotificationPrefs } from "../../services/notificationService";
+import { useNotifications } from "../services/useNotification";
+import type { NotificationPrefs } from "../services/notificationService";
 
 // ─────────────────────────────────────────────
 // DEVELOPER INFO (compact)

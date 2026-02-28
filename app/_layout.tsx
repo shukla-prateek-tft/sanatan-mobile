@@ -9,6 +9,8 @@ import { mantraService } from "@/services/mantraService";
 import { bhajanService } from "@/services/bhajanService";
 import { artistService } from "@/services/artistsService";
 import * as Speech from "expo-speech";
+import { SidebarProvider } from "@/components/SideBar";
+import { AppHeader } from "./(tabs)/_layout";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -52,19 +54,25 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaProvider>
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(tabs)" />
-        </Stack>
-
-        <LocationPickerModal
-          visible={loc.status === "denied"}
-          onDetectGPS={loc.detectGPS}
-          onPickCity={loc.pickCity}
-          error={loc.error}
-        />
-      </SafeAreaProvider>
-    </GestureHandlerRootView>
+    <SafeAreaProvider>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <SidebarProvider>
+          <Stack
+            screenOptions={{
+              // Use our custom header for every tab screen
+              header: () => <AppHeader />,
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+          </Stack>
+          <LocationPickerModal
+            visible={loc.status === "denied"}
+            onDetectGPS={loc.detectGPS}
+            onPickCity={loc.pickCity}
+            error={loc.error}
+          />
+        </SidebarProvider>
+      </GestureHandlerRootView>
+    </SafeAreaProvider>
   );
 }
