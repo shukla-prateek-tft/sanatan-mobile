@@ -11,6 +11,8 @@ import { artistService } from "@/services/artistsService";
 import * as Speech from "expo-speech";
 import { SidebarProvider } from "@/components/SideBar";
 import { AppHeader } from "./(tabs)/_layout";
+import { AppProvider } from "@/context/AppContext";
+import { initI18n } from "@/services/i18n";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,15 +20,18 @@ export default function RootLayout() {
   const loc = usePanchangLocation();
   const [appReady, setAppReady] = useState(false);
   const [showCustomSplash, setShowCustomSplash] = useState(true);
+  const [initialLanguage, setInitialLanguage] = useState('hi');
 
   const prepareApp = useCallback(async () => {
     try {
-      await Promise.all([
+      const [lang] = await Promise.all([
+        initI18n(),
         mantraService.init(),
         bhajanService.init(),
         artistService.init(),
         Speech.getAvailableVoicesAsync(),
       ]);
+      setInitialLanguage(lang);
     } catch (e) {
       console.warn(e);
     } finally {
@@ -40,7 +45,7 @@ export default function RootLayout() {
   }, []);
 
   if (!appReady) {
-    return null; // Native splash stays visible
+    return null;
   }
 
   if (showCustomSplash) {
@@ -54,25 +59,26 @@ export default function RootLayout() {
   }
 
   return (
-    <SafeAreaProvider>
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <SidebarProvider>
-          <Stack
-            screenOptions={{
-              // Use our custom header for every tab screen
-              header: () => <AppHeader />,
-            }}
-          >
-            <Stack.Screen name="(tabs)" />
-          </Stack>
-          <LocationPickerModal
-            visible={loc.status === "denied"}
-            onDetectGPS={loc.detectGPS}
-            onPickCity={loc.pickCity}
-            error={loc.error}
-          />
-        </SidebarProvider>
-      </GestureHandlerRootView>
-    </SafeAreaProvider>
+    <AppProvider initialLanguage={initialLanguage}>
+      <SafeAreaProvider>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <SidebarProvider>
+            <Stack
+              screenOptions={{
+                header: () => <AppHeader />,
+              }}
+            >
+              <Stack.Screen name="(tabs)" />
+            </Stack>
+            <LocationPickerModal
+              visible={loc.status === "denied"}
+              onDetectGPS={loc.detectGPS}
+              onPickCity={loc.pickCity}
+              error={loc.error}
+            />
+          </SidebarProvider>
+        </GestureHandlerRootView>
+      </SafeAreaProvider>
+    </AppProvider>
   );
 }

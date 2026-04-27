@@ -32,6 +32,7 @@ import {
 import { getPanchangam, Observer } from "@ishubhamx/panchangam-js";
 import { FadeInDown } from "react-native-reanimated";
 import { Card } from "@/components/Card";
+import { useTranslation } from "react-i18next";
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -350,6 +351,7 @@ const SecDiv = ({ en, hi }: { en: string; hi: string }) => (
 // SCREEN
 // ─────────────────────────────────────────────
 export default function CalendarScreen() {
+  const { t } = useTranslation();
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [panchang, setPanchang] = useState<PanchangData | null>(null);
@@ -646,7 +648,7 @@ export default function CalendarScreen() {
             {loadingModal ? (
               <View style={mStyles.loader}>
                 <ActivityIndicator size="large" color={colors.gold} />
-                <Text style={mStyles.loaderTxt}>पञ्चाङ्ग लोड हो रहा है…</Text>
+                <Text style={mStyles.loaderTxt}>{t('home.loading')}</Text>
               </View>
             ) : panchang ? (
               <ScrollView

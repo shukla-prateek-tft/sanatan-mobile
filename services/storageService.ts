@@ -7,6 +7,8 @@ const KEYS = {
   BOOKMARKS: '@sanatan_bookmarks',
   THEME_MODE: '@sanatan_theme_mode',
   FONT_SIZE: '@sanatan_font_size',
+  APP_THEME: '@sanatan_app_theme',
+  LANGUAGE: '@sanatan_language',
 };
 
 export const storageService = {

@@ -36,6 +36,7 @@ import * as Speech from "expo-speech";
 import { GradientBackground } from "../../components/GradientBackground";
 import { colors, spacing, typography, theme } from "../../theme";
 import { storageService } from "../../services/storageService";
+import { useTranslation } from "react-i18next";
 import { Mantra, mantraService } from "../../services/mantraService";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -177,6 +178,7 @@ const SettingRow = ({
 // MAIN SCREEN
 // ─────────────────────────────────────────────
 export default function JapScreen() {
+  const { t } = useTranslation();
   // ── State ──────────────────────────────────
   const [count, setCount] = useState(0);
   const [selectedMantra, setSelectedMantra] = useState<Mantra>([]);
@@ -410,10 +412,7 @@ export default function JapScreen() {
   const handleSaveCustomMantra = useCallback(async () => {
     const trimmed = formText.trim();
     if (!trimmed) {
-      Alert.alert(
-        "मंत्र आवश्यक है",
-        "कृपया मंत्र दर्ज करें · Please enter mantra text.",
-      );
+      Alert.alert(t('jap.alerts.mantraRequired'), t('jap.alerts.mantraRequiredMsg'));
       return;
     }
 
@@ -449,10 +448,10 @@ export default function JapScreen() {
 
   const handleDeleteCustomMantra = useCallback(
     (id: string) => {
-      Alert.alert("मंत्र हटाएं?", "Delete this custom mantra?", [
-        { text: "रद्द करें · Cancel", style: "cancel" },
+      Alert.alert(t('jap.alerts.deleteTitle'), t('jap.alerts.deleteMsg'), [
+        { text: t('jap.alerts.cancel'), style: "cancel" },
         {
-          text: "हटाएं · Delete",
+          text: t('jap.alerts.delete'),
           style: "destructive",
           onPress: () => {
             setCustomMantras((prev) => {
@@ -503,16 +502,16 @@ export default function JapScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="list" size={18} color={colors.gold} />
-            <Text style={st.topBarBtnTxt}>मंत्र</Text>
+            <Text style={st.topBarBtnTxt}>{t('jap.mantra')}</Text>
           </TouchableOpacity>
-          <Text style={st.screenTitle}>जप माला · Jap Mala</Text>
+          <Text style={st.screenTitle}>{t('jap.title')}</Text>
           <TouchableOpacity
             style={st.topBarBtn}
             onPress={() => setShowSettings(true)}
             activeOpacity={0.7}
           >
             <Ionicons name="settings-outline" size={18} color={colors.gold} />
-            <Text style={st.topBarBtnTxt}>सेटिंग्स</Text>
+            <Text style={st.topBarBtnTxt}>{t('jap.settings')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -576,16 +575,14 @@ export default function JapScreen() {
               activeOpacity={0.85}
             >
               <Text style={st.countNum}>{count}</Text>
-              <Text style={st.tapHi}>स्पर्श करें</Text>
-              <Text style={st.tapEn}>TAP</Text>
+              <Text style={st.tapHi}>{t('jap.tap')}</Text>
             </TouchableOpacity>
           </Animated.View>
 
           {celebrateVisible && (
             <Animated.View style={[st.celebOverlay, celebStyle]}>
               <Text style={st.celebEmoji}>🎉</Text>
-              <Text style={st.celebHi}>माला पूर्ण!</Text>
-              <Text style={st.celebEn}>Mala Complete</Text>
+              <Text style={st.celebHi}>{t('jap.malaComplete')}</Text>
             </Animated.View>
           )}
         </View>
@@ -593,8 +590,8 @@ export default function JapScreen() {
         {/* ── PROGRESS ── */}
         <Text style={st.malaLabel}>
           {completedMalas === 0
-            ? "पहली माला की ओर…"
-            : `${completedMalas} माला पूर्ण 🙏`}
+            ? t('jap.towardsFirst')
+            : `${completedMalas} ${t('jap.malasComplete')}`}
         </Text>
         <View style={st.progressWrap}>
           <View style={st.progressTrack}>
@@ -605,14 +602,9 @@ export default function JapScreen() {
 
         {/* ── STATS ── */}
         <View style={st.statsRow}>
-          <StatBox icon="🔢" value={count} labelHi="कुल जप" labelEn="Total" />
-          <StatBox
-            icon="📿"
-            value={completedMalas}
-            labelHi="पूर्ण माला"
-            labelEn="Malas"
-          />
-          <StatBox icon="⏳" value={remaining} labelHi="शेष" labelEn="Left" />
+          <StatBox icon="🔢" value={count} labelHi={t('jap.stats.total')} labelEn="" />
+          <StatBox icon="📿" value={completedMalas} labelHi={t('jap.stats.malas')} labelEn="" />
+          <StatBox icon="⏳" value={remaining} labelHi={t('jap.stats.left')} labelEn="" />
         </View>
 
         {/* ── MILESTONES ── */}
@@ -644,7 +636,7 @@ export default function JapScreen() {
             size={18}
             color={colors.textMuted}
           />
-          <Text style={st.resetTxt}>काउंटर रीसेट करें · Reset</Text>
+          <Text style={st.resetTxt}>{t('jap.reset')}</Text>
         </TouchableOpacity>
       </ScrollView>
 
@@ -662,8 +654,7 @@ export default function JapScreen() {
             <View style={md.handle} />
             <View style={md.header}>
               <View>
-                <Text style={md.titleHi}>मंत्र चुनें</Text>
-                <Text style={md.titleEn}>Select Mantra</Text>
+                <Text style={md.titleHi}>{t('jap.selectMantra')}</Text>
               </View>
               <View style={{ flexDirection: "row", gap: spacing.sm }}>
                 <TouchableOpacity
@@ -675,7 +666,7 @@ export default function JapScreen() {
                   activeOpacity={0.7}
                 >
                   <Ionicons name="add" size={18} color={colors.gold} />
-                  <Text style={md.addBtnTxt}>नया मंत्र</Text>
+                  <Text style={md.addBtnTxt}>{t('jap.addMantra')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={md.closeBtn}
@@ -694,7 +685,7 @@ export default function JapScreen() {
                 customMantras.length > 0 ? null : (
                   <View style={md.sectionHeader}>
                     <Text style={md.sectionHeaderTxt}>
-                      📿 प्रसिद्ध मंत्र · Classic Mantras
+                      📿 {t('jap.classicMantras')}
                     </Text>
                   </View>
                 )
@@ -709,7 +700,7 @@ export default function JapScreen() {
                     {showCustomHeader && (
                       <View style={md.sectionHeader}>
                         <Text style={md.sectionHeaderTxt}>
-                          ✏️ आपके मंत्र · Your Custom Mantras
+                          ✏️ {t('jap.customMantras')}
                         </Text>
                       </View>
                     )}
@@ -801,10 +792,7 @@ export default function JapScreen() {
               <View style={md.header}>
                 <View>
                   <Text style={md.titleHi}>
-                    {editingMantra ? "मंत्र संपादित करें" : "नया मंत्र जोड़ें"}
-                  </Text>
-                  <Text style={md.titleEn}>
-                    {editingMantra ? "Edit Mantra" : "Add Custom Mantra"}
+                    {editingMantra ? t('jap.form.editTitle') : t('jap.form.title')}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -896,7 +884,7 @@ export default function JapScreen() {
                     color={colors.bgSecondary}
                   />
                   <Text style={md.saveBtnTxt}>
-                    {editingMantra ? "अपडेट करें · Update" : "सहेजें · Save"}
+                    {t('jap.form.save')}
                   </Text>
                 </TouchableOpacity>
               </ScrollView>
@@ -919,8 +907,7 @@ export default function JapScreen() {
             <View style={md.handle} />
             <View style={md.header}>
               <View>
-                <Text style={md.titleHi}>सेटिंग्स</Text>
-                <Text style={md.titleEn}>Settings</Text>
+                <Text style={md.titleHi}>{t('jap.settings')}</Text>
               </View>
               <TouchableOpacity
                 style={md.closeBtn}
@@ -1036,27 +1023,22 @@ export default function JapScreen() {
         <View style={md.confirmOverlay}>
           <View style={md.confirmBox}>
             <Text style={md.confirmEmoji}>🔄</Text>
-            <Text style={md.confirmHi}>काउंटर रीसेट करें?</Text>
-            <Text style={md.confirmEn}>Reset Counter?</Text>
-            <Text style={md.confirmSub}>
-              {completedMalas > 0 ? `${completedMalas} माला और ` : ""}
-              {currentProgress} जप की प्रगति मिट जाएगी।{"\n"}
-              This will clear your current session.
-            </Text>
+            <Text style={md.confirmHi}>{t('jap.alerts.resetTitle')}</Text>
+            <Text style={md.confirmSub}>{t('jap.alerts.resetMsg')}</Text>
             <View style={md.confirmBtns}>
               <TouchableOpacity
                 style={md.cancelBtn}
                 onPress={() => setShowConfirmReset(false)}
                 activeOpacity={0.7}
               >
-                <Text style={md.cancelTxt}>रद्द · Cancel</Text>
+                <Text style={md.cancelTxt}>{t('jap.alerts.cancel')}</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={md.resetConfirmBtn}
                 onPress={handleReset}
                 activeOpacity={0.7}
               >
-                <Text style={md.resetConfirmTxt}>रीसेट · Reset</Text>
+                <Text style={md.resetConfirmTxt}>{t('jap.alerts.confirmReset')}</Text>
               </TouchableOpacity>
             </View>
           </View>

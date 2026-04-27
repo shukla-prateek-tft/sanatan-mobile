@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../theme';
+import { useAppTheme } from '../context/AppContext';
 
 interface GradientBackgroundProps {
   children: React.ReactNode;
@@ -9,10 +9,12 @@ interface GradientBackgroundProps {
 }
 
 export const GradientBackground: React.FC<GradientBackgroundProps> = ({ children, style }) => {
+  const { themeGradient } = useAppTheme();
+
   return (
     <View style={[styles.container, style]}>
       <LinearGradient
-        colors={[colors.bgPrimary, colors.bgSecondary, colors.primaryDark]}
+        colors={themeGradient}
         style={StyleSheet.absoluteFillObject}
         start={{ x: 0, y: 0 }}
         end={{ x: 0, y: 1 }}

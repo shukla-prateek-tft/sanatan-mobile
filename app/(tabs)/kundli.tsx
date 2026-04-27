@@ -26,6 +26,7 @@ import {
   nakshatraNames,
   tithiNames,
 } from "@ishubhamx/panchangam-js";
+import { useTranslation } from "react-i18next";
 
 const { width: SW } = Dimensions.get("window");
 const TZ_OFFSET = new Date().getTimezoneOffset() * -1;
@@ -376,6 +377,7 @@ const EMPTY_FORM: BirthData = {
 // SCREEN
 // ─────────────────────────────────────────────
 export default function KundliScreen() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"kundli" | "matching">("kundli");
   const [form, setForm] = useState<BirthData>(EMPTY_FORM);
   const [form2, setForm2] = useState<BirthData>({
@@ -757,7 +759,7 @@ export default function KundliScreen() {
                     size={16}
                     color={colors.gold}
                   />
-                  <Text style={st.regenTxt}>नई कुंडली · New Chart</Text>
+                  <Text style={st.regenTxt}>{`नई कुंडली · ${t('kundli.form.clear')}`}</Text>
                 </TouchableOpacity>
               </>
             )}
@@ -917,7 +919,7 @@ export default function KundliScreen() {
             activeOpacity={0.8}
           >
             <Ionicons name="create-outline" size={16} color={colors.gold} />
-            <Text style={st.regenTxt}>नई कुंडली मिलान · New Kundli Match</Text>
+            <Text style={st.regenTxt}>{`नई कुंडली मिलान · ${t('kundli.form.clear')}`}</Text>
           </TouchableOpacity>
         )}
       </ScrollView>
@@ -1084,7 +1086,7 @@ const BirthForm = ({
               <ActivityIndicator color={colors.bgSecondary} size="small" />
             ) : (
               <Text style={st.generateBtnTxt}>
-                कुंडली बनाएं · Generate Kundli
+                {`कुंडली बनाएं · ${t('kundli.form.calculate')}`}
               </Text>
             )}
           </TouchableOpacity>

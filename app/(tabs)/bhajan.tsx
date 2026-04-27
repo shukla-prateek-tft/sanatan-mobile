@@ -35,6 +35,7 @@ import Animated, {
   Easing,
 } from "react-native-reanimated";
 import { artistService } from "@/services/artistsService";
+import { useTranslation } from "react-i18next";
 
 const { width: SW } = Dimensions.get("window");
 
@@ -227,6 +228,7 @@ function YouTubeWebView({ url }: { url: string }) {
 // MAIN SCREEN
 // ─────────────────────────────────────────────
 export default function BhajanScreen() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState<Tab>("library");
   const [selectedDeity, setSelectedDeity] = useState("All");
   const [localBhajans, setLocalBhajans] = useState<LocalBhajan[]>([]);
@@ -607,8 +609,8 @@ export default function BhajanScreen() {
               ListEmptyComponent={
                 <EmptyState
                   icon="musical-notes-outline"
-                  msgHi="कोई भजन नहीं मिला"
-                  msgEn="No bhajans found"
+                  msgHi={t('bhajan.empty.noResults')}
+                  msgEn=""
                 />
               }
             />
@@ -624,9 +626,8 @@ export default function BhajanScreen() {
             ]}
             showsVerticalScrollIndicator={false}
           >
-            <Text style={st.ytTitle}>यूट्यूब पर भजन खोजें</Text>
-            <Text style={st.ytSubtitle}>Search Bhajans on YouTube</Text>
-            <Text style={st.ytSectionLabel}>⚡ त्वरित खोज · Quick Search</Text>
+            <Text style={st.ytTitle}>{t('bhajan.youtube.title')}</Text>
+            <Text style={st.ytSectionLabel}>{t('bhajan.youtube.quickSearch')}</Text>
             <View style={st.ytChipRow}>
               {[
                 "Shiv Bhajan",
@@ -652,7 +653,7 @@ export default function BhajanScreen() {
                 </TouchableOpacity>
               ))}
             </View>
-            <Text style={st.ytSectionLabel}>🔥 लोकप्रिय · Trending</Text>
+            <Text style={st.ytSectionLabel}>{t('bhajan.youtube.trending')}</Text>
             {[
               {
                 title: "Har Har Shambhu",
@@ -702,10 +703,7 @@ export default function BhajanScreen() {
                 size={16}
                 color={colors.textMuted}
               />
-              <Text style={st.ytNoteText}>
-                YouTube videos stream in-app. To save, use the Local Import tab
-                to add downloaded files.
-              </Text>
+              <Text style={st.ytNoteText}>{t('bhajan.youtube.note')}</Text>
             </View>
           </ScrollView>
         );
@@ -722,10 +720,8 @@ export default function BhajanScreen() {
             ]}
             ListHeaderComponent={
               <View style={st.artistsHeader}>
-                <Text style={st.artistsHeaderHi}>लोकप्रिय कलाकार</Text>
-                <Text style={st.artistsHeaderEn}>
-                  Tap any artist to open their YouTube channel
-                </Text>
+                <Text style={st.artistsHeaderHi}>{t('bhajan.popularArtists')}</Text>
+                <Text style={st.artistsHeaderEn}>{t('bhajan.artistsSubtitle')}</Text>
               </View>
             }
           />
@@ -750,17 +746,15 @@ export default function BhajanScreen() {
                 />
               )}
               <Text style={st.importBtnTxt}>
-                {importLoading
-                  ? "आयात हो रहा है…"
-                  : "डिवाइस से गाने जोड़ें · Import from Device"}
+                {importLoading ? t('bhajan.importing') : t('bhajan.import')}
               </Text>
             </TouchableOpacity>
             {localBhajans.length === 0 ? (
               <EmptyState
                 icon="phone-portrait-outline"
-                msgHi="कोई स्थानीय गाना नहीं"
-                msgEn="No local files added yet"
-                subEn="Tap the button above to import MP3/M4A files"
+                msgHi={t('bhajan.empty.noLocal')}
+                msgEn=""
+                subEn={t('bhajan.empty.noLocalSub')}
               />
             ) : (
               <FlatList
@@ -797,8 +791,7 @@ export default function BhajanScreen() {
         {/* ── HEADER ── */}
         <View style={st.header}>
           <View>
-            <Text style={st.headerHi}>भजन मंडली</Text>
-            <Text style={st.headerEn}>Bhajan & Kirtan</Text>
+            <Text style={st.headerHi}>{t('bhajan.title')}</Text>
           </View>
           <TouchableOpacity
             style={st.importHeaderBtn}
@@ -806,7 +799,7 @@ export default function BhajanScreen() {
             activeOpacity={0.7}
           >
             <Ionicons name="add-circle-outline" size={22} color={colors.gold} />
-            <Text style={st.importHeaderTxt}>जोड़ें</Text>
+            <Text style={st.importHeaderTxt}>{t('bhajan.add')}</Text>
           </TouchableOpacity>
         </View>
 
@@ -814,30 +807,10 @@ export default function BhajanScreen() {
         <View style={st.tabBar}>
           {(
             [
-              {
-                key: "library",
-                icon: "library-outline",
-                hi: "लाइब्रेरी",
-                en: "Library",
-              },
-              {
-                key: "youtube",
-                icon: "logo-youtube",
-                hi: "यूट्यूब",
-                en: "YouTube",
-              },
-              {
-                key: "artists",
-                icon: "mic-outline",
-                hi: "कलाकार",
-                en: "Artists",
-              },
-              {
-                key: "local",
-                icon: "phone-portrait-outline",
-                hi: "लोकल",
-                en: "Local",
-              },
+              { key: "library", icon: "library-outline" },
+              { key: "youtube", icon: "logo-youtube" },
+              { key: "artists", icon: "mic-outline" },
+              { key: "local", icon: "phone-portrait-outline" },
             ] as const
           ).map((tab) => (
             <TouchableOpacity
@@ -857,15 +830,7 @@ export default function BhajanScreen() {
                   activeTab === tab.key && st.tabLabelActive,
                 ]}
               >
-                {tab.hi}
-              </Text>
-              <Text
-                style={[
-                  st.tabLabelEn,
-                  activeTab === tab.key && st.tabLabelActive,
-                ]}
-              >
-                {tab.en}
+                {t(`bhajan.tabs.${tab.key}`)}
               </Text>
               {tab.key === "local" && localBhajans.length > 0 && (
                 <View style={st.tabBadge}>

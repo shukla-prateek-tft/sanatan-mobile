@@ -50,6 +50,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { colors, spacing, typography, theme } from "../theme";
 import { searchCities, CityResult } from "../services/panchangService";
+import { useTranslation } from "react-i18next";
 
 const { height: SH } = Dimensions.get("window");
 
@@ -96,6 +97,7 @@ export function LocationPickerModal({
   error,
   onSkip,
 }: Props) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [results, setResults] = useState<CityResult[]>([]);
   const [searching, setSearching] = useState(false);
@@ -132,9 +134,9 @@ export function LocationPickerModal({
         const res = await searchCities(text);
         setResults(res);
         if (res.length === 0)
-          setSearchError("कोई शहर नहीं मिला · No cities found");
+          setSearchError(t('locationPicker.notFound'));
       } catch {
-        setSearchError("Search failed. Check your internet connection.");
+        setSearchError(t('locationPicker.searchFailed'));
       } finally {
         setSearching(false);
       }
@@ -176,15 +178,11 @@ export function LocationPickerModal({
           <View style={st.titleRow}>
             <Text style={st.titleOm}>ॐ</Text>
             <View>
-              <Text style={st.titleHi}>अपना स्थान चुनें</Text>
-              <Text style={st.titleEn}>Choose Your Location</Text>
+              <Text style={st.titleHi}>{t('locationPicker.title')}</Text>
             </View>
           </View>
 
-          <Text style={st.subtitle}>
-            सटीक पञ्चाङ्ग के लिए आपके शहर की जानकारी आवश्यक है।{"\n"}
-            Your location is needed for accurate Panchang calculations.
-          </Text>
+          <Text style={st.subtitle}>{t('locationPicker.subtitle')}</Text>
 
           {/* Error banner */}
           {(error || searchError) && (
@@ -208,10 +206,7 @@ export function LocationPickerModal({
             )}
             <View>
               <Text style={st.gpsBtnTxtHi}>
-                {detecting ? "स्थान ढूंढा जा रहा है…" : "GPS से स्थान लें"}
-              </Text>
-              <Text style={st.gpsBtnTxtEn}>
-                {detecting ? "Detecting…" : "Use Current Location"}
+                {detecting ? t('locationPicker.detecting') : t('locationPicker.gps')}
               </Text>
             </View>
           </TouchableOpacity>
@@ -219,7 +214,7 @@ export function LocationPickerModal({
           {/* Divider */}
           <View style={st.dividerRow}>
             <View style={st.dividerLine} />
-            <Text style={st.dividerTxt}>या मैन्युअल खोजें · or search</Text>
+            <Text style={st.dividerTxt}>{t('locationPicker.orSearch')}</Text>
             <View style={st.dividerLine} />
           </View>
 
@@ -230,7 +225,7 @@ export function LocationPickerModal({
               style={st.searchInput}
               value={query}
               onChangeText={handleQueryChange}
-              placeholder="शहर का नाम लिखें · Type city name"
+              placeholder={t('locationPicker.searchPlaceholder')}
               placeholderTextColor={colors.textMuted + "80"}
               autoCorrect={false}
               autoCapitalize="words"
@@ -272,7 +267,7 @@ export function LocationPickerModal({
           {query.length === 0 && results.length === 0 && (
             <View style={st.suggestions}>
               <Text style={st.suggestionsLabel}>
-                लोकप्रिय शहर · Popular Cities
+                {t('locationPicker.popularCities')}
               </Text>
               <View style={st.suggestionChips}>
                 {[
@@ -308,7 +303,7 @@ export function LocationPickerModal({
           {/* Skip */}
           {onSkip && (
             <TouchableOpacity style={st.skipBtn} onPress={onSkip}>
-              <Text style={st.skipTxt}>अभी नहीं · Skip for now (Bhopal)</Text>
+              <Text style={st.skipTxt}>{t('locationPicker.skip')}</Text>
             </TouchableOpacity>
           )}
         </RNAnimated.View>

@@ -39,6 +39,7 @@ import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { colors, spacing, typography } from "@/theme";
+import { useTranslation } from "react-i18next";
 
 const { width: SW, height: SH } = Dimensions.get("window");
 const DRAWER_WIDTH = Math.min(SW * 0.8, 320);
@@ -64,8 +65,7 @@ export const useSidebar = () => useContext(SidebarContext);
 // NAV ITEMS — mirrors your exact tab files
 // ─────────────────────────────────────────────
 interface NavItem {
-  labelEn: string;
-  labelHi: string;
+  key: string;
   href: string;
   emoji: string;
   icon: keyof typeof Ionicons.glyphMap;
@@ -75,91 +75,19 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  {
-    labelEn: "Home",
-    labelHi: "होम",
-    href: "/(tabs)/",
-    emoji: "🏠",
-    icon: "home-outline",
-    iconActive: "home",
-  },
-  {
-    labelEn: "Jap",
-    labelHi: "जप",
-    href: "/(tabs)/jap",
-    emoji: "📿",
-    icon: "infinite-outline",
-    iconActive: "infinite",
-  },
-  {
-    labelEn: "Bhajan",
-    labelHi: "भजन",
-    href: "/(tabs)/bhajan",
-    emoji: "🎵",
-    icon: "musical-notes-outline",
-    iconActive: "musical-notes",
-  },
-  {
-    labelEn: "Scriptures",
-    labelHi: "शास्त्र",
-    href: "/(tabs)/scriptures",
-    emoji: "📖",
-    icon: "book-outline",
-    iconActive: "book",
-  },
-  {
-    labelEn: "Calendar",
-    labelHi: "पञ्चाङ्ग",
-    href: "/(tabs)/calendar",
-    emoji: "📅",
-    icon: "calendar-outline",
-    iconActive: "calendar",
-  },
-  {
-    labelEn: "Shop",
-    labelHi: "दुकान",
-    href: "/shop",
-    emoji: "🛍️",
-    icon: "storefront-outline",
-    iconActive: "storefront",
-  },
-  {
-    labelEn: "Nearby Temples",
-    labelHi: "नज़दीकी मंदिर",
-    href: "/temples",
-    emoji: "🛕",
-    icon: "location-outline",
-    iconActive: "location",
-    isFA6: true,
-    fa6Icon: "place-of-worship",
-  },
-  {
-    labelEn: "Settings",
-    labelHi: "सेटिंग्स",
-    href: "/settings",
-    emoji: "⚙️",
-    icon: "settings-outline",
-    iconActive: "settings",
-  },
+  { key: "home", href: "/(tabs)/", emoji: "🏠", icon: "home-outline", iconActive: "home" },
+  { key: "jap", href: "/(tabs)/jap", emoji: "📿", icon: "infinite-outline", iconActive: "infinite" },
+  { key: "bhajan", href: "/(tabs)/bhajan", emoji: "🎵", icon: "musical-notes-outline", iconActive: "musical-notes" },
+  { key: "scriptures", href: "/(tabs)/scriptures", emoji: "📖", icon: "book-outline", iconActive: "book" },
+  { key: "calendar", href: "/(tabs)/calendar", emoji: "📅", icon: "calendar-outline", iconActive: "calendar" },
+  { key: "shop", href: "/shop", emoji: "🛍️", icon: "storefront-outline", iconActive: "storefront" },
+  { key: "temples", href: "/temples", emoji: "🛕", icon: "location-outline", iconActive: "location", isFA6: true, fa6Icon: "place-of-worship" },
+  { key: "settings", href: "/settings", emoji: "⚙️", icon: "settings-outline", iconActive: "settings" },
 ];
 
 const QUICK_ACTIONS: NavItem[] = [
-  {
-    labelEn: "Jap Counter",
-    labelHi: "जप काउंटर",
-    href: "/(tabs)/jap",
-    emoji: "📿",
-    icon: "infinite-outline",
-    iconActive: "infinite",
-  },
-  {
-    labelEn: "Chalisa",
-    labelHi: "चालीसा",
-    href: "/(tabs)/scriptures",
-    emoji: "📖",
-    icon: "book-outline",
-    iconActive: "book",
-  },
+  { key: "japCounter", href: "/(tabs)/jap", emoji: "📿", icon: "infinite-outline", iconActive: "infinite" },
+  { key: "chalisa", href: "/(tabs)/scriptures", emoji: "📖", icon: "book-outline", iconActive: "book" },
 ];
 
 // ─────────────────────────────────────────────
@@ -169,6 +97,7 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
+  const { t } = useTranslation();
 
   const navigate = useCallback(
     (href: string) => {
@@ -192,8 +121,8 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           <Text style={dr.omText}>ॐ</Text>
         </View>
         <View style={{ flex: 1 }}>
-          <Text style={dr.appName}>Sanatan Dharma</Text>
-          <Text style={dr.appSub}>पञ्चाङ्ग · Spiritual Companion</Text>
+          <Text style={dr.appName}>{t('appName')}</Text>
+          <Text style={dr.appSub}>{t('sidebar.appSub')}</Text>
         </View>
         <TouchableOpacity
           style={dr.closeBtn}
@@ -211,7 +140,7 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
       >
         {/* ── Navigation ── */}
-        <Text style={dr.sectionLabel}>MENU · मेनू</Text>
+        <Text style={dr.sectionLabel}>{t('sidebar.menu')}</Text>
 
         {NAV_ITEMS.map((item) => {
           const active = isActive(item.href);
@@ -239,10 +168,7 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
               </View>
               <View style={{ flex: 1 }}>
                 <Text style={[dr.labelEn, active && dr.labelEnActive]}>
-                  {item.labelEn}
-                </Text>
-                <Text style={[dr.labelHi, active && dr.labelHiActive]}>
-                  {item.labelHi}
+                  {t(`sidebar.nav.${item.key}`)}
                 </Text>
               </View>
               {active && <View style={dr.pip} />}
@@ -253,18 +179,17 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <View style={dr.divider} />
 
         {/* ── Quick Actions ── */}
-        <Text style={dr.sectionLabel}>QUICK ACCESS · त्वरित</Text>
+        <Text style={dr.sectionLabel}>{t('sidebar.quickAccess')}</Text>
         <View style={dr.quickGrid}>
           {QUICK_ACTIONS.map((item) => (
             <TouchableOpacity
-              key={item.href + item.labelEn}
+              key={item.href + item.key}
               style={dr.quickCard}
               onPress={() => navigate(item.href)}
               activeOpacity={0.75}
             >
               <Text style={dr.quickEmoji}>{item.emoji}</Text>
-              <Text style={dr.quickEn}>{item.labelEn}</Text>
-              <Text style={dr.quickHi}>{item.labelHi}</Text>
+              <Text style={dr.quickEn}>{t(`sidebar.quick.${item.key}`)}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -272,8 +197,8 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         <View style={dr.divider} />
 
         <View style={dr.footerBox}>
-          <Text style={dr.footerMantra}>॥ सर्वे भवन्तु सुखिनः ॥</Text>
-          <Text style={dr.footerSub}>May all beings be happy</Text>
+          <Text style={dr.footerMantra}>{t('sidebar.footer.mantra')}</Text>
+          <Text style={dr.footerSub}>{t('sidebar.footer.sub')}</Text>
         </View>
       </ScrollView>
     </View>

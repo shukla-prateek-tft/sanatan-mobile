@@ -1,0 +1,289 @@
+{
+  "appName": "সনাতন ধর্ম",
+  "appSubtitle": "পঞ্চাঙ্গ • ভজন • জপ • গীতা",
+  "tabs": {
+    "home": "হোম",
+    "jap": "জপ",
+    "bhajan": "ভজন",
+    "scriptures": "শাস্ত্র",
+    "calendar": "পঞ্চাঙ্গ"
+  },
+  "common": {
+    "cancel": "বাতিল",
+    "setTime": "সময় সেট করুন",
+    "loading": "পছন্দ লোড হচ্ছে…",
+    "error": "ত্রুটি",
+    "daysBefore": "দিন আগে"
+  },
+  "days": {
+    "sun": "রবি",
+    "mon": "সোম",
+    "tue": "মঙ্গল",
+    "wed": "বুধ",
+    "thu": "বৃহস্পতি",
+    "fri": "শুক্র",
+    "sat": "শনি"
+  },
+  "settings": {
+    "title": "সেটিংস",
+    "notifications": {
+      "title": "🔔 বিজ্ঞপ্তি",
+      "permissionTitle": "বিজ্ঞপ্তি বন্ধ আছে",
+      "permissionSub": "অনুমতি দিতে ট্যাপ করুন",
+      "dailyReminders": "দৈনিক স্মরণ",
+      "morningPuja": "সকালের পূজা স্মরণ",
+      "morningPujaSub": "দৈনিক সকালের প্রার্থনা সতর্কতা",
+      "eveningAarti": "সন্ধ্যা আরতি স্মরণ",
+      "eveningAartiSub": "সন্ধ্যা প্রার্থনা ও আরতির সময়",
+      "dailyJap": "দৈনিক জপ স্মরণ",
+      "dailyJapSub": "মন্ত্র জপ ও গণনা স্মরণ",
+      "time": "সময়",
+      "weeklyDevotion": "সাপ্তাহিক ভক্তি",
+      "weeklyDevotionReminder": "সাপ্তাহিক ভক্তি স্মরণ",
+      "weeklyDevotionSub": "গভীর ভক্তির জন্য একটি বিশেষ দিন",
+      "daySelect": "দিন",
+      "festivalAlerts": "উৎসব সতর্কতা",
+      "festivalReminders": "উৎসব স্মরণ",
+      "festivalRemindersSub": "হিন্দু উৎসবের আগে বিজ্ঞপ্তি পান",
+      "notify": "কত দিন আগে",
+      "smartAlerts": "স্মার্ট আধ্যাত্মিক সতর্কতা",
+      "ekadashi": "একাদশী সতর্কতা",
+      "ekadashiSub": "একাদশী উপবাস স্মরণ",
+      "pradosh": "প্রদোষ ব্রত সতর্কতা",
+      "pradoshSub": "ত্রয়োদশীতে শিব পূজা",
+      "purnima": "পূর্ণিমা সতর্কতা",
+      "purnimaSub": "পবিত্র পূর্ণিমা স্মরণ",
+      "amavasya": "অমাবস্যা সতর্কতা",
+      "amavasySub": "পিতৃ তর্পণ ও পূর্বপুরুষ পূজা",
+      "personalizedReminders": "ব্যক্তিগত স্মরণ",
+      "personalizedNote": "কাস্টম স্মরণ জপ ও পূজা স্ক্রিন থেকে বুকমার্ক আইকনের মাধ্যমে যোগ করা যাবে।",
+      "soundVibration": "শব্দ ও কম্পন",
+      "sound": "বিজ্ঞপ্তি শব্দ",
+      "soundSub": "বিজ্ঞপ্তির সাথে শব্দ বাজান",
+      "vibration": "কম্পন",
+      "vibrationSub": "বিজ্ঞপ্তিতে কম্পন"
+    },
+    "appearance": {
+      "title": "🎨 চেহারা",
+      "language": "ভাষা",
+      "languageSub": "অ্যাপের ভাষা বেছে নিন",
+      "theme": "থিম",
+      "themeSub": "রঙের থিম বেছে নিন"
+    },
+    "about": {
+      "title": "🪔 পরিচয়",
+      "version": "অ্যাপ সংস্করণ",
+      "purpose": "উদ্দেশ্য",
+      "purposeValue": "দৈনিক হিন্দু পূজা, পঞ্চাঙ্গ, ভজন ও শাস্ত্রের জন্য আধ্যাত্মিক সহায়ক",
+      "origin": "দেশ",
+      "originValue": "ভারত 🇮🇳"
+    },
+    "developer": {
+      "title": "👨‍💻 ডেভেলপার",
+      "email": "ইমেইল",
+      "portfolio": "ওয়েবসাইট",
+      "linkedin": "লিংকডইন"
+    },
+    "feedback": {
+      "title": "💬 মতামত",
+      "send": "মতামত পাঠান",
+      "sendSub": "বাগ রিপোর্ট করুন বা পরামর্শ দিন",
+      "rate": "অ্যাপ রেট করুন",
+      "rateSub": "আপনার রেটিং অন্যদের সাহায্য করে",
+      "share": "অ্যাপ শেয়ার করুন",
+      "shareSub": "পরিবার ও বন্ধুদের সাথে শেয়ার করুন"
+    },
+    "footer": {
+      "main": "হর হর মহাদেব",
+      "sub": "হর হর মহাদেব",
+      "mantra": "॥ সর্বে ভবন্তু সুখিনঃ ॥"
+    }
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "mr": "मराठी",
+    "sa": "संस्कृत",
+    "bn": "বাংলা",
+    "ta": "தமிழ்",
+    "te": "తెలుగు",
+    "ml": "മലയാളം"
+  },
+  "themes": {
+    "maroon": "মন্দির মেরুন",
+    "saffron": "গেরুয়া",
+    "lotus": "পদ্ম গোলাপি",
+    "ocean": "সমুদ্র নীল",
+    "forest": "বন সবুজ"
+  },
+  "home": {
+    "loading": "পঞ্চাং লোড হচ্ছে…",
+    "festivals": "আজকের উৎসব",
+    "mantra": "আজকের মন্ত্র",
+    "calendar": "হিন্দু পঞ্চাং",
+    "panchangTitle": "পঞ্চ-অঙ্গ",
+    "sunMoon": "সূর্য ও চন্দ্র",
+    "auspicious": "শুভ মুহূর্ত",
+    "inauspicious": "অশুভ সময়",
+    "showInauspicious": "অশুভ দেখান",
+    "hideInauspicious": "অশুভ লুকান"
+  },
+  "sidebar": {
+    "menu": "মেনু",
+    "quickAccess": "দ্রুত অ্যাক্সেস",
+    "appSub": "পঞ্চাং · আধ্যাত্মিক সঙ্গী",
+    "nav": {
+      "home": "হোম",
+      "jap": "জপ",
+      "bhajan": "ভজন",
+      "scriptures": "শাস্ত্র",
+      "calendar": "পঞ্চাং",
+      "shop": "দোকান",
+      "temples": "কাছের মন্দির",
+      "settings": "সেটিংস"
+    },
+    "quick": {
+      "japCounter": "জপ কাউন্টার",
+      "chalisa": "চালিশা"
+    },
+    "footer": {
+      "mantra": "॥ সর্বে ভবন্তু সুখিনঃ ॥",
+      "sub": "সকল প্রাণী সুখী হোক"
+    }
+  },
+  "locationPicker": {
+    "title": "আপনার স্থান বেছে নিন",
+    "subtitle": "সঠিক পঞ্চাংয়ের জন্য আপনার শহরের তথ্য প্রয়োজন।",
+    "gps": "GPS দিয়ে স্থান নিন",
+    "detecting": "স্থান খোঁজা হচ্ছে…",
+    "orSearch": "বা অনুসন্ধান করুন",
+    "searchPlaceholder": "শহরের নাম লিখুন",
+    "popularCities": "জনপ্রিয় শহর",
+    "notFound": "কোনো শহর পাওয়া যায়নি",
+    "searchFailed": "অনুসন্ধান ব্যর্থ। ইন্টারনেট পরীক্ষা করুন।",
+    "skip": "এখন নয় (ভোপাল)"
+  },
+  "jap": {
+    "title": "জপ মালা",
+    "mantra": "মন্ত্র",
+    "settings": "সেটিংস",
+    "selectMantra": "মন্ত্র বেছে নিন",
+    "addMantra": "নতুন মন্ত্র",
+    "classicMantras": "বিখ্যাত মন্ত্র",
+    "customMantras": "আমার মন্ত্র",
+    "tap": "স্পর্শ করুন",
+    "tapHint": "TAP",
+    "reset": "কাউন্টার রিসেট করুন",
+    "malaComplete": "মালা সম্পূর্ণ!",
+    "towardsFirst": "প্রথম মালার দিকে…",
+    "malasComplete": "মালা সম্পূর্ণ 🙏",
+    "custom": "কাস্টম",
+    "stats": {
+      "total": "মোট জপ",
+      "malas": "সম্পূর্ণ মালা",
+      "left": "বাকি"
+    },
+    "form": {
+      "title": "মন্ত্র যোগ করুন",
+      "editTitle": "মন্ত্র সম্পাদনা করুন",
+      "placeholder": "মন্ত্র লিখুন",
+      "meaningPlaceholder": "অর্থ (ঐচ্ছিক)",
+      "deityPlaceholder": "দেবতা (ঐচ্ছিক)",
+      "save": "সংরক্ষণ করুন",
+      "cancel": "বাতিল"
+    },
+    "alerts": {
+      "mantraRequired": "মন্ত্র প্রয়োজন",
+      "mantraRequiredMsg": "অনুগ্রহ করে মন্ত্র লিখুন।",
+      "deleteTitle": "মন্ত্র মুছবেন?",
+      "deleteMsg": "এই কাস্টম মন্ত্র মুছবেন?",
+      "resetTitle": "কাউন্টার রিসেট করবেন?",
+      "resetMsg": "এটি আপনার জপ গণনা 0 করবে।",
+      "confirmReset": "রিসেট",
+      "cancel": "বাতিল",
+      "delete": "মুছুন"
+    }
+  },
+  "bhajan": {
+    "title": "ভজন ও কীর্তন",
+    "add": "যোগ করুন",
+    "tabs": {
+      "library": "লাইব্রেরি",
+      "youtube": "ইউটিউব",
+      "artists": "শিল্পী",
+      "local": "স্থানীয়"
+    },
+    "empty": {
+      "noResults": "কোনো ভজন পাওয়া যায়নি",
+      "noLocal": "কোনো স্থানীয় ফাইল নেই",
+      "noLocalSub": "MP3/M4A ফাইল আমদানি করুন"
+    },
+    "import": "ডিভাইস থেকে আমদানি করুন",
+    "importing": "আমদানি হচ্ছে…",
+    "popularArtists": "জনপ্রিয় শিল্পী",
+    "artistsSubtitle": "YouTube খুলতে যেকোনো শিল্পীতে ট্যাপ করুন",
+    "youtube": {
+      "title": "YouTube-এ ভজন খুঁজুন",
+      "quickSearch": "⚡ দ্রুত অনুসন্ধান",
+      "trending": "🔥 জনপ্রিয়",
+      "note": "YouTube ভিডিও অ্যাপে চলে।"
+    },
+    "deities": {
+      "all": "সকল",
+      "shiva": "শিব",
+      "vishnu": "বিষ্ণু",
+      "durga": "দুর্গা",
+      "krishna": "কৃষ্ণ",
+      "rama": "রাম",
+      "ganesha": "গণেশ",
+      "hanuman": "হনুমান"
+    }
+  },
+  "calendar": {
+    "loading": "ক্যালেন্ডার তৈরি হচ্ছে…",
+    "showInauspicious": "অশুভ দিন দেখান",
+    "legend": "রং বিবরণ",
+    "festivals": "উৎসব",
+    "panchang": "পঞ্চাং বিবরণ",
+    "noFestivals": "আজ কোনো উৎসব নেই",
+    "fastingDay": "উপবাস"
+  },
+  "scriptures": {
+    "tabs": {
+      "gita": "📖 গীতা",
+      "chalisa": "🙏 চালিশা"
+    },
+    "gita": {
+      "header": "ভগবদ্ গীতা",
+      "subheader": "১৮ অধ্যায় · ৭০০ শ্লোক",
+      "verse": "শ্লোক",
+      "readMore": "আরো পড়ুন"
+    },
+    "chalisa": {
+      "badge": "চালিশা",
+      "devotionalText": "ভক্তি গ্রন্থ"
+    }
+  },
+  "kundli": {
+    "title": "কুণ্ডলী",
+    "subtitle": "বৈদিক জন্ম কুণ্ডলী",
+    "form": {
+      "namePlaceholder": "আপনার নাম",
+      "calculate": "কুণ্ডলী তৈরি করুন",
+      "calculating": "গণনা হচ্ছে…",
+      "clear": "মুছুন / নতুন"
+    }
+  },
+  "shop": {
+    "headerTitle": "🛍️ দোকান",
+    "headerSub": "আধ্যাত্মিক পণ্য",
+    "featured": "⭐ বিশেষ",
+    "retry": "আবার চেষ্টা",
+    "buy": "কিনুন",
+    "shopNow": "এখন কিনুন →",
+    "empty": {
+      "title": "এখনো কোনো পণ্য নেই",
+      "sub": "Firebase Console থেকে পণ্য যোগ করুন।"
+    }
+  }
+}

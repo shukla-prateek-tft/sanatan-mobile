@@ -1,0 +1,289 @@
+{
+  "appName": "సనాతన ధర్మం",
+  "appSubtitle": "పంచాంగం • భజన • జపం • గీత",
+  "tabs": {
+    "home": "హోమ్",
+    "jap": "జపం",
+    "bhajan": "భజన",
+    "scriptures": "శాస్త్రాలు",
+    "calendar": "పంచాంగం"
+  },
+  "common": {
+    "cancel": "రద్దు చేయి",
+    "setTime": "సమయం సెట్ చేయి",
+    "loading": "ప్రాధాన్యతలు లోడ్ అవుతున్నాయి…",
+    "error": "లోపం",
+    "daysBefore": "రోజుల ముందు"
+  },
+  "days": {
+    "sun": "ఆది",
+    "mon": "సోమ",
+    "tue": "మంగళ",
+    "wed": "బుధ",
+    "thu": "గురు",
+    "fri": "శుక్ర",
+    "sat": "శని"
+  },
+  "settings": {
+    "title": "సెట్టింగ్లు",
+    "notifications": {
+      "title": "🔔 నోటిఫికేషన్లు",
+      "permissionTitle": "నోటిఫికేషన్లు నిలిపివేయబడ్డాయి",
+      "permissionSub": "అనుమతి ఇవ్వడానికి నొక్కండి",
+      "dailyReminders": "రోజువారీ రిమైండర్లు",
+      "morningPuja": "ఉదయం పూజ రిమైండర్",
+      "morningPujaSub": "రోజువారీ ఉదయం ప్రార్థన హెచ్చరిక",
+      "eveningAarti": "సాయంత్రం ఆరతి రిమైండర్",
+      "eveningAartiSub": "సంధ్యా ప్రార్థన మరియు ఆరతి సమయం",
+      "dailyJap": "రోజువారీ జప రిమైండర్",
+      "dailyJapSub": "మంత్ర జప మరియు గణన రిమైండర్",
+      "time": "సమయం",
+      "weeklyDevotion": "వారానికోసారి భక్తి",
+      "weeklyDevotionReminder": "వారానికోసారి భక్తి రిమైండర్",
+      "weeklyDevotionSub": "లోతైన భక్తికి ఒక ప్రత్యేక రోజు",
+      "daySelect": "రోజు",
+      "festivalAlerts": "పండుగ హెచ్చరికలు",
+      "festivalReminders": "పండుగ రిమైండర్లు",
+      "festivalRemindersSub": "హిందూ పండుగలకు ముందు నోటిఫికేషన్ పొందండి",
+      "notify": "ఎన్ని రోజుల ముందు",
+      "smartAlerts": "ఆధ్యాత్మిక హెచ్చరికలు",
+      "ekadashi": "ఏకాదశి హెచ్చరికలు",
+      "ekadashiSub": "ఏకాదశి వ్రత రిమైండర్లు",
+      "pradosh": "ప్రదోష వ్రత హెచ్చరికలు",
+      "pradoshSub": "త్రయోదశిన శివ పూజ",
+      "purnima": "పౌర్ణమి హెచ్చరికలు",
+      "purnimaSub": "పవిత్ర పౌర్ణమి రిమైండర్లు",
+      "amavasya": "అమావాస్య హెచ్చరికలు",
+      "amavasySub": "పితృ తర్పణ మరియు పూర్వీకుల పూజ",
+      "personalizedReminders": "వ్యక్తిగత రిమైండర్లు",
+      "personalizedNote": "కస్టమ్ రిమైండర్లను జప మరియు పూజ స్క్రీన్ల నుండి బుక్మార్క్ చిహ్నం ద్వారా జోడించవచ్చు.",
+      "soundVibration": "శబ్దం మరియు కంపనం",
+      "sound": "నోటిఫికేషన్ శబ్దం",
+      "soundSub": "నోటిఫికేషన్లతో శబ్దం ప్లే చేయండి",
+      "vibration": "కంపనం",
+      "vibrationSub": "నోటిఫికేషన్లలో కంపనం"
+    },
+    "appearance": {
+      "title": "🎨 రూపం",
+      "language": "భాష",
+      "languageSub": "యాప్ భాషను ఎంచుకోండి",
+      "theme": "థీమ్",
+      "themeSub": "రంగు థీమ్ ఎంచుకోండి"
+    },
+    "about": {
+      "title": "🪔 గురించి",
+      "version": "యాప్ వెర్షన్",
+      "purpose": "ఉద్దేశ్యం",
+      "purposeValue": "రోజువారీ హిందూ పూజ, పంచాంగం, భజన మరియు శాస్త్రాలకు ఆధ్యాత్మిక సహాయకుడు",
+      "origin": "దేశం",
+      "originValue": "భారత్ 🇮🇳"
+    },
+    "developer": {
+      "title": "👨‍💻 డెవలపర్",
+      "email": "ఇమెయిల్",
+      "portfolio": "వెబ్సైట్",
+      "linkedin": "లింక్డ్ఇన్"
+    },
+    "feedback": {
+      "title": "💬 అభిప్రాయం",
+      "send": "అభిప్రాయం పంపండి",
+      "sendSub": "బగ్ నివేదించండి లేదా సూచించండి",
+      "rate": "యాప్‌కు రేటింగ్ ఇవ్వండి",
+      "rateSub": "మీ రేటింగ్ ఇతరులకు సహాయపడుతుంది",
+      "share": "యాప్ షేర్ చేయండి",
+      "shareSub": "కుటుంబం మరియు స్నేహితులతో షేర్ చేయండి"
+    },
+    "footer": {
+      "main": "హర్ హర్ మహాదేవ్",
+      "sub": "హర్ హర్ మహాదేవ్",
+      "mantra": "॥ సర్వే భవంతు సుఖినః ॥"
+    }
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "mr": "मराठी",
+    "sa": "संस्कृत",
+    "bn": "বাংলা",
+    "ta": "தமிழ்",
+    "te": "తెలుగు",
+    "ml": "മലയാളം"
+  },
+  "themes": {
+    "maroon": "దేవాలయ మెరూన్",
+    "saffron": "కాషాయం",
+    "lotus": "కమలం పింక్",
+    "ocean": "సముద్రం నీలం",
+    "forest": "అడవి పచ్చ"
+  },
+  "home": {
+    "loading": "పంచాంగం లోడ్ అవుతోంది…",
+    "festivals": "నేటి పండుగలు",
+    "mantra": "నేటి మంత్రం",
+    "calendar": "హిందూ పంచాంగం",
+    "panchangTitle": "పంచ-అంగం",
+    "sunMoon": "సూర్యుడు & చంద్రుడు",
+    "auspicious": "శుభ ముహూర్తం",
+    "inauspicious": "అశుభ సమయం",
+    "showInauspicious": "అశుభం చూపించు",
+    "hideInauspicious": "అశుభం దాచు"
+  },
+  "sidebar": {
+    "menu": "మెనూ",
+    "quickAccess": "త్వరిత యాక్సెస్",
+    "appSub": "పంచాంగం · ఆధ్యాత్మిక సహాయి",
+    "nav": {
+      "home": "హోమ్",
+      "jap": "జపం",
+      "bhajan": "భజన",
+      "scriptures": "శాస్త్రాలు",
+      "calendar": "పంచాంగం",
+      "shop": "దుకాణం",
+      "temples": "దగ్గరలో మందిరాలు",
+      "settings": "సెట్టింగులు"
+    },
+    "quick": {
+      "japCounter": "జప కౌంటర్",
+      "chalisa": "చాలీసా"
+    },
+    "footer": {
+      "mantra": "॥ సర్వే భవంతు సుఖినః ॥",
+      "sub": "అందరూ సుఖంగా ఉండాలి"
+    }
+  },
+  "locationPicker": {
+    "title": "మీ స్థానాన్ని ఎంచుకోండి",
+    "subtitle": "ఖచ్చితమైన పంచాంగానికి మీ నగరం అవసరం.",
+    "gps": "GPS ద్వారా స్థానం తీసుకోండి",
+    "detecting": "స్థానం వెతుకుతోంది…",
+    "orSearch": "లేదా వెతకండి",
+    "searchPlaceholder": "నగరం పేరు టైప్ చేయండి",
+    "popularCities": "ప్రసిద్ధ నగరాలు",
+    "notFound": "నగరం కనుగొనబడలేదు",
+    "searchFailed": "శోధన విఫలమైంది. ఇంటర్నెట్ తనిఖీ చేయండి.",
+    "skip": "ఇప్పుడు వద్దు (భోపాల్)"
+  },
+  "jap": {
+    "title": "జప మాల",
+    "mantra": "మంత్రం",
+    "settings": "సెట్టింగులు",
+    "selectMantra": "మంత్రం ఎంచుకోండి",
+    "addMantra": "కొత్త మంత్రం",
+    "classicMantras": "ప్రసిద్ధ మంత్రాలు",
+    "customMantras": "నా మంత్రాలు",
+    "tap": "స్పర్శించు",
+    "tapHint": "TAP",
+    "reset": "కౌంటర్ రీసెట్",
+    "malaComplete": "మాల పూర్తయింది!",
+    "towardsFirst": "మొదటి మాల వైపు…",
+    "malasComplete": "మాల పూర్తి 🙏",
+    "custom": "కస్టమ్",
+    "stats": {
+      "total": "మొత్తం జపం",
+      "malas": "పూర్తి మాలలు",
+      "left": "మిగిలినవి"
+    },
+    "form": {
+      "title": "మంత్రం జోడించు",
+      "editTitle": "మంత్రం సవరించు",
+      "placeholder": "మంత్రం నమోదు చేయండి",
+      "meaningPlaceholder": "అర్థం (ఐచ్ఛికం)",
+      "deityPlaceholder": "దేవత (ఐచ్ఛికం)",
+      "save": "సేవ్ చేయి",
+      "cancel": "రద్దు చేయి"
+    },
+    "alerts": {
+      "mantraRequired": "మంత్రం అవసరం",
+      "mantraRequiredMsg": "మంత్రం నమోదు చేయండి.",
+      "deleteTitle": "మంత్రం తొలగించాలా?",
+      "deleteMsg": "ఈ మంత్రం తొలగించాలా?",
+      "resetTitle": "కౌంటర్ రీసెట్ చేయాలా?",
+      "resetMsg": "జప గణన 0 అవుతుంది.",
+      "confirmReset": "రీసెట్",
+      "cancel": "రద్దు",
+      "delete": "తొలగించు"
+    }
+  },
+  "bhajan": {
+    "title": "భజన & కీర్తన",
+    "add": "జోడించు",
+    "tabs": {
+      "library": "లైబ్రరీ",
+      "youtube": "యూట్యూబ్",
+      "artists": "కళాకారులు",
+      "local": "స్థానికం"
+    },
+    "empty": {
+      "noResults": "భజన కనుగొనబడలేదు",
+      "noLocal": "స్థానిక ఫైళ్ళు లేవు",
+      "noLocalSub": "MP3/M4A ఫైళ్ళు దిగుమతి చేయండి"
+    },
+    "import": "పరికరం నుండి దిగుమతి చేయి",
+    "importing": "దిగుమతి అవుతోంది…",
+    "popularArtists": "ప్రసిద్ధ కళాకారులు",
+    "artistsSubtitle": "YouTube తెరవడానికి కళాకారుడిని నొక్కండి",
+    "youtube": {
+      "title": "YouTube లో భజన వెతకండి",
+      "quickSearch": "⚡ త్వరిత శోధన",
+      "trending": "🔥 ప్రసిద్ధం",
+      "note": "YouTube వీడియోలు యాప్‌లో ప్లే అవుతాయి."
+    },
+    "deities": {
+      "all": "అందరూ",
+      "shiva": "శివుడు",
+      "vishnu": "విష్ణువు",
+      "durga": "దుర్గ",
+      "krishna": "కృష్ణుడు",
+      "rama": "రాముడు",
+      "ganesha": "గణేశ్",
+      "hanuman": "హనుమాన్"
+    }
+  },
+  "calendar": {
+    "loading": "క్యాలెండర్ నిర్మించబడుతోంది…",
+    "showInauspicious": "అశుభ రోజులు చూపించు",
+    "legend": "రంగు వివరణ",
+    "festivals": "పండుగలు",
+    "panchang": "పంచాంగ వివరాలు",
+    "noFestivals": "ఈరోజు పండుగలు లేవు",
+    "fastingDay": "ఉపవాసం"
+  },
+  "scriptures": {
+    "tabs": {
+      "gita": "📖 గీత",
+      "chalisa": "🙏 చాలీసా"
+    },
+    "gita": {
+      "header": "భగవద్ గీత",
+      "subheader": "18 అధ్యాయాలు · 700 శ్లోకాలు",
+      "verse": "శ్లోకం",
+      "readMore": "మరింత చదవండి"
+    },
+    "chalisa": {
+      "badge": "చాలీసా",
+      "devotionalText": "భక్తి గ్రంథం"
+    }
+  },
+  "kundli": {
+    "title": "కుండలి",
+    "subtitle": "వేద జన్మ కుండలి",
+    "form": {
+      "namePlaceholder": "మీ పేరు",
+      "calculate": "కుండలి లెక్కించండి",
+      "calculating": "లెక్కించబడుతోంది…",
+      "clear": "క్లియర్ / కొత్తది"
+    }
+  },
+  "shop": {
+    "headerTitle": "🛍️ దుకాణం",
+    "headerSub": "ఆధ్యాత్మిక ఉత్పత్తులు",
+    "featured": "⭐ ప్రత్యేకం",
+    "retry": "మళ్ళీ ప్రయత్నించు",
+    "buy": "కొనుగోలు",
+    "shopNow": "ఇప్పుడే కొనండి →",
+    "empty": {
+      "title": "ఇంకా ఉత్పత్తులు లేవు",
+      "sub": "Firebase Console నుండి ఉత్పత్తులు జోడించండి."
+    }
+  }
+}

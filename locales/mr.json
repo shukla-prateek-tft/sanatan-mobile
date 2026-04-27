@@ -1,0 +1,289 @@
+{
+  "appName": "सनातन धर्म",
+  "appSubtitle": "पंचांग • भजन • जप • गीता",
+  "tabs": {
+    "home": "मुख्यपृष्ठ",
+    "jap": "जप",
+    "bhajan": "भजन",
+    "scriptures": "शास्त्रे",
+    "calendar": "पंचांग"
+  },
+  "common": {
+    "cancel": "रद्द करा",
+    "setTime": "वेळ सेट करा",
+    "loading": "प्राधान्ये लोड होत आहेत…",
+    "error": "त्रुटी",
+    "daysBefore": "दिवस आधी"
+  },
+  "days": {
+    "sun": "रवि",
+    "mon": "सोम",
+    "tue": "मंगळ",
+    "wed": "बुध",
+    "thu": "गुरु",
+    "fri": "शुक्र",
+    "sat": "शनि"
+  },
+  "settings": {
+    "title": "सेटिंग्ज",
+    "notifications": {
+      "title": "🔔 सूचना",
+      "permissionTitle": "सूचना बंद आहेत",
+      "permissionSub": "परवानगी देण्यासाठी टॅप करा",
+      "dailyReminders": "दैनिक स्मरण",
+      "morningPuja": "सकाळची पूजा स्मरण",
+      "morningPujaSub": "दैनिक सकाळची प्रार्थना सूचना",
+      "eveningAarti": "संध्याकाळची आरती स्मरण",
+      "eveningAartiSub": "संध्याकाळची प्रार्थना आणि आरतीची वेळ",
+      "dailyJap": "दैनिक जप स्मरण",
+      "dailyJapSub": "मंत्र जप आणि गणना स्मरण",
+      "time": "वेळ",
+      "weeklyDevotion": "साप्ताहिक भक्ती",
+      "weeklyDevotionReminder": "साप्ताहिक भक्ती स्मरण",
+      "weeklyDevotionSub": "खोल भक्तीसाठी एक विशेष दिवस",
+      "daySelect": "दिवस निवडा",
+      "festivalAlerts": "सण सूचना",
+      "festivalReminders": "सण स्मरण",
+      "festivalRemindersSub": "हिंदू सणांपूर्वी सूचना मिळवा",
+      "notify": "किती दिवस आधी",
+      "smartAlerts": "स्मार्ट आध्यात्मिक सूचना",
+      "ekadashi": "एकादशी सूचना",
+      "ekadashiSub": "एकादशी उपवास स्मरण",
+      "pradosh": "प्रदोष व्रत सूचना",
+      "pradoshSub": "त्रयोदशीला शिव पूजा",
+      "purnima": "पौर्णिमा सूचना",
+      "purnimaSub": "पवित्र पौर्णिमा स्मरण",
+      "amavasya": "अमावस्या सूचना",
+      "amavasySub": "पितृ तर्पण आणि पूर्वज पूजा",
+      "personalizedReminders": "वैयक्तिक स्मरण",
+      "personalizedNote": "सानुकूल स्मरण जप आणि पूजा स्क्रीनवरून बुकमार्क चिन्हाद्वारे जोडता येतात.",
+      "soundVibration": "ध्वनी आणि कंपन",
+      "sound": "सूचना ध्वनी",
+      "soundSub": "सूचनांसह ध्वनी वाजवा",
+      "vibration": "कंपन",
+      "vibrationSub": "सूचनांवर कंपन"
+    },
+    "appearance": {
+      "title": "🎨 स्वरूप",
+      "language": "भाषा",
+      "languageSub": "ॲपची भाषा निवडा",
+      "theme": "थीम",
+      "themeSub": "रंग थीम निवडा"
+    },
+    "about": {
+      "title": "🪔 परिचय",
+      "version": "आवृत्ती",
+      "purpose": "उद्देश",
+      "purposeValue": "दैनिक हिंदू पूजा, पंचांग, भजन आणि शास्त्रांसाठी आध्यात्मिक सहाय्यक",
+      "origin": "देश",
+      "originValue": "भारत 🇮🇳"
+    },
+    "developer": {
+      "title": "👨‍💻 विकासक",
+      "email": "ईमेल",
+      "portfolio": "वेबसाइट",
+      "linkedin": "लिंक्डइन"
+    },
+    "feedback": {
+      "title": "💬 अभिप्राय",
+      "send": "अभिप्राय पाठवा",
+      "sendSub": "बग नोंदवा किंवा सुचवा",
+      "rate": "ॲपला रेटिंग द्या",
+      "rateSub": "तुमचे रेटिंग इतरांना मदत करते",
+      "share": "ॲप शेअर करा",
+      "shareSub": "कुटुंब आणि मित्रांसोबत शेअर करा"
+    },
+    "footer": {
+      "main": "हर हर महादेव",
+      "sub": "हर हर महादेव",
+      "mantra": "॥ सर्वे भवन्तु सुखिनः ॥"
+    }
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "mr": "मराठी",
+    "sa": "संस्कृत",
+    "bn": "বাংলা",
+    "ta": "தமிழ்",
+    "te": "తెలుగు",
+    "ml": "മലയാളം"
+  },
+  "themes": {
+    "maroon": "मंदिर मेरून",
+    "saffron": "भगवा",
+    "lotus": "कमळ गुलाबी",
+    "ocean": "समुद्री निळा",
+    "forest": "वन हिरवा"
+  },
+  "home": {
+    "loading": "पंचांग लोड होत आहे…",
+    "festivals": "आजचे सण",
+    "mantra": "आजचा मंत्र",
+    "calendar": "हिंदू पंचांग",
+    "panchangTitle": "पंच-अंग",
+    "sunMoon": "सूर्य आणि चंद्र",
+    "auspicious": "शुभ मुहूर्त",
+    "inauspicious": "अशुभ वेळ",
+    "showInauspicious": "अशुभ वेळ दाखवा",
+    "hideInauspicious": "अशुभ वेळ लपवा"
+  },
+  "sidebar": {
+    "menu": "मेनू",
+    "quickAccess": "जलद प्रवेश",
+    "appSub": "पंचांग · आध्यात्मिक साथी",
+    "nav": {
+      "home": "मुख्यपृष्ठ",
+      "jap": "जप",
+      "bhajan": "भजन",
+      "scriptures": "शास्त्रे",
+      "calendar": "पंचांग",
+      "shop": "दुकान",
+      "temples": "जवळील मंदिरे",
+      "settings": "सेटिंग्ज"
+    },
+    "quick": {
+      "japCounter": "जप काउंटर",
+      "chalisa": "चाळीसा"
+    },
+    "footer": {
+      "mantra": "॥ सर्वे भवन्तु सुखिनः ॥",
+      "sub": "सर्व प्राणी सुखी असोत"
+    }
+  },
+  "locationPicker": {
+    "title": "आपले स्थान निवडा",
+    "subtitle": "अचूक पंचांगासाठी आपल्या शहराची माहिती आवश्यक आहे।",
+    "gps": "GPS ने स्थान घ्या",
+    "detecting": "स्थान शोधले जात आहे…",
+    "orSearch": "किंवा शोधा",
+    "searchPlaceholder": "शहराचे नाव टाइप करा",
+    "popularCities": "लोकप्रिय शहरे",
+    "notFound": "कोणतेही शहर सापडले नाही",
+    "searchFailed": "शोध अयशस्वी. इंटरनेट तपासा.",
+    "skip": "नंतर (भोपाळ)"
+  },
+  "jap": {
+    "title": "जप माळा",
+    "mantra": "मंत्र",
+    "settings": "सेटिंग्ज",
+    "selectMantra": "मंत्र निवडा",
+    "addMantra": "नवीन मंत्र",
+    "classicMantras": "प्रसिद्ध मंत्र",
+    "customMantras": "माझे मंत्र",
+    "tap": "स्पर्श करा",
+    "tapHint": "TAP",
+    "reset": "काउंटर रीसेट करा",
+    "malaComplete": "माळा पूर्ण!",
+    "towardsFirst": "पहिल्या माळेकडे…",
+    "malasComplete": "माळा पूर्ण 🙏",
+    "custom": "सानुकूल",
+    "stats": {
+      "total": "एकूण जप",
+      "malas": "पूर्ण माळा",
+      "left": "शिल्लक"
+    },
+    "form": {
+      "title": "मंत्र जोडा",
+      "editTitle": "मंत्र संपादित करा",
+      "placeholder": "मंत्र प्रविष्ट करा",
+      "meaningPlaceholder": "अर्थ (पर्यायी)",
+      "deityPlaceholder": "देवता (पर्यायी)",
+      "save": "जतन करा",
+      "cancel": "रद्द करा"
+    },
+    "alerts": {
+      "mantraRequired": "मंत्र आवश्यक",
+      "mantraRequiredMsg": "कृपया मंत्र प्रविष्ट करा.",
+      "deleteTitle": "मंत्र हटवायचा?",
+      "deleteMsg": "हा सानुकूल मंत्र हटवायचा?",
+      "resetTitle": "काउंटर रीसेट करायचा?",
+      "resetMsg": "यामुळे तुमचा जप काउंट 0 होईल.",
+      "confirmReset": "रीसेट",
+      "cancel": "रद्द करा",
+      "delete": "हटवा"
+    }
+  },
+  "bhajan": {
+    "title": "भजन आणि कीर्तन",
+    "add": "जोडा",
+    "tabs": {
+      "library": "लायब्ररी",
+      "youtube": "यूट्यूब",
+      "artists": "कलाकार",
+      "local": "स्थानिक"
+    },
+    "empty": {
+      "noResults": "कोणतेही भजन सापडले नाही",
+      "noLocal": "कोणतीही स्थानिक फाइल नाही",
+      "noLocalSub": "MP3/M4A फाइल आयात करण्यासाठी वरील बटण दाबा"
+    },
+    "import": "डिव्हाइसवरून आयात करा",
+    "importing": "आयात होत आहे…",
+    "popularArtists": "लोकप्रिय कलाकार",
+    "artistsSubtitle": "YouTube उघडण्यासाठी कोणत्याही कलाकारावर टॅप करा",
+    "youtube": {
+      "title": "YouTube वर भजन शोधा",
+      "quickSearch": "⚡ जलद शोध",
+      "trending": "🔥 लोकप्रिय",
+      "note": "YouTube व्हिडिओ इन-ॲप चालतात."
+    },
+    "deities": {
+      "all": "सर्व",
+      "shiva": "शिव",
+      "vishnu": "विष्णु",
+      "durga": "दुर्गा",
+      "krishna": "कृष्ण",
+      "rama": "राम",
+      "ganesha": "गणेश",
+      "hanuman": "हनुमान"
+    }
+  },
+  "calendar": {
+    "loading": "कॅलेंडर तयार होत आहे…",
+    "showInauspicious": "अशुभ दिवस दाखवा",
+    "legend": "रंग माहिती",
+    "festivals": "सण",
+    "panchang": "पंचांग तपशील",
+    "noFestivals": "आज कोणताही सण नाही",
+    "fastingDay": "उपवास"
+  },
+  "scriptures": {
+    "tabs": {
+      "gita": "📖 गीता",
+      "chalisa": "🙏 चाळीसा"
+    },
+    "gita": {
+      "header": "भगवद् गीता",
+      "subheader": "18 अध्याय · 700 श्लोक",
+      "verse": "श्लोक",
+      "readMore": "अधिक वाचा"
+    },
+    "chalisa": {
+      "badge": "चाळीसा",
+      "devotionalText": "भक्ती ग्रंथ"
+    }
+  },
+  "kundli": {
+    "title": "कुंडली",
+    "subtitle": "वैदिक जन्म कुंडली",
+    "form": {
+      "namePlaceholder": "तुमचे नाव",
+      "calculate": "कुंडली बनवा",
+      "calculating": "गणना होत आहे…",
+      "clear": "साफ करा / नवीन"
+    }
+  },
+  "shop": {
+    "headerTitle": "🛍️ दुकान",
+    "headerSub": "आध्यात्मिक उत्पादने",
+    "featured": "⭐ विशेष",
+    "retry": "पुन्हा प्रयत्न",
+    "buy": "खरेदी करा",
+    "shopNow": "आत्ता खरेदी करा →",
+    "empty": {
+      "title": "अद्याप कोणतेही उत्पादन नाही",
+      "sub": "Firebase Console मध्ये उत्पादने जोडा."
+    }
+  }
+}

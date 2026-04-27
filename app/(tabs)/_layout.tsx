@@ -10,19 +10,23 @@
 import { Tabs } from "expo-router";
 import React from "react";
 import { Platform, Text, View, StyleSheet } from "react-native";
-import { FontAwesome5, FontAwesome6, Ionicons } from "@expo/vector-icons";
-import { colors, typography, spacing } from "../../theme";
+import { Ionicons } from "@expo/vector-icons";
+import { spacing, typography } from "../../theme";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { HamburgerButton } from "@/components/SideBar";
+import { useAppTheme } from "@/context/AppContext";
+import { useTranslation } from "react-i18next";
 
 // ─────────────────────────────────────────────
 // SHARED HEADER
 // ─────────────────────────────────────────────
 export function AppHeader() {
   const insets = useSafeAreaInsets();
+  const { themeColors } = useAppTheme();
+  const { t } = useTranslation();
 
   return (
-    <View style={[hdr.wrap, { paddingTop: insets.top }]}>
+    <View style={[hdr.wrap, { paddingTop: insets.top, backgroundColor: themeColors.bgSecondary, borderBottomColor: themeColors.cardBorder }]}>
       <View style={hdr.inner}>
         {/* LEFT — hamburger */}
         <View style={hdr.left}>
@@ -31,10 +35,12 @@ export function AppHeader() {
 
         {/* CENTER — title */}
         <View style={hdr.center}>
-          <Text style={hdr.title} numberOfLines={1}>
-            Sanatan Dharma
+          <Text style={[hdr.title, { color: themeColors.gold }]} numberOfLines={1}>
+            {t('appName')}
           </Text>
-          <Text style={hdr.subtitle}>सनातन धर्म</Text>
+          <Text style={[hdr.subtitle, { color: themeColors.gold + '88' }]}>
+            सनातन धर्म
+          </Text>
         </View>
 
         {/* RIGHT — spacer (keeps title centred) */}
@@ -46,9 +52,7 @@ export function AppHeader() {
 
 const hdr = StyleSheet.create({
   wrap: {
-    backgroundColor: colors.bgSecondary,
     borderBottomWidth: 1,
-    borderBottomColor: colors.cardBorder,
   },
   inner: {
     height: 52,
@@ -58,16 +62,14 @@ const hdr = StyleSheet.create({
   },
   left: { width: 56, alignItems: "flex-start" },
   center: { flex: 1, alignItems: "center" },
-  right: { width: 56 }, // mirrors left for symmetry
+  right: { width: 56 },
   title: {
     fontSize: typography.fontSize.lg,
     fontWeight: typography.fontWeight.bold,
-    color: colors.gold,
     letterSpacing: 0.3,
   },
   subtitle: {
     fontSize: 10,
-    color: colors.gold + "88",
     letterSpacing: 0.5,
     marginTop: 1,
   },
@@ -78,16 +80,18 @@ const hdr = StyleSheet.create({
 // ─────────────────────────────────────────────
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
+  const { themeColors } = useAppTheme();
+  const { t } = useTranslation();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.gold,
-        tabBarInactiveTintColor: colors.textMuted,
+        tabBarActiveTintColor: themeColors.gold,
+        tabBarInactiveTintColor: themeColors.textMuted,
         tabBarStyle: {
-          backgroundColor: colors.bgSecondary,
-          borderTopColor: colors.cardBorder,
+          backgroundColor: themeColors.bgSecondary,
+          borderTopColor: themeColors.cardBorder,
           borderTopWidth: 1,
           height: Platform.OS === "ios" ? 72 : 58 + insets.bottom,
           paddingBottom: insets.bottom,
@@ -102,7 +106,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          title: t('tabs.home'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
@@ -111,7 +115,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="jap"
         options={{
-          title: "Jap",
+          title: t('tabs.jap'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="infinite" size={size} color={color} />
           ),
@@ -120,7 +124,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="bhajan"
         options={{
-          title: "Bhajan",
+          title: t('tabs.bhajan'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="musical-notes" size={size} color={color} />
           ),
@@ -129,7 +133,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="scriptures"
         options={{
-          title: "Scriptures",
+          title: t('tabs.scriptures'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="book" size={size} color={color} />
           ),
@@ -138,36 +142,16 @@ export default function TabLayout() {
       <Tabs.Screen
         name="calendar"
         options={{
-          title: "Calendar",
+          title: t('tabs.calendar'),
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="calendar" size={size} color={color} />
           ),
         }}
       />
-      <Tabs.Screen
-        name="kundli"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="shop"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          href: null,
-        }}
-      />
-      <Tabs.Screen
-        name="temples"
-        options={{
-          href: null,
-        }}
-      />
+      <Tabs.Screen name="kundli" options={{ href: null }} />
+      <Tabs.Screen name="shop" options={{ href: null }} />
+      <Tabs.Screen name="settings" options={{ href: null }} />
+      <Tabs.Screen name="temples" options={{ href: null }} />
     </Tabs>
   );
 }

@@ -1,0 +1,289 @@
+{
+  "appName": "Sanatan Dharma",
+  "appSubtitle": "Panchang • Bhajan • Jap • Gita",
+  "tabs": {
+    "home": "Home",
+    "jap": "Jap",
+    "bhajan": "Bhajan",
+    "scriptures": "Scriptures",
+    "calendar": "Calendar"
+  },
+  "common": {
+    "cancel": "Cancel",
+    "setTime": "Set Time",
+    "loading": "Loading preferences…",
+    "error": "Error",
+    "daysBefore": "days before"
+  },
+  "days": {
+    "sun": "Sun",
+    "mon": "Mon",
+    "tue": "Tue",
+    "wed": "Wed",
+    "thu": "Thu",
+    "fri": "Fri",
+    "sat": "Sat"
+  },
+  "settings": {
+    "title": "Settings",
+    "notifications": {
+      "title": "🔔 Notifications",
+      "permissionTitle": "Notifications Disabled",
+      "permissionSub": "Tap to grant permission",
+      "dailyReminders": "Daily Reminders",
+      "morningPuja": "Morning Puja Reminder",
+      "morningPujaSub": "Daily morning prayer alert",
+      "eveningAarti": "Evening Aarti Reminder",
+      "eveningAartiSub": "Dusk prayer & aarti time",
+      "dailyJap": "Daily Jap Reminder",
+      "dailyJapSub": "Mantra jap & counting reminder",
+      "time": "Time",
+      "weeklyDevotion": "Weekly Devotion",
+      "weeklyDevotionReminder": "Weekly Devotion Reminder",
+      "weeklyDevotionSub": "One special day of deeper devotion",
+      "daySelect": "Day",
+      "festivalAlerts": "Festival Alerts",
+      "festivalReminders": "Festival Reminders",
+      "festivalRemindersSub": "Get notified before Hindu festivals",
+      "notify": "Notify",
+      "smartAlerts": "Smart Spiritual Alerts",
+      "ekadashi": "Ekadashi Alerts",
+      "ekadashiSub": "11th lunar day fasting reminders",
+      "pradosh": "Pradosh Vrat Alerts",
+      "pradoshSub": "Shiva worship on Trayodashi",
+      "purnima": "Purnima (Full Moon)",
+      "purnimaSub": "Sacred full moon day reminders",
+      "amavasya": "Amavasya (No Moon)",
+      "amavasySub": "Pitru Tarpan & ancestor puja reminders",
+      "personalizedReminders": "Personalized Reminders",
+      "personalizedNote": "Custom reminders can be added from the Jap and Puja screens via the bookmark icon.",
+      "soundVibration": "Sound & Vibration",
+      "sound": "Notification Sound",
+      "soundSub": "Play sound with notifications",
+      "vibration": "Vibration",
+      "vibrationSub": "Vibrate on notifications"
+    },
+    "appearance": {
+      "title": "🎨 Appearance",
+      "language": "Language",
+      "languageSub": "Select app language",
+      "theme": "Theme",
+      "themeSub": "Select color theme"
+    },
+    "about": {
+      "title": "🪔 About",
+      "version": "App Version",
+      "purpose": "Purpose",
+      "purposeValue": "A spiritual companion for daily Hindu practices",
+      "origin": "Origin",
+      "originValue": "India 🇮🇳"
+    },
+    "developer": {
+      "title": "👨‍💻 Developer",
+      "email": "Email",
+      "portfolio": "Portfolio",
+      "linkedin": "LinkedIn"
+    },
+    "feedback": {
+      "title": "💬 Feedback",
+      "send": "Send Feedback",
+      "sendSub": "Report a bug or suggest a feature",
+      "rate": "Rate the App",
+      "rateSub": "Your rating helps others",
+      "share": "Share App",
+      "shareSub": "Share with family & friends"
+    },
+    "footer": {
+      "main": "Har Har Mahadev",
+      "sub": "Har Har Mahadev",
+      "mantra": "॥ Sarve Bhavantu Sukhinah ॥"
+    }
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "mr": "मराठी",
+    "sa": "संस्कृत",
+    "bn": "বাংলা",
+    "ta": "தமிழ்",
+    "te": "తెలుగు",
+    "ml": "മലയാളം"
+  },
+  "themes": {
+    "maroon": "Temple Maroon",
+    "saffron": "Saffron",
+    "lotus": "Lotus Pink",
+    "ocean": "Ocean Blue",
+    "forest": "Forest Green"
+  },
+  "home": {
+    "loading": "Loading Panchang…",
+    "festivals": "Today's Festivals",
+    "mantra": "Today's Mantra",
+    "calendar": "Hindu Calendar",
+    "panchangTitle": "Panch-Ang",
+    "sunMoon": "Sun & Moon",
+    "auspicious": "Auspicious Timings",
+    "inauspicious": "Inauspicious Timings",
+    "showInauspicious": "Show Inauspicious",
+    "hideInauspicious": "Hide Inauspicious"
+  },
+  "sidebar": {
+    "menu": "MENU",
+    "quickAccess": "QUICK ACCESS",
+    "appSub": "Panchang · Spiritual Companion",
+    "nav": {
+      "home": "Home",
+      "jap": "Jap",
+      "bhajan": "Bhajan",
+      "scriptures": "Scriptures",
+      "calendar": "Calendar",
+      "shop": "Shop",
+      "temples": "Nearby Temples",
+      "settings": "Settings"
+    },
+    "quick": {
+      "japCounter": "Jap Counter",
+      "chalisa": "Chalisa"
+    },
+    "footer": {
+      "mantra": "॥ Sarve Bhavantu Sukhinah ॥",
+      "sub": "May all beings be happy"
+    }
+  },
+  "locationPicker": {
+    "title": "Choose Your Location",
+    "subtitle": "Your location is needed for accurate Panchang calculations.",
+    "gps": "Use Current Location",
+    "detecting": "Detecting…",
+    "orSearch": "or search",
+    "searchPlaceholder": "Type city name",
+    "popularCities": "Popular Cities",
+    "notFound": "No cities found",
+    "searchFailed": "Search failed. Check your internet connection.",
+    "skip": "Skip for now (Bhopal)"
+  },
+  "jap": {
+    "title": "Jap Mala",
+    "mantra": "Mantra",
+    "settings": "Settings",
+    "selectMantra": "Select Mantra",
+    "addMantra": "New Mantra",
+    "classicMantras": "Classic Mantras",
+    "customMantras": "My Mantras",
+    "tap": "TAP",
+    "tapHint": "Tap",
+    "reset": "Reset Counter",
+    "malaComplete": "Mala Complete!",
+    "towardsFirst": "Towards first mala…",
+    "malasComplete": "malas complete",
+    "custom": "Custom",
+    "stats": {
+      "total": "Total",
+      "malas": "Malas",
+      "left": "Left"
+    },
+    "form": {
+      "title": "Add Mantra",
+      "editTitle": "Edit Mantra",
+      "placeholder": "Enter mantra text",
+      "meaningPlaceholder": "Meaning (optional)",
+      "deityPlaceholder": "Deity (optional)",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "alerts": {
+      "mantraRequired": "Mantra Required",
+      "mantraRequiredMsg": "Please enter mantra text.",
+      "deleteTitle": "Delete Mantra?",
+      "deleteMsg": "Delete this custom mantra?",
+      "resetTitle": "Reset Counter?",
+      "resetMsg": "This will reset your jap count to 0.",
+      "confirmReset": "Reset",
+      "cancel": "Cancel",
+      "delete": "Delete"
+    }
+  },
+  "bhajan": {
+    "title": "Bhajan & Kirtan",
+    "add": "Add",
+    "tabs": {
+      "library": "Library",
+      "youtube": "YouTube",
+      "artists": "Artists",
+      "local": "Local"
+    },
+    "empty": {
+      "noResults": "No bhajans found",
+      "noLocal": "No local files added yet",
+      "noLocalSub": "Tap the button above to import MP3/M4A files"
+    },
+    "import": "Import from Device",
+    "importing": "Importing…",
+    "popularArtists": "Popular Artists",
+    "artistsSubtitle": "Tap any artist to open their YouTube channel",
+    "youtube": {
+      "title": "Search Bhajans on YouTube",
+      "quickSearch": "⚡ Quick Search",
+      "trending": "🔥 Trending",
+      "note": "YouTube videos stream in-app. Use the Local tab to add downloaded files."
+    },
+    "deities": {
+      "all": "All",
+      "shiva": "Shiva",
+      "vishnu": "Vishnu",
+      "durga": "Durga",
+      "krishna": "Krishna",
+      "rama": "Rama",
+      "ganesha": "Ganesha",
+      "hanuman": "Hanuman"
+    }
+  },
+  "calendar": {
+    "loading": "Building Calendar…",
+    "showInauspicious": "Show Inauspicious Days",
+    "legend": "Legend",
+    "festivals": "Festivals",
+    "panchang": "Panchang Details",
+    "noFestivals": "No festivals today",
+    "fastingDay": "Fasting Day"
+  },
+  "scriptures": {
+    "tabs": {
+      "gita": "📖 Gita",
+      "chalisa": "🙏 Chalisa"
+    },
+    "gita": {
+      "header": "Bhagavad Gita",
+      "subheader": "18 Chapters · 700 Verses",
+      "verse": "Verse",
+      "readMore": "Read more"
+    },
+    "chalisa": {
+      "badge": "Chalisa",
+      "devotionalText": "Devotional Scripture"
+    }
+  },
+  "kundli": {
+    "title": "Kundli",
+    "subtitle": "Vedic Birth Chart",
+    "form": {
+      "namePlaceholder": "Your Name",
+      "calculate": "Calculate Kundli",
+      "calculating": "Calculating…",
+      "clear": "Clear / New"
+    }
+  },
+  "shop": {
+    "headerTitle": "🛍️ Shop",
+    "headerSub": "Spiritual products",
+    "featured": "⭐ Featured",
+    "retry": "Retry",
+    "buy": "Buy",
+    "shopNow": "Shop Now →",
+    "empty": {
+      "title": "No Products Yet",
+      "sub": "Add products from your Firebase Console to display them here."
+    }
+  }
+}

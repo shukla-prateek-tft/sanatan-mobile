@@ -1,0 +1,289 @@
+{
+  "appName": "सनातनधर्मः",
+  "appSubtitle": "पञ्चाङ्गम् • भजनम् • जपः • गीता",
+  "tabs": {
+    "home": "गृहम्",
+    "jap": "जपः",
+    "bhajan": "भजनम्",
+    "scriptures": "शास्त्रम्",
+    "calendar": "पञ्चाङ्गम्"
+  },
+  "common": {
+    "cancel": "निरसनम्",
+    "setTime": "समयं स्थापयतु",
+    "loading": "प्राधान्यानि लोड्यन्ते…",
+    "error": "त्रुटिः",
+    "daysBefore": "दिवसाः पूर्वम्"
+  },
+  "days": {
+    "sun": "रविः",
+    "mon": "सोमः",
+    "tue": "मङ्गलः",
+    "wed": "बुधः",
+    "thu": "गुरुः",
+    "fri": "शुक्रः",
+    "sat": "शनिः"
+  },
+  "settings": {
+    "title": "व्यवस्थापनम्",
+    "notifications": {
+      "title": "🔔 सूचनाः",
+      "permissionTitle": "सूचनाः बद्धाः सन्ति",
+      "permissionSub": "अनुमतिं दातुं स्पृशतु",
+      "dailyReminders": "दैनिकस्मरणम्",
+      "morningPuja": "प्रातःपूजास्मरणम्",
+      "morningPujaSub": "दैनिकप्रातःप्रार्थनासूचना",
+      "eveningAarti": "सायंकालीनआरतिस्मरणम्",
+      "eveningAartiSub": "सन्ध्याप्रार्थना आरतिसमयः",
+      "dailyJap": "दैनिकजपस्मरणम्",
+      "dailyJapSub": "मन्त्रजपगणनास्मरणम्",
+      "time": "समयः",
+      "weeklyDevotion": "साप्ताहिकभक्तिः",
+      "weeklyDevotionReminder": "साप्ताहिकभक्तिस्मरणम्",
+      "weeklyDevotionSub": "गहनभक्त्यै एकः विशेषदिवसः",
+      "daySelect": "दिवसं चिनोतु",
+      "festivalAlerts": "पर्वसूचनाः",
+      "festivalReminders": "पर्वस्मरणम्",
+      "festivalRemindersSub": "हिन्दूपर्वभ्यः पूर्वं सूचना प्राप्यताम्",
+      "notify": "कति दिवसाः पूर्वम्",
+      "smartAlerts": "आध्यात्मिकसूचनाः",
+      "ekadashi": "एकादशीसूचना",
+      "ekadashiSub": "एकादशीव्रतस्मरणम्",
+      "pradosh": "प्रदोषव्रतसूचना",
+      "pradoshSub": "त्रयोदश्यां शिवपूजा",
+      "purnima": "पूर्णिमासूचना",
+      "purnimaSub": "पवित्रपूर्णिमास्मरणम्",
+      "amavasya": "अमावास्यासूचना",
+      "amavasySub": "पितृतर्पणपूर्वजपूजा",
+      "personalizedReminders": "व्यक्तिगतस्मरणम्",
+      "personalizedNote": "विशेषस्मरणानि जप-पूजास्क्रीनतः बुकमार्केन योजयितुं शक्यन्ते।",
+      "soundVibration": "ध्वनिः स्पन्दनं च",
+      "sound": "सूचनाध्वनिः",
+      "soundSub": "सूचनाभिः सह ध्वनिः",
+      "vibration": "स्पन्दनम्",
+      "vibrationSub": "सूचनासु स्पन्दनम्"
+    },
+    "appearance": {
+      "title": "🎨 रूपम्",
+      "language": "भाषा",
+      "languageSub": "अनुप्रयोगभाषां चिनोतु",
+      "theme": "विषयः",
+      "themeSub": "वर्णविषयं चिनोतु"
+    },
+    "about": {
+      "title": "🪔 परिचयः",
+      "version": "संस्करणम्",
+      "purpose": "उद्देश्यम्",
+      "purposeValue": "दैनिकहिन्दूपूजायाः पञ्चाङ्गस्य भजनस्य शास्त्रस्य च आध्यात्मिकसहायकः",
+      "origin": "देशः",
+      "originValue": "भारतम् 🇮🇳"
+    },
+    "developer": {
+      "title": "👨‍💻 विकासकः",
+      "email": "विद्युत्पत्रम्",
+      "portfolio": "जालपुटम्",
+      "linkedin": "लिंक्डइन"
+    },
+    "feedback": {
+      "title": "💬 प्रतिक्रिया",
+      "send": "प्रतिक्रियां प्रेषयतु",
+      "sendSub": "दोषं सूचयतु अथवा सुझावं ददातु",
+      "rate": "अनुप्रयोगं मूल्याङ्कयतु",
+      "rateSub": "भवतः मूल्याङ्कनम् अन्येभ्यः साहाय्यकरम्",
+      "share": "अनुप्रयोगं साझयतु",
+      "shareSub": "परिवारेण मित्रैः च साझयतु"
+    },
+    "footer": {
+      "main": "हर हर महादेव",
+      "sub": "हर हर महादेव",
+      "mantra": "॥ सर्वे भवन्तु सुखिनः ॥"
+    }
+  },
+  "language": {
+    "en": "English",
+    "hi": "हिन्दी",
+    "mr": "मराठी",
+    "sa": "संस्कृत",
+    "bn": "বাংলা",
+    "ta": "தமிழ்",
+    "te": "తెలుగు",
+    "ml": "മലയാളം"
+  },
+  "themes": {
+    "maroon": "मन्दिर मेरून",
+    "saffron": "भगवः",
+    "lotus": "कमलम् गुलाबी",
+    "ocean": "सागरनीलम्",
+    "forest": "वनहरितम्"
+  },
+  "home": {
+    "loading": "पञ्चाङ्गं लोड्यते…",
+    "festivals": "अद्यतनपर्वाणि",
+    "mantra": "अद्यतनमन्त्रः",
+    "calendar": "हिन्दूपञ्चाङ्गम्",
+    "panchangTitle": "पञ्च-अङ्गम्",
+    "sunMoon": "सूर्यश्चन्द्रश्च",
+    "auspicious": "शुभमुहूर्तम्",
+    "inauspicious": "अशुभसमयः",
+    "showInauspicious": "अशुभं दर्शयतु",
+    "hideInauspicious": "अशुभं गोपयतु"
+  },
+  "sidebar": {
+    "menu": "मेनू",
+    "quickAccess": "त्वरितप्रवेशः",
+    "appSub": "पञ्चाङ्गम् · आध्यात्मिकसहायकः",
+    "nav": {
+      "home": "गृहम्",
+      "jap": "जपः",
+      "bhajan": "भजनम्",
+      "scriptures": "शास्त्राणि",
+      "calendar": "पञ्चाङ्गम्",
+      "shop": "विपणम्",
+      "temples": "समीपमन्दिराणि",
+      "settings": "व्यवस्थापनम्"
+    },
+    "quick": {
+      "japCounter": "जपगणकः",
+      "chalisa": "चालीसा"
+    },
+    "footer": {
+      "mantra": "॥ सर्वे भवन्तु सुखिनः ॥",
+      "sub": "सर्वे प्राणिनः सुखिनो भवन्तु"
+    }
+  },
+  "locationPicker": {
+    "title": "स्थानं चिनोतु",
+    "subtitle": "सटीकपञ्चाङ्गाय नगरज्ञानमावश्यकम्।",
+    "gps": "GPSतः स्थानं गृह्यताम्",
+    "detecting": "स्थानं अन्विष्यते…",
+    "orSearch": "अथवा अन्विष्यतु",
+    "searchPlaceholder": "नगरनाम लिखतु",
+    "popularCities": "लोकप्रियनगराणि",
+    "notFound": "नगरं न लब्धम्",
+    "searchFailed": "अन्वेषणं विफलम्।",
+    "skip": "अधुना न (भोपालम्)"
+  },
+  "jap": {
+    "title": "जपमाला",
+    "mantra": "मन्त्रः",
+    "settings": "व्यवस्थापनम्",
+    "selectMantra": "मन्त्रं चिनोतु",
+    "addMantra": "नवमन्त्रः",
+    "classicMantras": "प्रसिद्धमन्त्राः",
+    "customMantras": "मम मन्त्राः",
+    "tap": "स्पृशतु",
+    "tapHint": "स्पर्शः",
+    "reset": "गणकं रीसेट्यतु",
+    "malaComplete": "माला पूर्णा!",
+    "towardsFirst": "प्रथममालायाः दिशि…",
+    "malasComplete": "माला पूर्णा 🙏",
+    "custom": "विशेषः",
+    "stats": {
+      "total": "कुलजपः",
+      "malas": "पूर्णमाला",
+      "left": "शेषम्"
+    },
+    "form": {
+      "title": "मन्त्रं योजयतु",
+      "editTitle": "मन्त्रं सम्पादयतु",
+      "placeholder": "मन्त्रं लिखतु",
+      "meaningPlaceholder": "अर्थः (ऐच्छिकम्)",
+      "deityPlaceholder": "देवता (ऐच्छिकम्)",
+      "save": "रक्षतु",
+      "cancel": "निरसनम्"
+    },
+    "alerts": {
+      "mantraRequired": "मन्त्रः आवश्यकः",
+      "mantraRequiredMsg": "कृपया मन्त्रं लिखतु।",
+      "deleteTitle": "मन्त्रं हटायतु?",
+      "deleteMsg": "एतं मन्त्रं हटायतु?",
+      "resetTitle": "गणकं रीसेट्यतु?",
+      "resetMsg": "जपगणना शून्या भविष्यति।",
+      "confirmReset": "रीसेट्",
+      "cancel": "निरसनम्",
+      "delete": "हटायतु"
+    }
+  },
+  "bhajan": {
+    "title": "भजनं कीर्तनं च",
+    "add": "योजयतु",
+    "tabs": {
+      "library": "भण्डारम्",
+      "youtube": "यूट्यूब",
+      "artists": "कलाकाराः",
+      "local": "स्थानीयम्"
+    },
+    "empty": {
+      "noResults": "भजनं न लब्धम्",
+      "noLocal": "स्थानीयसंगीतं नास्ति",
+      "noLocalSub": "MP3/M4A संचिकाः आयात्यताम्"
+    },
+    "import": "यन्त्रतः आयात्यताम्",
+    "importing": "आयात्यते…",
+    "popularArtists": "लोकप्रियकलाकाराः",
+    "artistsSubtitle": "YouTube उद्घाटनाय कलाकारं स्पृशतु",
+    "youtube": {
+      "title": "YouTube पर भजन खोजें",
+      "quickSearch": "⚡ त्वरितान्वेषणम्",
+      "trending": "🔥 लोकप्रियम्",
+      "note": "YouTube वीडियो इन-ऐप चलते हैं।"
+    },
+    "deities": {
+      "all": "सर्वे",
+      "shiva": "शिवः",
+      "vishnu": "विष्णुः",
+      "durga": "दुर्गा",
+      "krishna": "कृष्णः",
+      "rama": "रामः",
+      "ganesha": "गणेशः",
+      "hanuman": "हनुमान्"
+    }
+  },
+  "calendar": {
+    "loading": "पञ्चाङ्गं निर्मीयते…",
+    "showInauspicious": "अशुभदिनानि दर्शयतु",
+    "legend": "वर्णविवरणम्",
+    "festivals": "पर्वाणि",
+    "panchang": "पञ्चाङ्गविवरणम्",
+    "noFestivals": "अद्य पर्वं नास्ति",
+    "fastingDay": "व्रतम्"
+  },
+  "scriptures": {
+    "tabs": {
+      "gita": "📖 गीता",
+      "chalisa": "🙏 चालीसा"
+    },
+    "gita": {
+      "header": "भगवद्गीता",
+      "subheader": "18 अध्यायाः · 700 श्लोकाः",
+      "verse": "श्लोकः",
+      "readMore": "अधिकं पठतु"
+    },
+    "chalisa": {
+      "badge": "चालीसा",
+      "devotionalText": "भक्तिग्रन्थः"
+    }
+  },
+  "kundli": {
+    "title": "कुण्डली",
+    "subtitle": "वैदिकजन्मकुण्डली",
+    "form": {
+      "namePlaceholder": "भवतः नाम",
+      "calculate": "कुण्डलीं निर्मातु",
+      "calculating": "गणना क्रियते…",
+      "clear": "शुद्धयतु / नवम्"
+    }
+  },
+  "shop": {
+    "headerTitle": "🛍️ विपणम्",
+    "headerSub": "आध्यात्मिकोत्पादाः",
+    "featured": "⭐ विशेषम्",
+    "retry": "पुनः प्रयतताम्",
+    "buy": "क्रीयताम्",
+    "shopNow": "अधुना क्रीयताम् →",
+    "empty": {
+      "title": "उत्पादानि न सन्ति",
+      "sub": "Firebase Console तः उत्पादानि योजयतु।"
+    }
+  }
+}

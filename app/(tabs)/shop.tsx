@@ -38,6 +38,7 @@ import {
   getCategoryLabel,
   type Product,
 } from "../../services/useProducts";
+import { useTranslation } from "react-i18next";
 
 const { width: SW } = Dimensions.get("window");
 const CARD_WIDTH = (SW - spacing.md * 2 - spacing.sm) / 2;
@@ -367,14 +368,11 @@ const tab = StyleSheet.create({
 // ─────────────────────────────────────────────
 // EMPTY STATE
 // ─────────────────────────────────────────────
-const EmptyState = () => (
+const EmptyState = ({ title, sub }: { title: string; sub: string }) => (
   <View style={st.emptyBox}>
     <Text style={{ fontSize: 48 }}>🛍️</Text>
-    <Text style={st.emptyTitle}>No Products Yet</Text>
-    <Text style={st.emptyHi}>अभी कोई उत्पाद नहीं है</Text>
-    <Text style={st.emptySub}>
-      Add products from your Firebase Console to display them here.
-    </Text>
+    <Text style={st.emptyTitle}>{title}</Text>
+    <Text style={st.emptySub}>{sub}</Text>
   </View>
 );
 
@@ -382,6 +380,7 @@ const EmptyState = () => (
 // SCREEN
 // ─────────────────────────────────────────────
 export default function ShopScreen() {
+  const { t } = useTranslation();
   const { products, featured, categories, loading, error, refresh } =
     useProducts();
   const [activeCategory, setActiveCategory] = useState<string>("all");
@@ -428,10 +427,8 @@ export default function ShopScreen() {
         {/* ── HEADER ── */}
         <View style={st.header}>
           <View style={{ flex: 1 }}>
-            <Text style={st.headerTitle}>🛍️ दुकान · Shop</Text>
-            <Text style={st.headerSub}>
-              Spiritual products · आध्यात्मिक उत्पाद
-            </Text>
+            <Text style={st.headerTitle}>{t('shop.headerTitle')}</Text>
+            <Text style={st.headerSub}>{t('shop.headerSub')}</Text>
           </View>
           <TouchableOpacity style={st.refreshBtn} onPress={onRefresh}>
             <Ionicons name="refresh-outline" size={20} color={colors.gold} />
@@ -444,7 +441,7 @@ export default function ShopScreen() {
             <Ionicons name="warning-outline" size={18} color="#F87171" />
             <Text style={st.errorTxt}>{error}</Text>
             <TouchableOpacity onPress={refresh}>
-              <Text style={st.errorRetry}>Retry</Text>
+              <Text style={st.errorRetry}>{t('shop.retry')}</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -453,7 +450,7 @@ export default function ShopScreen() {
         {!loading && featured.length > 0 && (
           <>
             <View style={st.sectionRow}>
-              <Text style={st.sectionTitle}>⭐ Featured · विशेष</Text>
+              <Text style={st.sectionTitle}>{t('shop.featured')}</Text>
             </View>
             <ScrollView
               horizontal
@@ -508,7 +505,7 @@ export default function ShopScreen() {
         )}
 
         {/* ── GRID ── */}
-        {!loading && filtered.length === 0 && <EmptyState />}
+        {!loading && filtered.length === 0 && <EmptyState title={t('shop.empty.title')} sub={t('shop.empty.sub')} />}
 
         {!loading && rows.length > 0 && (
           <View style={st.grid}>

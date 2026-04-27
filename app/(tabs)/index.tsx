@@ -51,6 +51,7 @@ import {
 import { bhajanService } from "@/services/bhajanService";
 import { artistService } from "@/services/artistsService";
 import { getPanchangam, Observer } from "@ishubhamx/panchangam-js";
+import { useTranslation } from "react-i18next";
 
 // ─────────────────────────────────────────────
 // FESTIVAL HELPERS
@@ -223,6 +224,7 @@ const Pill = ({ text, color }: { text: string; color?: string }) => (
 // SCREEN
 // ─────────────────────────────────────────────
 export default function HomeScreen() {
+  const { t } = useTranslation();
   // usePanchangLocation is already exported from panchangService —
   // panchangService reads the same _loc internally for its own calculations.
   const { location } = usePanchangLocation();
@@ -304,8 +306,7 @@ export default function HomeScreen() {
             color={colors.gold}
             style={{ marginTop: 24 }}
           />
-          <Text style={styles.loadingEn}>Loading Panchang…</Text>
-          <Text style={styles.loadingHi}>पञ्चाङ्ग लोड हो रहा है…</Text>
+          <Text style={styles.loadingEn}>{t('home.loading')}</Text>
         </View>
       </GradientBackground>
     );
@@ -357,7 +358,7 @@ export default function HomeScreen() {
             ════════════════════════════════════════════════════ */}
         {festivals.length > 0 && (
           <Animated.View entering={FadeInDown.delay(50).duration(700)}>
-            <Card title={`🎊 त्योहार · Today's Festivals`}>
+            <Card title={`🎊 ${t('home.festivals')}`}>
               {festivals.map((f, i) => (
                 <FestivalCard key={`${f.name}-${i}`} fest={f} />
               ))}
@@ -367,7 +368,7 @@ export default function HomeScreen() {
         {/* ── DAILY MANTRA (unchanged) ── */}
         {dailyMantra && (
           <Animated.View entering={FadeInDown.delay(100).duration(700)}>
-            <Card title={`✨ ${SECTION_LABELS_HI.mantra} · Today's Mantra`}>
+            <Card title={`✨ ${SECTION_LABELS_HI.mantra} · ${t('home.mantra')}`}>
               <Text style={styles.mantraText}>{dailyMantra.text}</Text>
               <Text style={styles.mantraMeaning}>{dailyMantra.meaning}</Text>
               <View style={styles.mantraFooter}>
@@ -383,7 +384,7 @@ export default function HomeScreen() {
           <>
             {/* ── HINDU CALENDAR ── */}
             <Animated.View entering={FadeInDown.delay(200).duration(700)}>
-              <Card title={`📅 ${SECTION_LABELS_HI.calendar} · Hindu Calendar`}>
+              <Card title={`📅 ${SECTION_LABELS_HI.calendar} · ${t('home.calendar')}`}>
                 <View style={styles.strip}>
                   <View style={styles.stripCell}>
                     <Text style={styles.stripLabelHi}>
@@ -435,7 +436,7 @@ export default function HomeScreen() {
 
             {/* ── PANCH-ANG ── */}
             <Animated.View entering={FadeInDown.delay(300).duration(700)}>
-              <Card title={`🪔 ${SECTION_LABELS_HI.panchang} · Panch-Ang`}>
+              <Card title={`🪔 ${SECTION_LABELS_HI.panchang} · ${t('home.panchangTitle')}`}>
                 <View style={styles.grid2}>
                   <BiCell
                     labelEn="Tithi"
@@ -480,7 +481,7 @@ export default function HomeScreen() {
 
             {/* ── SUN & MOON ── */}
             <Animated.View entering={FadeInDown.delay(400).duration(700)}>
-              <Card title={`☀️ ${SECTION_LABELS_HI.sunMoon} · Sun & Moon`}>
+              <Card title={`☀️ ${SECTION_LABELS_HI.sunMoon} · ${t('home.sunMoon')}`}>
                 <View style={styles.moonRow}>
                   <MoonPhase phase={panchang.moonPhase} size={90} />
                   <View style={styles.moonDetails}>
@@ -540,7 +541,7 @@ export default function HomeScreen() {
             {/* ── AUSPICIOUS TIMINGS ── */}
             <Animated.View entering={FadeInDown.delay(500).duration(700)}>
               <Card
-                title={`🌟 ${SECTION_LABELS_HI.auspicious} · Auspicious Timings`}
+                title={`🌟 ${SECTION_LABELS_HI.auspicious} · ${t('home.auspicious')}`}
               >
                 <TimingRow
                   icon="⭐"
@@ -570,8 +571,8 @@ export default function HomeScreen() {
                 >
                   <Text style={styles.toggleText}>
                     {showInauspicious
-                      ? "▴ अशुभ काल छुपाएँ · Hide inauspicious"
-                      : "▾ अशुभ काल देखें · Show inauspicious"}
+                      ? `▴ ${t('home.hideInauspicious')}`
+                      : `▾ ${t('home.showInauspicious')}`}
                   </Text>
                 </TouchableOpacity>
               </Card>
@@ -581,7 +582,7 @@ export default function HomeScreen() {
             {showInauspicious && (
               <Animated.View entering={FadeInLeft.duration(400)}>
                 <Card
-                  title={`⚠️ ${SECTION_LABELS_HI.inauspicious} · Inauspicious Periods`}
+                  title={`⚠️ ${SECTION_LABELS_HI.inauspicious} · ${t('home.inauspicious')}`}
                 >
                   <Text style={styles.avoidNote}>
                     इन समयों में महत्वपूर्ण कार्य, यात्रा या अनुष्ठान न करें।

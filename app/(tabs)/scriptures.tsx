@@ -24,6 +24,7 @@ import { colors, spacing, typography } from "../../theme";
 import { gitaService, Chapter, Verse } from "../../services/gitaService";
 import { chalisasService, Chalisa } from "../../services/chalisasService";
 import { Ionicons } from "@expo/vector-icons";
+import { useTranslation } from "react-i18next";
 
 const { width: SW, height: SH } = Dimensions.get("window");
 
@@ -241,6 +242,7 @@ const ChalisaCard = React.memo(
     index: number;
     onPress: () => void;
   }) => {
+    const { t } = useTranslation();
     const scale = useRef(new RNAnimated.Value(1)).current;
 
     const onPressIn = () =>
@@ -289,13 +291,13 @@ const ChalisaCard = React.memo(
                   ]}
                 >
                   <Text style={[st.badgeTxt, { color: CHALISA_ACCENT }]}>
-                    चालीसा
+                    {t('scriptures.chalisa.badge')}
                   </Text>
                 </View>
               </View>
             </View>
             <Text style={st.chSanskrit}>{getText(item.title, "hindi")}</Text>
-            <Text style={st.chMeaning}>भक्ति ग्रंथ</Text>
+            <Text style={st.chMeaning}>{t('scriptures.chalisa.devotionalText')}</Text>
           </TouchableOpacity>
         </RNAnimated.View>
       </FadeIn>
@@ -308,36 +310,39 @@ const ChalisaCard = React.memo(
 // ─────────────────────────────────────────────
 
 const VerseCard = React.memo(
-  ({ item, a, onPress }: { item: Verse; a: string; onPress: () => void }) => (
-    <TouchableOpacity
-      style={[st.vCard, { borderTopColor: a + "55" }]}
-      onPress={onPress}
-      activeOpacity={0.75}
-    >
-      <View
-        style={[st.vPill, { backgroundColor: a + "20", borderColor: a + "55" }]}
+  ({ item, a, onPress }: { item: Verse; a: string; onPress: () => void }) => {
+    const { t } = useTranslation();
+    return (
+      <TouchableOpacity
+        style={[st.vCard, { borderTopColor: a + "55" }]}
+        onPress={onPress}
+        activeOpacity={0.75}
       >
-        <Text style={[st.vPillTxt, { color: a }]}>श्लोक {item.verse}</Text>
-      </View>
-      <Text style={st.vSanskrit} numberOfLines={2}>
-        {item.sanskrit}
-      </Text>
-      <Text style={st.vTransl} numberOfLines={2}>
-        {item.translation}
-      </Text>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 3,
-          marginTop: spacing.xs,
-        }}
-      >
-        <Text style={[st.vMore, { color: a }]}>Read more</Text>
-        <Ionicons name="chevron-forward" size={11} color={a} />
-      </View>
-    </TouchableOpacity>
-  ),
+        <View
+          style={[st.vPill, { backgroundColor: a + "20", borderColor: a + "55" }]}
+        >
+          <Text style={[st.vPillTxt, { color: a }]}>श्लोक {item.verse}</Text>
+        </View>
+        <Text style={st.vSanskrit} numberOfLines={2}>
+          {item.sanskrit}
+        </Text>
+        <Text style={st.vTransl} numberOfLines={2}>
+          {item.translation}
+        </Text>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            gap: 3,
+            marginTop: spacing.xs,
+          }}
+        >
+          <Text style={[st.vMore, { color: a }]}>{t('scriptures.gita.readMore')}</Text>
+          <Ionicons name="chevron-forward" size={11} color={a} />
+        </View>
+      </TouchableOpacity>
+    );
+  },
 );
 
 // ─────────────────────────────────────────────
@@ -345,6 +350,7 @@ const VerseCard = React.memo(
 // ─────────────────────────────────────────────
 
 export default function ScripturesScreen() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<"gita" | "chalisas">("gita");
 
   // GITA STATE
@@ -406,8 +412,8 @@ export default function ScripturesScreen() {
             <View style={st.hdr}>
               <Text style={st.hdrOm}>ॐ</Text>
               <View>
-                <Text style={st.hdrTitle}>भगवद् गीता</Text>
-                <Text style={st.hdrSub}>18 अध्याय · 700 श्लोक</Text>
+                <Text style={st.hdrTitle}>{t('scriptures.gita.header')}</Text>
+                <Text style={st.hdrSub}>{t('scriptures.gita.subheader')}</Text>
               </View>
             </View>
 
@@ -432,7 +438,7 @@ export default function ScripturesScreen() {
                     },
                   ]}
                 >
-                  📖 गीता
+                  {t('scriptures.tabs.gita')}
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
@@ -454,7 +460,7 @@ export default function ScripturesScreen() {
                     },
                   ]}
                 >
-                  🙏 चालीसा
+                  {t('scriptures.tabs.chalisa')}
                 </Text>
               </TouchableOpacity>
             </View>
