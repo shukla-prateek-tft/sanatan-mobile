@@ -31,7 +31,7 @@ import {
   Dimensions,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { spacing, typography } from "../../theme";
 import { Ionicons } from "@expo/vector-icons";
 import {
   useProducts,
@@ -39,6 +39,8 @@ import {
   type Product,
 } from "../../services/useProducts";
 import { useTranslation } from "react-i18next";
+import { useAppTheme } from "../../context/AppContext";
+import type { ThemeColors } from "../../theme/themes";
 
 const { width: SW } = Dimensions.get("window");
 const CARD_WIDTH = (SW - spacing.md * 2 - spacing.sm) / 2;
@@ -70,7 +72,26 @@ async function openAffiliateLink(
 // ─────────────────────────────────────────────
 // BADGE CHIP
 // ─────────────────────────────────────────────
+const getChipStyles = (colors: ThemeColors) => StyleSheet.create({
+  wrap: {
+    borderRadius: 6,
+    borderWidth: 1,
+    paddingHorizontal: 7,
+    paddingVertical: 2,
+    alignSelf: "flex-start",
+  },
+  txt: {
+    fontSize: 9,
+    fontWeight: "800",
+    letterSpacing: 0.5,
+    textTransform: "uppercase",
+  },
+});
+
 const BadgeChip: React.FC<{ label: string }> = ({ label }) => {
+  const { themeColors: colors } = useAppTheme();
+  const chip = useMemo(() => getChipStyles(colors), [colors]);
+
   const color =
     label === "Bestseller"
       ? "#F97316"
@@ -91,77 +112,11 @@ const BadgeChip: React.FC<{ label: string }> = ({ label }) => {
     </View>
   );
 };
-const chip = StyleSheet.create({
-  wrap: {
-    borderRadius: 6,
-    borderWidth: 1,
-    paddingHorizontal: 7,
-    paddingVertical: 2,
-    alignSelf: "flex-start",
-  },
-  txt: {
-    fontSize: 9,
-    fontWeight: "800",
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
-  },
-});
 
 // ─────────────────────────────────────────────
 // PRODUCT CARD  (grid)
 // ─────────────────────────────────────────────
-const ProductCard: React.FC<{ item: Product }> = ({ item }) => (
-  <View style={card.wrap}>
-    {/* Image */}
-    <View style={card.imgBox}>
-      {item.imageUrl ? (
-        <Image
-          source={{ uri: item.imageUrl }}
-          style={card.img}
-          resizeMode="cover"
-        />
-      ) : (
-        <View style={card.imgPlaceholder}>
-          <Text style={{ fontSize: 32 }}>🛍️</Text>
-        </View>
-      )}
-      {item.badge ? (
-        <View style={card.badgePos}>
-          <BadgeChip label={item.badge} />
-        </View>
-      ) : null}
-    </View>
-
-    {/* Info */}
-    <View style={card.info}>
-      <Text style={card.nameEn} numberOfLines={2}>
-        {item.name}
-      </Text>
-      <Text style={card.nameHi} numberOfLines={1}>
-        {item.nameHi}
-      </Text>
-      {item.description ? (
-        <Text style={card.desc} numberOfLines={2}>
-          {item.description}
-        </Text>
-      ) : null}
-
-      <View style={card.bottom}>
-        <Text style={card.price}>{item.price}</Text>
-        <TouchableOpacity
-          style={card.buyBtn}
-          onPress={() => openAffiliateLink(item.affiliateUrl, item.name)}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="cart-outline" size={14} color={colors.bgSecondary} />
-          <Text style={card.buyTxt}>Buy</Text>
-        </TouchableOpacity>
-      </View>
-    </View>
-  </View>
-);
-
-const card = StyleSheet.create({
+const getCardStyles = (colors: ThemeColors) => StyleSheet.create({
   wrap: {
     width: CARD_WIDTH,
     backgroundColor: colors.cardBg,
@@ -213,47 +168,66 @@ const card = StyleSheet.create({
   buyTxt: { fontSize: 11, color: colors.bgSecondary, fontWeight: "700" },
 });
 
-// ─────────────────────────────────────────────
-// FEATURED CARD  (horizontal scroll)
-// ─────────────────────────────────────────────
-const FeaturedCard: React.FC<{ item: Product }> = ({ item }) => (
-  <TouchableOpacity
-    style={feat.wrap}
-    onPress={() => openAffiliateLink(item.affiliateUrl, item.name)}
-    activeOpacity={0.88}
-  >
-    {item.imageUrl ? (
-      <Image
-        source={{ uri: item.imageUrl }}
-        style={feat.img}
-        resizeMode="cover"
-      />
-    ) : (
-      <View style={[feat.img, feat.imgPlaceholder]}>
-        <Text style={{ fontSize: 44 }}>🪔</Text>
+const ProductCard: React.FC<{ item: Product }> = ({ item }) => {
+  const { themeColors: colors } = useAppTheme();
+  const card = useMemo(() => getCardStyles(colors), [colors]);
+
+  return (
+    <View style={card.wrap}>
+      {/* Image */}
+      <View style={card.imgBox}>
+        {item.imageUrl ? (
+          <Image
+            source={{ uri: item.imageUrl }}
+            style={card.img}
+            resizeMode="cover"
+          />
+        ) : (
+          <View style={card.imgPlaceholder}>
+            <Text style={{ fontSize: 32 }}>🛍️</Text>
+          </View>
+        )}
+        {item.badge ? (
+          <View style={card.badgePos}>
+            <BadgeChip label={item.badge} />
+          </View>
+        ) : null}
       </View>
-    )}
-    {/* Gradient overlay */}
-    <View style={feat.overlay} />
-    <View style={feat.content}>
-      {item.badge ? <BadgeChip label={item.badge} /> : null}
-      <Text style={feat.nameEn} numberOfLines={1}>
-        {item.name}
-      </Text>
-      <Text style={feat.nameHi} numberOfLines={1}>
-        {item.nameHi}
-      </Text>
-      <View style={feat.row}>
-        <Text style={feat.price}>{item.price}</Text>
-        <View style={feat.buyPill}>
-          <Text style={feat.buyTxt}>Shop Now →</Text>
+
+      {/* Info */}
+      <View style={card.info}>
+        <Text style={card.nameEn} numberOfLines={2}>
+          {item.name}
+        </Text>
+        <Text style={card.nameHi} numberOfLines={1}>
+          {item.nameHi}
+        </Text>
+        {item.description ? (
+          <Text style={card.desc} numberOfLines={2}>
+            {item.description}
+          </Text>
+        ) : null}
+
+        <View style={card.bottom}>
+          <Text style={card.price}>{item.price}</Text>
+          <TouchableOpacity
+            style={card.buyBtn}
+            onPress={() => openAffiliateLink(item.affiliateUrl, item.name)}
+            activeOpacity={0.8}
+          >
+            <Ionicons name="cart-outline" size={14} color={colors.bgSecondary} />
+            <Text style={card.buyTxt}>Buy</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
-  </TouchableOpacity>
-);
+  );
+};
 
-const feat = StyleSheet.create({
+// ─────────────────────────────────────────────
+// FEATURED CARD  (horizontal scroll)
+// ─────────────────────────────────────────────
+const getFeatStyles = (colors: ThemeColors) => StyleSheet.create({
   wrap: {
     width: FEATURED_WIDTH,
     height: 170,
@@ -305,47 +279,78 @@ const feat = StyleSheet.create({
   buyTxt: { fontSize: 11, color: colors.bgSecondary, fontWeight: "700" },
 });
 
+const FeaturedCard: React.FC<{ item: Product }> = ({ item }) => {
+  const { themeColors: colors } = useAppTheme();
+  const feat = useMemo(() => getFeatStyles(colors), [colors]);
+
+  return (
+    <TouchableOpacity
+      style={feat.wrap}
+      onPress={() => openAffiliateLink(item.affiliateUrl, item.name)}
+      activeOpacity={0.88}
+    >
+      {item.imageUrl ? (
+        <Image
+          source={{ uri: item.imageUrl }}
+          style={feat.img}
+          resizeMode="cover"
+        />
+      ) : (
+        <View style={[feat.img, feat.imgPlaceholder]}>
+          <Text style={{ fontSize: 44 }}>🪔</Text>
+        </View>
+      )}
+      {/* Gradient overlay */}
+      <View style={feat.overlay} />
+      <View style={feat.content}>
+        {item.badge ? <BadgeChip label={item.badge} /> : null}
+        <Text style={feat.nameEn} numberOfLines={1}>
+          {item.name}
+        </Text>
+        <Text style={feat.nameHi} numberOfLines={1}>
+          {item.nameHi}
+        </Text>
+        <View style={feat.row}>
+          <Text style={feat.price}>{item.price}</Text>
+          <View style={feat.buyPill}>
+            <Text style={feat.buyTxt}>Shop Now →</Text>
+          </View>
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
 // ─────────────────────────────────────────────
 // SKELETON CARD
 // ─────────────────────────────────────────────
-const SkeletonCard = () => (
-  <View style={[card.wrap, sk.wrap]}>
-    <View style={[card.imgBox, sk.block]} />
-    <View style={card.info}>
-      <View style={[sk.line, { width: "80%", height: 12 }]} />
-      <View style={[sk.line, { width: "50%", height: 9, marginTop: 4 }]} />
-      <View style={[sk.line, { width: "40%", height: 16, marginTop: 8 }]} />
-    </View>
-  </View>
-);
-const sk = StyleSheet.create({
+const getSkStyles = (colors: ThemeColors) => StyleSheet.create({
   wrap: { opacity: 0.5 },
   block: { backgroundColor: colors.cardBorder },
   line: { backgroundColor: colors.cardBorder, borderRadius: 4 },
 });
 
+const SkeletonCard = () => {
+  const { themeColors: colors } = useAppTheme();
+  const card = useMemo(() => getCardStyles(colors), [colors]);
+  const sk = useMemo(() => getSkStyles(colors), [colors]);
+
+  return (
+    <View style={[card.wrap, sk.wrap]}>
+      <View style={[card.imgBox, sk.block]} />
+      <View style={card.info}>
+        <View style={[sk.line, { width: "80%", height: 12 }]} />
+        <View style={[sk.line, { width: "50%", height: 9, marginTop: 4 }]} />
+        <View style={[sk.line, { width: "40%", height: 16, marginTop: 8 }]} />
+      </View>
+    </View>
+  );
+};
+
 // ─────────────────────────────────────────────
 // CATEGORY TAB
 // ─────────────────────────────────────────────
-const CategoryTab: React.FC<{
-  cat: string;
-  active: boolean;
-  onPress: () => void;
-}> = ({ cat, active, onPress }) => {
-  const label = getCategoryLabel(cat);
-  return (
-    <TouchableOpacity
-      style={[tab.btn, active && tab.btnActive]}
-      onPress={onPress}
-      activeOpacity={0.75}
-    >
-      <Text style={tab.emoji}>{label.emoji}</Text>
-      <Text style={[tab.en, active && tab.enActive]}>{label.en}</Text>
-      <Text style={[tab.hi, active && tab.hiActive]}>{label.hi}</Text>
-    </TouchableOpacity>
-  );
-};
-const tab = StyleSheet.create({
+const getTabStyles = (colors: ThemeColors) => StyleSheet.create({
   btn: {
     alignItems: "center",
     paddingHorizontal: 14,
@@ -365,21 +370,154 @@ const tab = StyleSheet.create({
   hiActive: { color: colors.gold + "AA" },
 });
 
+const CategoryTab: React.FC<{
+  cat: string;
+  active: boolean;
+  onPress: () => void;
+}> = ({ cat, active, onPress }) => {
+  const { themeColors: colors } = useAppTheme();
+  const tab = useMemo(() => getTabStyles(colors), [colors]);
+
+  const label = getCategoryLabel(cat);
+  return (
+    <TouchableOpacity
+      style={[tab.btn, active && tab.btnActive]}
+      onPress={onPress}
+      activeOpacity={0.75}
+    >
+      <Text style={tab.emoji}>{label.emoji}</Text>
+      <Text style={[tab.en, active && tab.enActive]}>{label.en}</Text>
+      <Text style={[tab.hi, active && tab.hiActive]}>{label.hi}</Text>
+    </TouchableOpacity>
+  );
+};
+
 // ─────────────────────────────────────────────
 // EMPTY STATE
 // ─────────────────────────────────────────────
-const EmptyState = ({ title, sub }: { title: string; sub: string }) => (
-  <View style={st.emptyBox}>
-    <Text style={{ fontSize: 48 }}>🛍️</Text>
-    <Text style={st.emptyTitle}>{title}</Text>
-    <Text style={st.emptySub}>{sub}</Text>
-  </View>
-);
+const getStStyles = (colors: ThemeColors) => StyleSheet.create({
+  container: { flex: 1 },
+
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm,
+  },
+  headerTitle: {
+    fontSize: typography.fontSize.lg,
+    fontWeight: typography.fontWeight.bold,
+    color: colors.gold,
+  },
+  headerSub: { fontSize: 11, color: colors.textMuted, marginTop: 1 },
+  refreshBtn: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: colors.gold + "15",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  errorBox: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.sm,
+    marginHorizontal: spacing.md,
+    marginBottom: spacing.sm,
+    backgroundColor: "#F8717115",
+    borderRadius: 10,
+    padding: spacing.sm,
+    borderWidth: 1,
+    borderColor: "#F8717140",
+  },
+  errorTxt: { flex: 1, fontSize: 12, color: "#F87171" },
+  errorRetry: { fontSize: 12, color: colors.gold, fontWeight: "700" },
+
+  featuredList: { paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
+
+  tabsRow: {
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.sm,
+  },
+
+  sectionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.sm,
+    paddingBottom: 6,
+  },
+  sectionTitle: {
+    fontSize: typography.fontSize.md,
+    fontWeight: "700",
+    color: colors.textPrimary,
+  },
+  productCount: { fontSize: 11, color: colors.textMuted },
+
+  grid: { paddingHorizontal: spacing.md },
+  gridRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  emptyBox: {
+    alignItems: "center",
+    paddingVertical: spacing.xl * 2,
+    gap: spacing.sm,
+    paddingHorizontal: spacing.lg,
+  },
+  emptyTitle: {
+    fontSize: typography.fontSize.lg,
+    color: colors.textPrimary,
+    fontWeight: "700",
+  },
+  emptyHi: { fontSize: 13, color: colors.gold },
+  emptySub: {
+    fontSize: 12,
+    color: colors.textMuted,
+    textAlign: "center",
+    lineHeight: 18,
+  },
+
+  disclaimer: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 6,
+    paddingHorizontal: spacing.md,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+  },
+  disclaimerTxt: {
+    flex: 1,
+    fontSize: 10,
+    color: colors.textMuted,
+    lineHeight: 15,
+  },
+});
+
+const EmptyState = ({ title, sub }: { title: string; sub: string }) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = useMemo(() => getStStyles(colors), [colors]);
+
+  return (
+    <View style={st.emptyBox}>
+      <Text style={{ fontSize: 48 }}>🛍️</Text>
+      <Text style={st.emptyTitle}>{title}</Text>
+      <Text style={st.emptySub}>{sub}</Text>
+    </View>
+  );
+};
 
 // ─────────────────────────────────────────────
 // SCREEN
 // ─────────────────────────────────────────────
 export default function ShopScreen() {
+  const { themeColors: colors } = useAppTheme();
+  const st = useMemo(() => getStStyles(colors), [colors]);
   const { t } = useTranslation();
   const { products, featured, categories, loading, error, refresh } =
     useProducts();
@@ -538,110 +676,3 @@ export default function ShopScreen() {
     </GradientBackground>
   );
 }
-
-// ─────────────────────────────────────────────
-// STYLES
-// ─────────────────────────────────────────────
-const st = StyleSheet.create({
-  container: { flex: 1 },
-
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
-    gap: spacing.sm,
-  },
-  headerTitle: {
-    fontSize: typography.fontSize.lg,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.gold,
-  },
-  headerSub: { fontSize: 11, color: colors.textMuted, marginTop: 1 },
-  refreshBtn: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: colors.gold + "15",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-  errorBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: spacing.sm,
-    marginHorizontal: spacing.md,
-    marginBottom: spacing.sm,
-    backgroundColor: "#F8717115",
-    borderRadius: 10,
-    padding: spacing.sm,
-    borderWidth: 1,
-    borderColor: "#F8717140",
-  },
-  errorTxt: { flex: 1, fontSize: 12, color: "#F87171" },
-  errorRetry: { fontSize: 12, color: colors.gold, fontWeight: "700" },
-
-  featuredList: { paddingHorizontal: spacing.md, paddingBottom: spacing.sm },
-
-  tabsRow: {
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.sm,
-  },
-
-  sectionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.sm,
-    paddingBottom: 6,
-  },
-  sectionTitle: {
-    fontSize: typography.fontSize.md,
-    fontWeight: "700",
-    color: colors.textPrimary,
-  },
-  productCount: { fontSize: 11, color: colors.textMuted },
-
-  grid: { paddingHorizontal: spacing.md },
-  gridRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-
-  emptyBox: {
-    alignItems: "center",
-    paddingVertical: spacing.xl * 2,
-    gap: spacing.sm,
-    paddingHorizontal: spacing.lg,
-  },
-  emptyTitle: {
-    fontSize: typography.fontSize.lg,
-    color: colors.textPrimary,
-    fontWeight: "700",
-  },
-  emptyHi: { fontSize: 13, color: colors.gold },
-  emptySub: {
-    fontSize: 12,
-    color: colors.textMuted,
-    textAlign: "center",
-    lineHeight: 18,
-  },
-
-  disclaimer: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    gap: 6,
-    paddingHorizontal: spacing.md,
-    paddingTop: spacing.md,
-    paddingBottom: spacing.sm,
-  },
-  disclaimerTxt: {
-    flex: 1,
-    fontSize: 10,
-    color: colors.textMuted,
-    lineHeight: 15,
-  },
-});

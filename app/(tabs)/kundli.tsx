@@ -17,7 +17,9 @@ import {
   Dimensions,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { spacing, typography } from "../../theme";
+import { useAppTheme } from "../../context/AppContext";
+import type { ThemeColors } from "../../theme/themes";
 import { Ionicons } from "@expo/vector-icons";
 import {
   getPanchangam,
@@ -241,16 +243,20 @@ function validateBirthForm(f: BirthData): string | null {
 // ─────────────────────────────────────────────
 // ATOMS
 // ─────────────────────────────────────────────
-const SecDiv = ({ en, hi }: { en: string; hi: string }) => (
-  <View style={st.secDiv}>
-    <View style={st.secLine} />
-    <View style={st.secPill}>
-      <Text style={st.secHi}>{hi}</Text>
-      <Text style={st.secEn}> · {en}</Text>
+const SecDiv = ({ en, hi }: { en: string; hi: string }) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
+  return (
+    <View style={st.secDiv}>
+      <View style={st.secLine} />
+      <View style={st.secPill}>
+        <Text style={st.secHi}>{hi}</Text>
+        <Text style={st.secEn}> · {en}</Text>
+      </View>
+      <View style={st.secLine} />
     </View>
-    <View style={st.secLine} />
-  </View>
-);
+  );
+};
 
 const InfoRow = ({
   icon,
@@ -266,23 +272,27 @@ const InfoRow = ({
   valueEn: string;
   valueHi?: string;
   accent?: boolean;
-}) => (
-  <View style={st.infoRow}>
-    {icon ? (
-      <Text style={st.infoIcon}>{icon}</Text>
-    ) : (
-      <View style={{ width: 22 }} />
-    )}
-    <View style={st.infoLabels}>
-      <Text style={st.infoLabelHi}>{labelHi}</Text>
-      <Text style={st.infoLabelEn}>{labelEn}</Text>
+}) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
+  return (
+    <View style={st.infoRow}>
+      {icon ? (
+        <Text style={st.infoIcon}>{icon}</Text>
+      ) : (
+        <View style={{ width: 22 }} />
+      )}
+      <View style={st.infoLabels}>
+        <Text style={st.infoLabelHi}>{labelHi}</Text>
+        <Text style={st.infoLabelEn}>{labelEn}</Text>
+      </View>
+      <View style={st.infoValues}>
+        <Text style={[st.infoValueEn, accent && st.accent]}>{valueEn}</Text>
+        {valueHi ? <Text style={st.infoValueHi}>{valueHi}</Text> : null}
+      </View>
     </View>
-    <View style={st.infoValues}>
-      <Text style={[st.infoValueEn, accent && st.accent]}>{valueEn}</Text>
-      {valueHi ? <Text style={st.infoValueHi}>{valueHi}</Text> : null}
-    </View>
-  </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // KUNDLI CHART
@@ -294,6 +304,8 @@ const KundliChart = ({
   planets: Record<string, number>;
   lagna: number;
 }) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
   const cellSize = (SW - spacing.md * 2) / 4;
   const houseOccupants: Record<number, string[]> = {};
   for (let h = 1; h <= 12; h++) houseOccupants[h] = [];
@@ -378,6 +390,8 @@ const EMPTY_FORM: BirthData = {
 // ─────────────────────────────────────────────
 export default function KundliScreen() {
   const { t } = useTranslation();
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
   const [tab, setTab] = useState<"kundli" | "matching">("kundli");
   const [form, setForm] = useState<BirthData>(EMPTY_FORM);
   const [form2, setForm2] = useState<BirthData>({
@@ -947,6 +961,8 @@ const BirthForm = ({
   compact?: boolean;
   noGenerate?: boolean;
 }) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
   const f = (key: keyof BirthData, val: string) =>
     setForm((p) => ({ ...p, [key]: val }));
   return (
@@ -1100,6 +1116,8 @@ const BirthForm = ({
 // MANGAL DOSHA
 // ─────────────────────────────────────────────
 const MangalDosha = ({ data, label }: { data: any; label: string }) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
   if (!data) return null;
   const marsRashi = data.planetaryPositions?.mars?.rashi ?? -1;
   const lagna = data.lagna ?? data.planetaryPositions?.sun?.rashi ?? 0;
@@ -1220,7 +1238,7 @@ const TITHI_HI = [
 // ─────────────────────────────────────────────
 // STYLES  (unchanged from original)
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+const getStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1 },
   content: { paddingHorizontal: spacing.md, paddingBottom: spacing.xl * 2 },
   tabRow: {

@@ -20,7 +20,9 @@ import {
   Animated as RNAnimated,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { spacing, typography } from "../../theme";
+import { useAppTheme } from "../../context/AppContext";
+import type { ThemeColors } from "../../theme/themes";
 import { gitaService, Chapter, Verse } from "../../services/gitaService";
 import { chalisasService, Chalisa } from "../../services/chalisasService";
 import { Ionicons } from "@expo/vector-icons";
@@ -164,6 +166,8 @@ const ChapterCard = React.memo(
     index: number;
     onPress: () => void;
   }) => {
+    const { themeColors: colors } = useAppTheme();
+    const st = React.useMemo(() => getStyles(colors), [colors]);
     const a = accent(item.number);
     const s = symbol(item.number);
     const scale = useRef(new RNAnimated.Value(1)).current;
@@ -243,6 +247,8 @@ const ChalisaCard = React.memo(
     onPress: () => void;
   }) => {
     const { t } = useTranslation();
+    const { themeColors: colors } = useAppTheme();
+    const st = React.useMemo(() => getStyles(colors), [colors]);
     const scale = useRef(new RNAnimated.Value(1)).current;
 
     const onPressIn = () =>
@@ -312,6 +318,8 @@ const ChalisaCard = React.memo(
 const VerseCard = React.memo(
   ({ item, a, onPress }: { item: Verse; a: string; onPress: () => void }) => {
     const { t } = useTranslation();
+    const { themeColors: colors } = useAppTheme();
+    const st = React.useMemo(() => getStyles(colors), [colors]);
     return (
       <TouchableOpacity
         style={[st.vCard, { borderTopColor: a + "55" }]}
@@ -351,6 +359,8 @@ const VerseCard = React.memo(
 
 export default function ScripturesScreen() {
   const { t } = useTranslation();
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
   const [tab, setTab] = useState<"gita" | "chalisas">("gita");
 
   // GITA STATE
@@ -876,7 +886,7 @@ export default function ScripturesScreen() {
 // STYLES
 // ─────────────────────────────────────────────
 
-const st = StyleSheet.create({
+const getStyles = (colors: ThemeColors) => StyleSheet.create({
   root: { flex: 1 },
 
   // Header

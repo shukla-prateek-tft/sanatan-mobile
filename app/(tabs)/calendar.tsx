@@ -11,7 +11,9 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography, theme } from "../../theme";
+import { spacing, typography, theme } from "../../theme";
+import { useAppTheme } from "../../context/AppContext";
+import type { ThemeColors } from "../../theme/themes";
 import {
   panchangService,
   PanchangData,
@@ -83,6 +85,8 @@ const FALLBACK_LNG = 77.209;
 // FESTIVAL CARD  (new, self-contained)
 // ─────────────────────────────────────────────
 const FestivalCard = ({ fest }: { fest: FestivalObj }) => {
+  const { themeColors: colors } = useAppTheme();
+  const mStyles = React.useMemo(() => getModalStyles(colors), [colors]);
   const accent = FESTIVAL_COLOR[fest.category ?? "minor"] ?? colors.gold;
   const emoji =
     fest.category === "major" ? "🎊" : fest.isFastingDay ? "🙏" : "🪔";
@@ -265,21 +269,25 @@ const InfoRow = ({
   valueEn: string;
   valueHi?: string;
   accent?: boolean;
-}) => (
-  <View style={mStyles.infoRow}>
-    <Text style={mStyles.infoIcon}>{icon}</Text>
-    <View style={mStyles.infoLabels}>
-      <Text style={mStyles.infoLabelHi}>{labelHi}</Text>
-      <Text style={mStyles.infoLabelEn}>{labelEn}</Text>
+}) => {
+  const { themeColors: colors } = useAppTheme();
+  const mStyles = React.useMemo(() => getModalStyles(colors), [colors]);
+  return (
+    <View style={mStyles.infoRow}>
+      <Text style={mStyles.infoIcon}>{icon}</Text>
+      <View style={mStyles.infoLabels}>
+        <Text style={mStyles.infoLabelHi}>{labelHi}</Text>
+        <Text style={mStyles.infoLabelEn}>{labelEn}</Text>
+      </View>
+      <View style={mStyles.infoValues}>
+        <Text style={[mStyles.infoValueEn, accent && mStyles.accent]}>
+          {valueEn}
+        </Text>
+        {valueHi ? <Text style={mStyles.infoValueHi}>{valueHi}</Text> : null}
+      </View>
     </View>
-    <View style={mStyles.infoValues}>
-      <Text style={[mStyles.infoValueEn, accent && mStyles.accent]}>
-        {valueEn}
-      </Text>
-      {valueHi ? <Text style={mStyles.infoValueHi}>{valueHi}</Text> : null}
-    </View>
-  </View>
-);
+  );
+};
 
 const TimeRow = ({
   icon,
@@ -293,19 +301,23 @@ const TimeRow = ({
   labelHi: string;
   value: string;
   dot: string;
-}) => (
-  <View style={mStyles.infoRow}>
-    <View style={[mStyles.dot, { backgroundColor: dot }]} />
-    <Text style={mStyles.infoIcon}>{icon}</Text>
-    <View style={mStyles.infoLabels}>
-      <Text style={mStyles.infoLabelHi}>{labelHi}</Text>
-      <Text style={mStyles.infoLabelEn}>{labelEn}</Text>
+}) => {
+  const { themeColors: colors } = useAppTheme();
+  const mStyles = React.useMemo(() => getModalStyles(colors), [colors]);
+  return (
+    <View style={mStyles.infoRow}>
+      <View style={[mStyles.dot, { backgroundColor: dot }]} />
+      <Text style={mStyles.infoIcon}>{icon}</Text>
+      <View style={mStyles.infoLabels}>
+        <Text style={mStyles.infoLabelHi}>{labelHi}</Text>
+        <Text style={mStyles.infoLabelEn}>{labelEn}</Text>
+      </View>
+      <View style={mStyles.infoValues}>
+        <Text style={mStyles.infoValueEn}>{value}</Text>
+      </View>
     </View>
-    <View style={mStyles.infoValues}>
-      <Text style={mStyles.infoValueEn}>{value}</Text>
-    </View>
-  </View>
-);
+  );
+};
 
 const SlotRow = ({
   icon,
@@ -321,37 +333,48 @@ const SlotRow = ({
   start: string;
   end: string;
   dot: string;
-}) => (
-  <View style={mStyles.infoRow}>
-    <View style={[mStyles.dot, { backgroundColor: dot }]} />
-    <Text style={mStyles.infoIcon}>{icon}</Text>
-    <View style={mStyles.infoLabels}>
-      <Text style={mStyles.infoLabelHi}>{labelHi}</Text>
-      <Text style={mStyles.infoLabelEn}>{labelEn}</Text>
+}) => {
+  const { themeColors: colors } = useAppTheme();
+  const mStyles = React.useMemo(() => getModalStyles(colors), [colors]);
+  return (
+    <View style={mStyles.infoRow}>
+      <View style={[mStyles.dot, { backgroundColor: dot }]} />
+      <Text style={mStyles.infoIcon}>{icon}</Text>
+      <View style={mStyles.infoLabels}>
+        <Text style={mStyles.infoLabelHi}>{labelHi}</Text>
+        <Text style={mStyles.infoLabelEn}>{labelEn}</Text>
+      </View>
+      <View style={mStyles.infoValues}>
+        <Text style={mStyles.infoValueEn}>{start}</Text>
+        <Text style={mStyles.infoValueHi}>{end}</Text>
+      </View>
     </View>
-    <View style={mStyles.infoValues}>
-      <Text style={mStyles.infoValueEn}>{start}</Text>
-      <Text style={mStyles.infoValueHi}>{end}</Text>
-    </View>
-  </View>
-);
+  );
+};
 
-const SecDiv = ({ en, hi }: { en: string; hi: string }) => (
-  <View style={mStyles.secDiv}>
-    <View style={mStyles.secLine} />
-    <View style={mStyles.secPill}>
-      <Text style={mStyles.secHi}>{hi}</Text>
-      <Text style={mStyles.secEn}> · {en}</Text>
+const SecDiv = ({ en, hi }: { en: string; hi: string }) => {
+  const { themeColors: colors } = useAppTheme();
+  const mStyles = React.useMemo(() => getModalStyles(colors), [colors]);
+  return (
+    <View style={mStyles.secDiv}>
+      <View style={mStyles.secLine} />
+      <View style={mStyles.secPill}>
+        <Text style={mStyles.secHi}>{hi}</Text>
+        <Text style={mStyles.secEn}> · {en}</Text>
+      </View>
+      <View style={mStyles.secLine} />
     </View>
-    <View style={mStyles.secLine} />
-  </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // SCREEN
 // ─────────────────────────────────────────────
 export default function CalendarScreen() {
   const { t } = useTranslation();
+  const { themeColors: colors } = useAppTheme();
+  const s = React.useMemo(() => getCalStyles(colors), [colors]);
+  const mStyles = React.useMemo(() => getModalStyles(colors), [colors]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [panchang, setPanchang] = useState<PanchangData | null>(null);
@@ -939,7 +962,7 @@ export default function CalendarScreen() {
 // ─────────────────────────────────────────────
 // CALENDAR STYLES
 // ─────────────────────────────────────────────
-const s = StyleSheet.create({
+const getCalStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1 },
   content: { paddingBottom: spacing.xl },
 
@@ -1087,7 +1110,7 @@ const s = StyleSheet.create({
 // ─────────────────────────────────────────────
 // MODAL STYLES
 // ─────────────────────────────────────────────
-const mStyles = StyleSheet.create({
+const getModalStyles = (colors: ThemeColors) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.6)",

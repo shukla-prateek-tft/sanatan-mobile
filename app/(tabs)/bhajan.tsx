@@ -23,7 +23,9 @@ import {
 import { Audio, AVPlaybackStatus } from "expo-av";
 import * as DocumentPicker from "expo-document-picker";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography } from "../../theme";
+import { spacing, typography } from "../../theme";
+import { useAppTheme } from "../../context/AppContext";
+import type { ThemeColors } from "../../theme/themes";
 import { bhajanService, Bhajan } from "../../services/bhajanService";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, {
@@ -111,6 +113,7 @@ const SpinDisc = ({
   size?: number;
   emoji?: string;
 }) => {
+  const { themeColors: colors } = useAppTheme();
   const rotate = useSharedValue(0);
   useEffect(() => {
     if (isPlaying) {
@@ -160,6 +163,8 @@ function EmptyState({
   msgEn: string;
   subEn?: string;
 }) {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
   return (
     <View style={st.emptyState}>
       <Ionicons name={icon as any} size={60} color={colors.textMuted + "60"} />
@@ -229,6 +234,8 @@ function YouTubeWebView({ url }: { url: string }) {
 // ─────────────────────────────────────────────
 export default function BhajanScreen() {
   const { t } = useTranslation();
+  const { themeColors: colors } = useAppTheme();
+  const { st, npStyle, ytStyle } = React.useMemo(() => getStyles(colors), [colors]);
   const [activeTab, setActiveTab] = useState<Tab>("library");
   const [selectedDeity, setSelectedDeity] = useState("All");
   const [localBhajans, setLocalBhajans] = useState<LocalBhajan[]>([]);
@@ -1063,7 +1070,8 @@ export default function BhajanScreen() {
 // ─────────────────────────────────────────────
 // STYLES
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+const getStyles = (colors: ThemeColors) => {
+  const st = StyleSheet.create({
   container: { flex: 1 },
   header: {
     flexDirection: "row",
@@ -1405,9 +1413,9 @@ const st = StyleSheet.create({
     color: colors.textMuted,
     lineHeight: 18,
   },
-});
+  });
 
-const npStyle = StyleSheet.create({
+  const npStyle = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.85)",
@@ -1530,9 +1538,9 @@ const npStyle = StyleSheet.create({
     borderColor: colors.cardBorder,
   },
   stopTxt: { fontSize: 13, color: colors.textMuted },
-});
+  });
 
-const ytStyle = StyleSheet.create({
+  const ytStyle = StyleSheet.create({
   ytHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -1556,4 +1564,7 @@ const ytStyle = StyleSheet.create({
     fontSize: typography.fontSize.lg,
     fontWeight: "bold",
   },
-});
+  });
+
+  return { st, npStyle, ytStyle };
+};

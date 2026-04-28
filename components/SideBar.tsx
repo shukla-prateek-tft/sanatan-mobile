@@ -38,8 +38,10 @@ import {
 import { Ionicons, FontAwesome6 } from "@expo/vector-icons";
 import { useRouter, usePathname } from "expo-router";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { colors, spacing, typography } from "@/theme";
+import { spacing, typography } from "@/theme";
 import { useTranslation } from "react-i18next";
+import { useAppTheme } from "@/context/AppContext";
+import type { ThemeColors } from "@/theme/themes";
 
 const { width: SW, height: SH } = Dimensions.get("window");
 const DRAWER_WIDTH = Math.min(SW * 0.8, 320);
@@ -94,6 +96,8 @@ const QUICK_ACTIONS: NavItem[] = [
 // DRAWER CONTENT
 // ─────────────────────────────────────────────
 const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const { themeColors: colors } = useAppTheme();
+  const dr = React.useMemo(() => getDrStyles(colors), [colors]);
   const router = useRouter();
   const pathname = usePathname();
   const insets = useSafeAreaInsets();
@@ -211,6 +215,8 @@ const DrawerContent: React.FC<{ onClose: () => void }> = ({ onClose }) => {
 export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStStyles(colors), [colors]);
   const [isOpen, setIsOpen] = useState(false);
   const [modalMounted, setModalMounted] = useState(false);
 
@@ -328,9 +334,10 @@ export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({
 // ─────────────────────────────────────────────
 // HAMBURGER BUTTON
 // ─────────────────────────────────────────────
-export const HamburgerButton: React.FC<{ color?: string }> = ({
-  color = colors.gold,
-}) => {
+export const HamburgerButton: React.FC<{ color?: string }> = (props) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStStyles(colors), [colors]);
+  const { color = colors.gold } = props;
   const { open } = useSidebar();
   return (
     <TouchableOpacity
@@ -349,7 +356,7 @@ export const HamburgerButton: React.FC<{ color?: string }> = ({
 // ─────────────────────────────────────────────
 // STYLES — DRAWER
 // ─────────────────────────────────────────────
-const dr = StyleSheet.create({
+const getDrStyles = (colors: ThemeColors) => StyleSheet.create({
   wrap: {
     flex: 1,
     backgroundColor: colors.bgSecondary,
@@ -484,7 +491,7 @@ const dr = StyleSheet.create({
 // ─────────────────────────────────────────────
 // STYLES — MODAL SHELL
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+const getStStyles = (colors: ThemeColors) => StyleSheet.create({
   // Full-screen transparent container inside Modal
   modalRoot: {
     flex: 1,

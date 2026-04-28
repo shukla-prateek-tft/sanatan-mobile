@@ -34,7 +34,9 @@ import {
 import * as Haptics from "expo-haptics";
 import * as Speech from "expo-speech";
 import { GradientBackground } from "../../components/GradientBackground";
-import { colors, spacing, typography, theme } from "../../theme";
+import { spacing, typography, theme } from "../../theme";
+import { useAppTheme } from "../../context/AppContext";
+import type { ThemeColors } from "../../theme/themes";
 import { storageService } from "../../services/storageService";
 import { useTranslation } from "react-i18next";
 import { Mantra, mantraService } from "../../services/mantraService";
@@ -81,42 +83,45 @@ interface JapSettings {
 // ─────────────────────────────────────────────
 // MALA BEAD RING
 // ─────────────────────────────────────────────
-const MalaRing = React.memo(({ progress }: { progress: number }) => (
-  <View style={{ width: RING_SIZE, height: RING_SIZE, position: "relative" }}>
-    {Array.from({ length: BEAD_COUNT }).map((_, i) => {
-      const angle = (i / BEAD_COUNT) * 2 * Math.PI - Math.PI / 2;
-      const x = RING_R + BEAD_R * Math.cos(angle) - 5;
-      const y = RING_R + BEAD_R * Math.sin(angle) - 5;
-      const isActive = i < progress;
-      const isSumeru = i === 0 || i === 27 || i === 54 || i === 81;
-      const size = isSumeru ? 11 : 8;
-      return (
-        <View
-          key={i}
-          style={{
-            position: "absolute",
-            left: x - (size - 8) / 2,
-            top: y - (size - 8) / 2,
-            width: size,
-            height: size,
-            borderRadius: size / 2,
-            backgroundColor: isActive
-              ? isSumeru
-                ? "#FFE066"
-                : colors.gold
-              : isSumeru
-                ? colors.gold + "45"
-                : colors.cardBorder + "BB",
-            shadowColor: isActive ? colors.gold : "transparent",
-            shadowOpacity: isActive ? 0.9 : 0,
-            shadowRadius: 3,
-            elevation: isActive ? 2 : 0,
-          }}
-        />
-      );
-    })}
-  </View>
-));
+const MalaRing = React.memo(({ progress }: { progress: number }) => {
+  const { themeColors: colors } = useAppTheme();
+  return (
+    <View style={{ width: RING_SIZE, height: RING_SIZE, position: "relative" }}>
+      {Array.from({ length: BEAD_COUNT }).map((_, i) => {
+        const angle = (i / BEAD_COUNT) * 2 * Math.PI - Math.PI / 2;
+        const x = RING_R + BEAD_R * Math.cos(angle) - 5;
+        const y = RING_R + BEAD_R * Math.sin(angle) - 5;
+        const isActive = i < progress;
+        const isSumeru = i === 0 || i === 27 || i === 54 || i === 81;
+        const size = isSumeru ? 11 : 8;
+        return (
+          <View
+            key={i}
+            style={{
+              position: "absolute",
+              left: x - (size - 8) / 2,
+              top: y - (size - 8) / 2,
+              width: size,
+              height: size,
+              borderRadius: size / 2,
+              backgroundColor: isActive
+                ? isSumeru
+                  ? "#FFE066"
+                  : colors.gold
+                : isSumeru
+                  ? colors.gold + "45"
+                  : colors.cardBorder + "BB",
+              shadowColor: isActive ? colors.gold : "transparent",
+              shadowOpacity: isActive ? 0.9 : 0,
+              shadowRadius: 3,
+              elevation: isActive ? 2 : 0,
+            }}
+          />
+        );
+      })}
+    </View>
+  );
+});
 
 // ─────────────────────────────────────────────
 // STAT BOX ATOM
@@ -131,14 +136,18 @@ const StatBox = ({
   value: string | number;
   labelHi: string;
   labelEn: string;
-}) => (
-  <View style={st.statBox}>
-    <Text style={st.statIcon}>{icon}</Text>
-    <Text style={st.statValue}>{value}</Text>
-    <Text style={st.statLabelHi}>{labelHi}</Text>
-    <Text style={st.statLabelEn}>{labelEn}</Text>
-  </View>
-);
+}) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
+  return (
+    <View style={st.statBox}>
+      <Text style={st.statIcon}>{icon}</Text>
+      <Text style={st.statValue}>{value}</Text>
+      <Text style={st.statLabelHi}>{labelHi}</Text>
+      <Text style={st.statLabelEn}>{labelEn}</Text>
+    </View>
+  );
+};
 
 // ─────────────────────────────────────────────
 // SETTINGS ROW ATOM
@@ -157,28 +166,35 @@ const SettingRow = ({
   subtitle?: string;
   value: boolean;
   onChange: (v: boolean) => void;
-}) => (
-  <View style={st.settingRow}>
-    <Text style={st.settingIcon}>{icon}</Text>
-    <View style={st.settingInfo}>
-      <Text style={st.settingTitleHi}>{titleHi}</Text>
-      <Text style={st.settingTitleEn}>{titleEn}</Text>
-      {subtitle ? <Text style={st.settingSub}>{subtitle}</Text> : null}
+}) => {
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
+  return (
+    <View style={st.settingRow}>
+      <Text style={st.settingIcon}>{icon}</Text>
+      <View style={st.settingInfo}>
+        <Text style={st.settingTitleHi}>{titleHi}</Text>
+        <Text style={st.settingTitleEn}>{titleEn}</Text>
+        {subtitle ? <Text style={st.settingSub}>{subtitle}</Text> : null}
+      </View>
+      <Switch
+        value={value}
+        onValueChange={onChange}
+        trackColor={{ false: colors.cardBorder, true: colors.gold + "60" }}
+        thumbColor={value ? colors.gold : colors.textMuted}
+      />
     </View>
-    <Switch
-      value={value}
-      onValueChange={onChange}
-      trackColor={{ false: colors.cardBorder, true: colors.gold + "60" }}
-      thumbColor={value ? colors.gold : colors.textMuted}
-    />
-  </View>
-);
+  );
+};
 
 // ─────────────────────────────────────────────
 // MAIN SCREEN
 // ─────────────────────────────────────────────
 export default function JapScreen() {
   const { t } = useTranslation();
+  const { themeColors: colors } = useAppTheme();
+  const st = React.useMemo(() => getStyles(colors), [colors]);
+  const md = React.useMemo(() => getMdStyles(colors), [colors]);
   // ── State ──────────────────────────────────
   const [count, setCount] = useState(0);
   const [selectedMantra, setSelectedMantra] = useState<Mantra>([]);
@@ -1051,7 +1067,7 @@ export default function JapScreen() {
 // ─────────────────────────────────────────────
 // SCREEN STYLES
 // ─────────────────────────────────────────────
-const st = StyleSheet.create({
+const getStyles = (colors: ThemeColors) => StyleSheet.create({
   container: { flex: 1 },
   content: {
     paddingVertical: spacing.lg,
@@ -1370,7 +1386,7 @@ const st = StyleSheet.create({
 // ─────────────────────────────────────────────
 // MODAL STYLES
 // ─────────────────────────────────────────────
-const md = StyleSheet.create({
+const getMdStyles = (colors: ThemeColors) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.65)",

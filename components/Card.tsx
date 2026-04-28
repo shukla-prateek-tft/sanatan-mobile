@@ -2,6 +2,8 @@ import React from "react";
 import { View, Text, StyleSheet, ViewStyle, TextStyle } from "react-native";
 import { colors, spacing, typography, theme } from "../theme";
 import { LinearGradient } from "expo-linear-gradient";
+import { useAppTheme } from "@/context/AppContext";
+import { ThemeColors } from "@/theme/themes";
 
 interface CardProps {
   children: React.ReactNode;
@@ -16,6 +18,8 @@ export const Card: React.FC<CardProps> = ({
   title,
   subtitle,
 }) => {
+  const { themeColors: colors } = useAppTheme();
+  const styles = React.useMemo(() => getStyles(colors), [colors]);
   return (
     <View style={[styles.container, style]}>
       <View style={styles.card}>
@@ -31,30 +35,31 @@ export const Card: React.FC<CardProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: spacing.md,
-    marginVertical: spacing.sm,
-  },
-  card: {
-    backgroundColor: colors.cardBg,
-    borderRadius: theme.borderRadius.lg,
-    borderWidth: 1,
-    borderColor: colors.cardBorder,
-    padding: spacing.md,
-    ...theme.shadows.md,
-  },
-  header: {
-    marginBottom: spacing.md,
-  },
-  title: {
-    fontSize: typography.fontSize.xl,
-    fontWeight: typography.fontWeight.bold,
-    color: colors.textPrimary,
-    marginBottom: spacing.xs,
-  },
-  subtitle: {
-    fontSize: typography.fontSize.md,
-    color: colors.textMuted,
-  },
-});
+const getStyles = (colors: ThemeColors) =>
+  StyleSheet.create({
+    container: {
+      marginHorizontal: spacing.md,
+      marginVertical: spacing.sm,
+    },
+    card: {
+      backgroundColor: colors.cardBg,
+      borderRadius: theme.borderRadius.lg,
+      borderWidth: 1,
+      borderColor: colors.cardBorder,
+      padding: spacing.md,
+      ...theme.shadows.md,
+    },
+    header: {
+      marginBottom: spacing.md,
+    },
+    title: {
+      fontSize: typography.fontSize.xl,
+      fontWeight: typography.fontWeight.bold,
+      color: colors.textPrimary,
+      marginBottom: spacing.xs,
+    },
+    subtitle: {
+      fontSize: typography.fontSize.md,
+      color: colors.textMuted,
+    },
+  });
